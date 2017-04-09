@@ -9,6 +9,7 @@
 
 using namespace std;
 
+int getopt(int argc, char *argv[], int *d, int *m, int *n, unsigned int *addr_begin, unsigned int *addr_end, string& filename);
 bool isinst(string input);
 void wmem(unsigned char* mem, unsigned int n, unsigned int a);
 unsigned int rmem(unsigned char* mem, unsigned int n);
