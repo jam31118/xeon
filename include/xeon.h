@@ -1,7 +1,7 @@
 #ifndef _XEON_H_
 #define _XEON_H_
 
-struct XeonStruct{
+struct XeonStruct {
 	int PC = -1;
 	int PC_bus = -1;
 	int clock = -1;
@@ -20,5 +20,7 @@ struct XeonStruct{
 		} Data;
 	} ID_EX;
 };
+
+void IFstage(struct XeonStruct *Xeon);
 
 #endif
