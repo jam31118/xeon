@@ -14,7 +14,10 @@ struct XeonStruct {
 		struct {} Parsed_bus;
 	} ID;
 	struct {
-		struct { int Ex, MEM, WB;
+		struct {
+			int Ex = -1;
+			int MEM;
+			int WB;
 		} ConSig;
 		struct { 
 		} Data;

@@ -151,6 +151,7 @@ int main(int argc, char* argv[]) {
 	/* TESTING START */
 	XeonStruct Xeon;
 	cout << "Xeon.clock == " << Xeon.clock << endl;
+	IFstage(&Xeon);
 	/* TESTING END */
 
 	return 0;
