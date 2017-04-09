@@ -150,7 +150,7 @@ int main(int argc, char* argv[]) {
 	
 	/* TESTING START */
 	XeonStruct Xeon;
-	//cout << "Xeon.a == " << Xeon.a << endl;
+	cout << "Xeon.clock == " << Xeon.clock << endl;
 	/* TESTING END */
 
 	return 0;

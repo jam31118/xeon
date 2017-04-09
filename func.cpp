@@ -164,7 +164,7 @@ void findlabel(string* input, string* label) {
 
 	// 16진법을 10진법으로. 아까 위에서 만든 함수 이용.
 	for (int i = 0; i < 1000; ++i) {
-		if (input[i].find("0x") != -1) {
+		if (input[i].find("0x") != string::npos) {
 			unsigned int a = hex2int(input[i]);
 			input[i] = to_string(a);
 		}
@@ -179,7 +179,7 @@ void savedata(string* input, unsigned char* mem) {
 	int i = 0;
 	int j = 0x10000000;
 	while (input[i] != ".text") {
-		if (input[i].find(".") == -1 && input[i].find(":") == -1) {
+		if (input[i].find(".") == string::npos && input[i].find(":") == string::npos) {
 			wmem(mem, j, atoi(input[i].c_str()));
 			j += 4;
 		}
@@ -208,7 +208,7 @@ int lab2loc(string* input, string* label) {
 
 		// 다음꺼 add까지.
 		while (label[j + 1] + ":" != input[index] && input[index] != ".text") {
-			if (input[index].find(".") != -1) {
+			if (input[index].find(".") != string::npos) {
 				add += 4;
 			}
 			++index;
@@ -271,7 +271,7 @@ void lab2pos(string* input, string* label) {
 	++j;
 	while (label[j] != "") {
 		int index1 = 0;
-		int pos = 0;
+		//int pos = 0;
 
 		// 라벨에 해당하는 index1 찾기.
 		while ((label[j] + ":") != input[index1]) {
@@ -344,7 +344,7 @@ int formain(string* input) {
 		++i;
 	}
 	++i;
-	while (input[i].find(":") == -1) {
+	while (input[i].find(":") == string::npos) {
 		if (i == 999) {
 			break;
 		}
@@ -373,7 +373,7 @@ void cleaner(string* input) {
 
 	// 2번. 라벨 제거.
 	for (int i = 0; i < 1000; ++i) {
-		if (input[i].find(":") != -1) {
+		if (input[i].find(":") != string::npos) {
 			for (int j = i + 1; j < 1000; ++j) {
 				input[j - 1] = input[j];
 			}
@@ -692,7 +692,7 @@ int instruction(unsigned int* reg, unsigned char* mem, unsigned int* PC, int mai
 	}
 	else if (a == 3) { // jal
 		int target = bi2int(text.substr(6, 26).c_str());
-		if (*PC == 0x00400000 + mainloc * 4) {
+		if (*PC == abs(0x00400000 + mainloc * 4)) {
 			reg[31] = 0;
 		}
 		else {
@@ -726,7 +726,7 @@ int instruction(unsigned int* reg, unsigned char* mem, unsigned int* PC, int mai
 		int rs = bi2int(text.substr(6, 5).c_str());
 		int rt = bi2int(text.substr(11, 5).c_str());
 		int imm = sbi2int(text.substr(16, 16).c_str());
-		if (reg[rs] < imm) {
+		if (reg[rs] < abs(imm)) {
 			reg[rt] = 1;
 		}
 		else {

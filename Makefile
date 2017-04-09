@@ -1,4 +1,8 @@
-CXX = g++ -O2 -Wall --std=c++11
+CXX = g++ 
+CFLAGS = -O2 -Wall --std=c++11 -I./include
+OBJ = main.cpp func.cpp print_func.cpp
 
-main: main.cpp func.cpp print_func.cpp
-	$(CXX) -o main main.cpp func.cpp print_func.cpp
+all: main
+
+main: $(OBJ)
+	$(CXX) -o $@ $^ $(CFLAGS)
