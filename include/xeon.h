@@ -50,7 +50,6 @@ typedef struct XeonStruct {
     } MEM_WB;
 
     struct {} WB;
-};
 
 } XeonStruct;
 
