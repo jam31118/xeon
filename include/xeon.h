@@ -1,7 +1,7 @@
 #ifndef _XEON_H_
 #define _XEON_H_
 
-struct XeonStruct {
+typedef struct XeonStruct {
 	int PC = -1;
 	int PC_bus = -1;
 	int clock = -1;
@@ -31,6 +31,7 @@ struct XeonStruct {
 		} Data;
 	} ID_EX;
 
+
     struct {} EX;
 
     struct {
@@ -50,6 +51,9 @@ struct XeonStruct {
 
     struct {} WB;
 };
+
+} XeonStruct;
+
 
 void IFstage(struct XeonStruct *Xeon);
 
