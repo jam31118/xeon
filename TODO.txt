@@ -1,0 +1,9 @@
+170415 log
+- should add clock half edge: first half for register writing and last half for register reading.
+- implemment without hazard handleing --> add hazard detecting --> add hazard handling
+- The decode (decomposition) should already be done before proceeding to ID stage, i.e. the Rs, Rt .. parts should be there. It is for Load-use Hazard Detection Unit // maybe, just 32bit instruction may be okay
+- Let's implement R-type first, then I and J type.
+
+- Hazard handling memo
+ - "Computing branch target address can be done in parallel with RegFile read (done for all instructions – only used when needed)"
+

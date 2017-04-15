@@ -5,12 +5,15 @@ struct XeonStruct {
 	int PC = -1;
 	int PC_bus = -1;
 	int clock = -1;
-	char *MEM;
-	int *REG_MEM;
+	char *mem;
+	int *reg_mem;
 
 	struct {} IF;
 
-	struct { int instr; } IF_ID;
+	struct {
+        int instr;
+        int PC;
+    } IF_ID;
 
 	struct {
 		struct {} IF_ID_bus;
@@ -18,6 +21,7 @@ struct XeonStruct {
 	} ID;
 
 	struct {
+        int PC;
 		struct {
 			int EX = -1;
 			int MEM;
