@@ -2,7 +2,7 @@ CXX = g++
 CFLAGS = -O2 -Wall --std=c++11 -I./include
 OBJ = lib/* 
 OUTPUT = xeon
-SUBDIRS = $(wildcard *)
+SUBDIRS = $(wildcard */.)
 
 all: main
 
