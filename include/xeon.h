@@ -6,7 +6,7 @@ typedef struct XeonStruct {
 	int PC_bus = -1;
 	int clock = -1;
 	char *mem;
-	int *reg_mem;
+	//int *reg_mem;
 
 	struct {} IF;
 
@@ -19,8 +19,23 @@ typedef struct XeonStruct {
 		struct {
             int ID_IF_out;
             int sign_extension_in, sign_extension_out;
-        } bus;
-		struct {} Parsed_bus;
+            int read_addr_1, read_addr_2, write_addr, write_data;
+            int dest_1; // bus carrying Rd(5 bits) to ID_EX reg.
+            int dest_2; // bus carrying Rt(5 bits) to ID_EX reg.
+            int control_in; // bus into Control module
+            int jump_x4_in; // bus into left shifter(x4) for jump instr.
+        } Bus;
+		//struct {} Parsed_bus;
+        struct {
+            int read_addr_1, read_addr_2;
+            int write_addr, write_data;
+            int read_data_1, read_data_2;
+            int *reg_file;
+            int do_reg_write;
+        } Register;
+        struct {
+            
+        } Control;
 	} ID;
 
 	struct {
