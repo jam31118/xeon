@@ -1,9 +1,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "print_func.h"
-#include "func.h"
-#include "xeon.h"
+#include "print_func.hpp"
+#include "func.hpp"
+#include "xeon.hpp"
 
 using namespace std;
 
