@@ -64,6 +64,11 @@ int main(int argc, char* argv[]) {
 	if (n != 0) { // n이 0일 때는 메모리에 담기지 않도록 예외처리하라고 하셔서, if문을 추가하였습니다.
 		savetext(binary, mem);
 	}
+
+	// Initialize Xeon Structure
+	XeonStruct Xeon;
+	initalizeXeon(&Xeon,reg,mem,pc);
+	cout << "Xeon.clock == " << Xeon.clock << endl; // test
     
     // 명령어 실행 핵심 부분
     unsigned int pc_max = pc + text_size - 4;
@@ -82,8 +87,8 @@ int main(int argc, char* argv[]) {
 	delete[] reg;
 
 	/* TESTING START */
-	XeonStruct Xeon;
-	cout << "Xeon.clock == " << Xeon.clock << endl;
+//	XeonStruct Xeon;
+//	cout << "Xeon.clock == " << Xeon.clock << endl;
 	//IFstage(&Xeon);
 	/* TESTING END */
 

@@ -2,13 +2,14 @@
 #define _XEON_H_
 
 typedef struct XeonStruct {
-	int PC = -1;
-	int PC_bus = -1;
+	//int PC_bus = -1;
 	int clock = -1;
-	char *mem;
+	unsigned char *mem;
 	//int *reg_mem;
 
-	struct {} IF;
+	struct {
+		unsigned int PC = -1;
+	} IF;
 
 	struct {
         int instr;
@@ -17,7 +18,10 @@ typedef struct XeonStruct {
 
 	struct {
 		struct {
-            int ID_IF_out;
+            struct {
+				int PC;
+				int instr;
+			} ID_IF_out;
             int sign_extension_in, sign_extension_out;
             int read_addr_1, read_addr_2, write_addr, write_data;
             int dest_1; // bus carrying Rd(5 bits) to ID_EX reg.
@@ -30,7 +34,7 @@ typedef struct XeonStruct {
             int read_addr_1, read_addr_2;
             int write_addr, write_data;
             int read_data_1, read_data_2;
-            int *reg_file;
+            unsigned int *reg_file;
             int do_reg_write;
         } Register;
         struct {
@@ -71,6 +75,7 @@ typedef struct XeonStruct {
 
 } XeonStruct;
 
+int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem, unsigned int PC);
 int move2bus(struct XeonStruct *Xeon);
 void IFstage(struct XeonStruct *Xeon);
 void IDstage(struct XeonStruct *Xeon);
