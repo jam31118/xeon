@@ -16,7 +16,10 @@ typedef struct XeonStruct {
     } IF_ID;
 
 	struct {
-		struct {} IF_ID_bus;
+		struct {
+            int ID_IF_out;
+            int sign_extension_in, sign_extension_out;
+        } bus;
 		struct {} Parsed_bus;
 	} ID;
 
