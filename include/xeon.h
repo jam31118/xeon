@@ -34,7 +34,7 @@ typedef struct XeonStruct {
             int do_reg_write;
         } Register;
         struct {
-            
+                
         } Control;
 	} ID;
 
@@ -71,7 +71,8 @@ typedef struct XeonStruct {
 
 } XeonStruct;
 
-
+int move2bus(struct XeonStruct *Xeon);
 void IFstage(struct XeonStruct *Xeon);
+void IDstage(struct XeonStruct *Xeon);
 
 #endif
