@@ -53,7 +53,6 @@ typedef struct XeonStruct {
 		} Data;
 	} ID_EX;
 
-
     struct {} EX;
 
     struct {
@@ -74,6 +73,17 @@ typedef struct XeonStruct {
     struct {} WB;
 
 } XeonStruct;
+
+struct MaskInstr {
+	static const unsigned int OPCODE = 0xFC000000;
+	static const unsigned int RS = 0x03E00000;
+	static const unsigned int RT = 0x001F0000;
+	static const unsigned int RD = 0x0000F800;
+	static const unsigned int SHIFT = 0x000007C0;
+	static const unsigned int FUNCT = 0x0000003F;
+	static const unsigned int IMM = 0x0000FFFF;
+	static const unsigned int J26 = 0x0CFFFFFF;
+};
 
 int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem, unsigned int PC);
 int move2bus(struct XeonStruct *Xeon);
