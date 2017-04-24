@@ -1,5 +1,5 @@
 CXX = g++ 
-CFLAGS = -O3 -Wall --std=c++11 -I./include
+CFLAGS = -O2 -Wall --std=c++11 -I./include
 OBJ = lib/* 
 OUTPUT = xeon
 SUBDIRS = $(wildcard */.)

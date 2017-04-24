@@ -68,8 +68,10 @@ int main(int argc, char* argv[]) {
 	// Initialize Xeon Structure
 	XeonStruct Xeon;
 	initalizeXeon(&Xeon,reg,mem,pc);
-	cout << "Xeon.clock == " << Xeon.clock << endl; // test
-    
+	/* test start */
+	cout << "Xeon.clock == " << Xeon.clock << endl; 
+	cout << Xeon.ID.Func.parseIDstage(&Xeon) << endl;
+    /* test ends */ 
     // 명령어 실행 핵심 부분
     unsigned int pc_max = pc + text_size - 4;
     if (n >= 0) { pc_max = pc + (n-1)*4; }

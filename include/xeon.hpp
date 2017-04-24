@@ -12,42 +12,45 @@ typedef struct XeonStruct {
 	} IF;
 
 	struct {
-        int instr;
-        int PC;
+        unsigned int instr;
+        unsigned int PC;
     } IF_ID;
 
 	struct {
 		struct {
             struct {
-				int PC;
-				int instr;
+				unsigned int PC;
+				unsigned int instr;
 			} ID_IF_out;
-            int sign_extension_in, sign_extension_out;
-            int read_addr_1, read_addr_2, write_addr, write_data;
-            int dest_1; // bus carrying Rd(5 bits) to ID_EX reg.
-            int dest_2; // bus carrying Rt(5 bits) to ID_EX reg.
-            int control_in; // bus into Control module
-            int jump_x4_in; // bus into left shifter(x4) for jump instr.
+            unsigned int sign_extension_in, sign_extension_out;
+            unsigned int read_addr_1, read_addr_2, write_addr, write_data;
+            unsigned int dest_1; // bus carrying Rd(5 bits) to ID_EX reg.
+            unsigned int dest_2; // bus carrying Rt(5 bits) to ID_EX reg.
+            unsigned int control_in; // bus into Control module
+            unsigned int jump_x4_in; // bus into left shifter(x4) for jump instr.
         } Bus;
 		//struct {} Parsed_bus;
         struct {
-            int read_addr_1, read_addr_2;
-            int write_addr, write_data;
-            int read_data_1, read_data_2;
+            unsigned int read_addr_1, read_addr_2;
+            unsigned int write_addr, write_data;
+            unsigned int read_data_1, read_data_2;
             unsigned int *reg_file;
-            int do_reg_write;
+            unsigned int do_reg_write;
         } Register;
         struct {
                 
         } Control;
+		struct {
+			int (*parseIDstage)(XeonStruct *Xeon);
+		} Func;
 	} ID;
 
 	struct {
-        int PC;
+        unsigned int PC;
 		struct {
-			int EX = -1;
-			int MEM;
-			int WB;
+			//unsigned int EX = -1;
+			//unsigned int MEM;
+			//unsigned int WB;
 		} ConSig;
 		struct { 
 		} Data;
@@ -57,8 +60,8 @@ typedef struct XeonStruct {
 
     struct {
         struct {
-            int MEM;
-            int WB;
+            // unsigned int MEM;
+            // unsigned int WB;
         } ConSig;
     } EX_MEM;
 
@@ -66,7 +69,7 @@ typedef struct XeonStruct {
 
     struct {
         struct {
-            int WB;
+            // unsigned int WB;
         } ConSig;
     } MEM_WB;
 
@@ -86,6 +89,7 @@ struct MaskInstr {
 };
 
 int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem, unsigned int PC);
+int parseIDstage(XeonStruct *Xeon);
 int move2bus(struct XeonStruct *Xeon);
 void IFstage(struct XeonStruct *Xeon);
 void IDstage(struct XeonStruct *Xeon);
