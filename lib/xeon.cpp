@@ -27,11 +27,15 @@ int move2bus(struct XeonStruct *Xeon) {
 	// Moves in EX stage starts
 	/* ... */
 
+
 	// Moves in MEM stage starts
-	/* ... */
+	Xeon->MEM.BUS.ALU_result = Xeon->EX_MEM.ALU_result;
+	Xeon->MEM.BUS.PC_target = Xeon->EX_MEM.PC_target;
 
 	// Moves in WB stage starts
-	/* ... */
+	Xeon->WB.BUS.ALU_result = Xeon->EX_MEM.ALU_result;// need to check
+	Xeon->WB.BUS.dest = Xeon->MEM_WB.dest;
+	Xeon->WB.BUS.read_data = Xeon->MEM_WB.read_data;
 
     return 0; 
 }
@@ -68,4 +72,60 @@ void IFstage(struct XeonStruct *Xeon) {
 	//cout << "Xeon.ID_EX.ConSig.EX == " << Xeon->ID_EX.ConSig.EX << endl;
 }
 
-/*Testing GIT*/
+void fetch(struct XeonStruct *Xeon) {
+	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.PC];
+}
+
+//MEM BUS to MEM
+void move2src_MEM(struct XeonStruct *Xeon) {
+	Xeon->MEM.BUS.ALU_result = Xeon->MEM.addr_src;
+	Xeon->ID_EX.Data.reg_read_data_2 = Xeon->MEM.write_data;
+}
+
+// MEM stage acting fucntion
+void f_MEM(struct XeonStruct *Xeon) {
+	if (Xeon->EX_MEM.ConSig.MEM[0] == 0) {
+		if (Xeon->EX_MEM.ConSig.MEM[1] == 0) {
+			if (Xeon->EX_MEM.ConSig.MEM[2] == 0) {
+				// r type instructin
+			}
+			else {
+				// sw instruction
+				Xeon->mem[Xeon->MEM.addr_src] = Xeon->MEM.write_data;
+			}
+		}
+		else {
+			// lw instrution
+			Xeon->MEM.read_data = Xeon->mem[Xeon->MEM.addr_src];
+		}
+	}
+	else {
+		//beq instruction
+
+		//PC value 
+		Xeon->IF.PC = Xeon->EX_MEM.PC_target;
+		// Flush
+		Xeon->IF_ID.instr = 0;//instructino update ban
+		Xeon->IF_ID.PC = 0;//PC update ban
+						   // clearing ID ,EXE stage
+	}
+}
+//WB BUS to WB
+void move2src_WB(struct XeonStruct *Xeon) {
+	Xeon->WB.ALU_result = Xeon->WB.BUS.ALU_result;
+	Xeon->WB.dest = Xeon->WB.BUS.dest;
+	Xeon->WB.read_data = Xeon->WB.BUS.read_data;
+}
+// WB function
+void f_WB(struct XeonStruct *Xeon) {
+	// store at REG
+	if (Xeon->MEM_WB.ConSig.WB[0] == 1)
+	{
+		if (Xeon->MEM_WB.ConSig.WB[1] == 1) {
+			Xeon->ID.Register.reg_file[Xeon->WB.dest] = Xeon->WB.read_data;// lw instruction
+		}
+		else {
+			Xeon->ID.Register.reg_file[Xeon->WB.dest] = Xeon->WB.ALU_result;// r type instruction
+		}
+	}
+}

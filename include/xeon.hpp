@@ -5,10 +5,13 @@ typedef struct XeonStruct {
 	//int PC_bus = -1;
 	int clock = -1;
 	unsigned char *mem;
-	//int *reg_mem;
+	//int *reg_mem; 
 
 	struct {
 		unsigned int PC = -1;
+		struct {
+			void(*fetch)(struct XeonStruct);
+		}Func;
 	} IF;
 
 	struct {
@@ -53,27 +56,58 @@ typedef struct XeonStruct {
 			//unsigned int WB;
 		} ConSig;
 		struct { 
+			int reg_read_data_1;
+			int reg_read_data_2;
 		} Data;
 	} ID_EX;
 
     struct {} EX;
 
     struct {
+		unsigned int ALU_result;
+		unsigned int PC_target;
         struct {
-            // unsigned int MEM;
-            // unsigned int WB;
+            unsigned int MEM[3];
+            unsigned int WB[2];
         } ConSig;
     } EX_MEM;
 
-    struct {} MEM;
+    struct {
+		unsigned int addr_src;
+		unsigned int write_data;
+		unsigned int read_data;
+		struct {
+			unsigned int ALU_result;
+			unsigned int PC_target;
+		}BUS;
+		struct {
+			void(*move2src_MEM)(struct XeonStruct);
+			void(*f_MEM)(struct XeonStruct);
+		}Func;
+	} MEM;
 
     struct {
+	unsigned int dest;
+	unsigned int read_data;
         struct {
-            // unsigned int WB;
+             unsigned int WB[2];
         } ConSig;
     } MEM_WB;
 
-    struct {} WB;
+    struct {
+		unsigned int read_data;
+		unsigned int ALU_result;
+		unsigned int dest;
+		struct {
+			void(*move2src_WB)(struct XeonStruct);
+			void(*f_WB)(struct XeonStruct);
+		}Func;
+		struct {
+			unsigned int read_data;
+			unsigned int ALU_result;
+			unsigned  int dest;
+		}BUS;
+	} WB;
 
 } XeonStruct;
 
