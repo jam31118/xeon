@@ -68,8 +68,8 @@ typedef struct XeonStruct {
 		unsigned int ALU_result;
 		unsigned int PC_target;
         struct {
-            // unsigned int MEM;
-            // unsigned int WB;
+            unsigned int MEM[3];
+            unsigned int WB[2];
         } ConSig;
     } EX_MEM;
 
@@ -135,5 +135,13 @@ int parseIDstage(XeonStruct *Xeon);
 int move2entrance(XeonStruct *Xeon);
 int read_register(XeonStruct *Xeon);
 int is_register_index(unsigned int idx); 
+
+void fetch(struct XeonStruct *Xeon);
+void move2src_MEM(struct XeonStruct *Xeon);
+void f_MEM(struct XeonStruct *Xeon);
+void move2src_WB(struct XeonStruct *Xeon);
+void f_WB(struct XeonStruct *Xeon);
+
+// hey
 
 #endif
