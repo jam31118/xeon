@@ -7,3 +7,6 @@
 - Hazard handling memo
  - "Computing branch target address can be done in parallel with RegFile read (done for all instructions – only used when needed)"
 
+170426 log
+- should implement initializeXeon()
+

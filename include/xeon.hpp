@@ -38,10 +38,11 @@ typedef struct XeonStruct {
             unsigned int do_reg_write;
         } Register;
         struct {
-                
+			unsigned int input;
         } Control;
 		struct {
 			int (*parseIDstage)(XeonStruct *Xeon);
+			int (*move2entrance)(XeonStruct *Xeon);
 		} Func;
 	} ID;
 
@@ -89,9 +90,16 @@ struct MaskInstr {
 };
 
 int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem, unsigned int PC);
-int parseIDstage(XeonStruct *Xeon);
 int move2bus(struct XeonStruct *Xeon);
+
+/* Functions for IF stage */
 void IFstage(struct XeonStruct *Xeon);
+
+/* Functions for ID stage */
 void IDstage(struct XeonStruct *Xeon);
+int parseIDstage(XeonStruct *Xeon);
+int move2entrance(XeonStruct *Xeon);
+int read_register(XeonStruct *Xeon);
+int is_register_index(unsigned int idx); 
 
 #endif
