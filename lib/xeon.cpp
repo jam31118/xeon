@@ -28,11 +28,15 @@ int move2bus(struct XeonStruct *Xeon) {
 	// Moves in EX stage starts
 	/* ... */
 
+
 	// Moves in MEM stage starts
-	/* ... */
+	Xeon->MEM.BUS.ALU_result = Xeon->EX_MEM.ALU_result;
+	Xeon->MEM.BUS.PC_target = Xeon->EX_MEM.PC_target;
 
 	// Moves in WB stage starts
-	/* ... */
+	Xeon->WB.BUS.ALU_result = Xeon->EX_MEM.ALU_result;// need to check
+	Xeon->WB.BUS.dest = Xeon->MEM_WB.dest;
+	Xeon->WB.BUS.read_data = Xeon->MEM_WB.read_data;
 
     return 0; 
 }

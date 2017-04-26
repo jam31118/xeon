@@ -68,6 +68,11 @@ int main(int argc, char* argv[]) {
 	// Initialize Xeon Structure
 	XeonStruct Xeon;
 	initalizeXeon(&Xeon,reg,mem,pc);
+	//fetch(&Xeon);
+	//move2src_MEM(&Xeon);
+	//f_MEM(&Xeon);
+	//move2src_WB(&Xeon);
+	//f_WB(&Xeon);
 	/* test start */
 	cout << "Xeon.clock == " << Xeon.clock << endl; 
 	cout << "Result of parseIDstage: " << Xeon.ID.Func.parseIDstage(&Xeon) << endl;
