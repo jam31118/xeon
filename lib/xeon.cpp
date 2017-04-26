@@ -74,12 +74,14 @@ void IFstage(struct XeonStruct *Xeon) {
 
 void fetch(struct XeonStruct *Xeon) {
 	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.PC];
+	//printf("TESTING fetch\n");
 }
 
 //MEM BUS to MEM
 void move2src_MEM(struct XeonStruct *Xeon) {
 	Xeon->MEM.BUS.ALU_result = Xeon->MEM.addr_src;
 	Xeon->ID_EX.Data.reg_read_data_2 = Xeon->MEM.write_data;
+	//printf("TESTING move2src_MEM\n");
 }
 
 // MEM stage acting fucntion
@@ -109,12 +111,14 @@ void f_MEM(struct XeonStruct *Xeon) {
 		Xeon->IF_ID.PC = 0;//PC update ban
 						   // clearing ID ,EXE stage
 	}
+	//printf("TESTING f_MEM\n");
 }
 //WB BUS to WB
 void move2src_WB(struct XeonStruct *Xeon) {
 	Xeon->WB.ALU_result = Xeon->WB.BUS.ALU_result;
 	Xeon->WB.dest = Xeon->WB.BUS.dest;
 	Xeon->WB.read_data = Xeon->WB.BUS.read_data;
+	//printf("TESTING move2scr_WB\n");
 }
 // WB function
 void f_WB(struct XeonStruct *Xeon) {
@@ -128,4 +132,5 @@ void f_WB(struct XeonStruct *Xeon) {
 			Xeon->ID.Register.reg_file[Xeon->WB.dest] = Xeon->WB.ALU_result;// r type instruction
 		}
 	}
+	//printf("TESTING f_WB\n");
 }

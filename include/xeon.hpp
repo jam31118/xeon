@@ -127,5 +127,9 @@ int parseIDstage(XeonStruct *Xeon);
 int move2bus(struct XeonStruct *Xeon);
 void IFstage(struct XeonStruct *Xeon);
 void IDstage(struct XeonStruct *Xeon);
-
+void fetch(struct XeonStruct *Xeon);
+void move2src_MEM(struct XeonStruct *Xeon);
+void f_MEM(struct XeonStruct *Xeon);
+void move2src_WB(struct XeonStruct *Xeon);
+void f_WB(struct XeonStruct *Xeon);
 #endif
