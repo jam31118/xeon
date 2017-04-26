@@ -41,10 +41,11 @@ typedef struct XeonStruct {
             unsigned int do_reg_write;
         } Register;
         struct {
-                
+			unsigned int input;
         } Control;
 		struct {
 			int (*parseIDstage)(XeonStruct *Xeon);
+			int (*move2entrance)(XeonStruct *Xeon);
 		} Func;
 	} ID;
 
@@ -67,8 +68,8 @@ typedef struct XeonStruct {
 		unsigned int ALU_result;
 		unsigned int PC_target;
         struct {
-            unsigned int MEM[3];
-            unsigned int WB[2];
+            // unsigned int MEM;
+            // unsigned int WB;
         } ConSig;
     } EX_MEM;
 
@@ -123,13 +124,16 @@ struct MaskInstr {
 };
 
 int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem, unsigned int PC);
-int parseIDstage(XeonStruct *Xeon);
 int move2bus(struct XeonStruct *Xeon);
+
+/* Functions for IF stage */
 void IFstage(struct XeonStruct *Xeon);
+
+/* Functions for ID stage */
 void IDstage(struct XeonStruct *Xeon);
-void fetch(struct XeonStruct *Xeon);
-void move2src_MEM(struct XeonStruct *Xeon);
-void f_MEM(struct XeonStruct *Xeon);
-void move2src_WB(struct XeonStruct *Xeon);
-void f_WB(struct XeonStruct *Xeon);
+int parseIDstage(XeonStruct *Xeon);
+int move2entrance(XeonStruct *Xeon);
+int read_register(XeonStruct *Xeon);
+int is_register_index(unsigned int idx); 
+
 #endif

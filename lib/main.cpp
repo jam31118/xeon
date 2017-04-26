@@ -75,7 +75,9 @@ int main(int argc, char* argv[]) {
 	//f_WB(&Xeon);
 	/* test start */
 	cout << "Xeon.clock == " << Xeon.clock << endl; 
-	cout << Xeon.ID.Func.parseIDstage(&Xeon) << endl;
+	cout << "Result of parseIDstage: " << Xeon.ID.Func.parseIDstage(&Xeon) << endl;
+	cout << "Result of move2entrance: "<< Xeon.ID.Func.move2entrance(&Xeon) << endl;
+	
     /* test ends */ 
     // 명령어 실행 핵심 부분
     unsigned int pc_max = pc + text_size - 4;
