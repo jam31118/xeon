@@ -75,14 +75,19 @@ int main(int argc, char* argv[]) {
 	//f_WB(&Xeon);
 	/* test start */
 	cout << "Xeon.clock == " << Xeon.clock << endl; 
+	// ID-head stage
 	cout << "Result of parseIDstage: " << Xeon.ID.Func.parseIDstage(&Xeon) << endl;
 	cout << "Result of move2entrance: "<< Xeon.ID.Func.move2entrance(&Xeon) << endl;
-	
+	// ID-tail stage
+	cout << "Resulf of read_register: " << Xeon.ID.Func.read_register(&Xeon) << endl;
+	cout << "Result of sign_extension_ID: " << Xeon.ID.Func.sign_extension_ID(&Xeon) << endl;
+
     /* test ends */ 
     // 명령어 실행 핵심 부분
     unsigned int pc_max = pc + text_size - 4;
     if (n >= 0) { pc_max = pc + (n-1)*4; }
     while (pc_max >= pc) {
+		//cout << "in while\n";
         instruction(reg, mem, PC, mainloc);
         if (d) { print_reg(PC, reg); }
         if (d && m) { print_mem(mem, addr_begin, addr_end); }
@@ -91,8 +96,6 @@ int main(int argc, char* argv[]) {
     if (!d && m) { print_mem(mem, addr_begin, addr_end); }
     if (!d && !m) { print_reg(PC, reg); } 
 
-	// 동적 할당받은 메모리들을 삭제하여줍니다.
-	delete[] mem;
 	delete[] reg;
 
 	/* TESTING START */
