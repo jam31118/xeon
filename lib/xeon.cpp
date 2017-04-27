@@ -27,7 +27,7 @@ int move2bus(struct XeonStruct *Xeon) {
 		
 	// Moves in EX stage starts
 	/* ... */
-
+	Xeon->BUS.
 
 	// Moves in MEM stage starts
 	Xeon->MEM.BUS.ALU_result = Xeon->EX_MEM.ALU_result;
