@@ -195,13 +195,20 @@ unsigned int multiplier_x4(unsigned int input) {
 	return input << 2;
 }
 
-void IFstage(struct XeonStruct *Xeon) {
-	/* Just Test (can be removed) */
-	//cout << "Xeon.PC == " << Xeon->PC << endl;
-	//cout << "Xeon.ID_EX.ConSig.EX == " << Xeon->ID_EX.ConSig.EX << endl;
+void setPC(struct XeonStruct *Xeon){
+	if(Xeon->IF.BUS.ConSig.PC_src==1)
+	{
+		if(Xeon->IF.BUS.ConSig.jump==1)
+			Xeon->IF.PC=Xeon->IF.Tmp.jump;
+		else
+			Xeon->IF.PC=Xeon->IF.Tmp.branch;
+	}
+	else
+		Xeon->IF.PC= Xeon->IF.PC + 4; //BUS ??
 }
 void fetch(struct XeonStruct *Xeon) {
 	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.PC];
+	Xeon->IF_ID.PC = Xeon->IF.PC;
 	//printf("TESTING fetch\n");
 }
 
@@ -232,7 +239,12 @@ void f_MEM(struct XeonStruct *Xeon) {
 	else {
 		if (Xeon->EX_MEM.ConSig.is_zero == 1) {
 			//beq instruction
-			Xeon->IF.BUS.ConSig.PC_src= 1;	
+			Xeon->IF.BUS.ConSig.PC_src= 1;
+			Xeon->IF.Tmp.branch= Xeon->MEM.BUS.PC_target;
+			
+			//Flush
+			Xeon->IF_ID.instr =0;
+			Xeon->IF_ID.PC =0;
 		}
 	}
 	//printf("TESTING f_MEM\n");

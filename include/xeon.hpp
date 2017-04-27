@@ -9,8 +9,14 @@ typedef struct XeonStruct {
 
 	struct {
 		unsigned int PC = -1;
+		// brach and jump address tmp storage
+		struct{
+			unsigned int branch;
+			unsigned int jump;
+		}Tmp;
 		struct {
 			void(*fetch)(struct XeonStruct*);
+			void(*setPC)(struct XeonStruct*);
 		}Func;
 		struct {
 			struct {
@@ -163,6 +169,7 @@ int is_5bit(unsigned int input);
 int is_n_bit(unsigned int input, int n);
 unsigned int multiplier_x4(unsigned int input);
 
+void setPC(struct XeonStruct *Xeon);
 void fetch(struct XeonStruct *Xeon);
 void move2src_MEM(struct XeonStruct *Xeon);
 void f_MEM(struct XeonStruct *Xeon);
