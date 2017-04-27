@@ -295,6 +295,7 @@ void MEM_HEAD(struct XeonStruct *Xeon) {
 }
 void WB_HEAD(struct XeonStruct *Xeon) {
 	Xeon->WB.Func.move2src_WB(Xeon);
+	Xeon->WB.Func.f_WB(Xeon);
 	//printf("THIS IS WB_HEAD STAGE\n");
 }
 void IF_TAIL(struct XeonStruct *Xeon) {
@@ -312,6 +313,6 @@ void MEM_TAIL(struct XeonStruct *Xeon) {
 	//printf("THIS IS MEM_TAIL STAGE\n");
 }
 void WB_TAIL(struct XeonStruct *Xeon) {
-	Xeon->WB.Func.f_WB(Xeon);
+	
 	//printf("THIS IS WB_TAIL STAGE\n");
 }
