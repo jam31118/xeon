@@ -16,3 +16,7 @@
 - add ssh autologin
 - if something goes wrong, functions returns 1. We should check this results and if one of them returns 1 then we should stop program and should cerr << (error messeage).
 
+170428 log
+- to do before 22:00
+ - implement ID stage completely, including Control and ID stage _head() and _tail() etc.
+ - so that direct pasting to main function would work
