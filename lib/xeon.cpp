@@ -15,6 +15,7 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 	Xeon->ID.Func.move2entrance = &move2entrance;
 	Xeon->ID.Func.read_register = &read_register;
 	Xeon->ID.Func.sign_extension_ID = &sign_extension_ID;
+	Xeon->ID.Func.move2dest = &move2dest;
 
 	// Initialize MEM structure
 	Xeon->MEM.Func.move2src_MEM = &move2src_MEM;
@@ -91,6 +92,20 @@ int move2entrance(XeonStruct *Xeon) {
 	Xeon->ID.Control.input = Xeon->ID.Bus.control_in;
 	return 0;	
 }
+int move2dest(XeonStruct *Xeon) {
+	/* Check the validity of input buses */	
+	if (!is_5bit(Xeon->ID.Bus.dest_1) || !is_5bit(Xeon->ID.Bus.dest_2)) {
+		cerr << "[ERROR] The input of Bus.dest_1 or Bus.dest_2 is not valid." << endl;
+		cerr << "[ERROR] The value of Bus.dest_1 == " << Xeon->ID.Bus.dest_1 << endl;
+		cerr << "[ERROR] The value of Bus.dest_2 == " << Xeon->ID.Bus.dest_2 << endl;
+		return 1;
+	}
+	/* Move date into ID_EX register */
+	Xeon->ID_EX.Data.dest_1 = Xeon->ID.Bus.dest_1;
+	Xeon->ID_EX.Data.dest_2 = Xeon->ID.Bus.dest_2;
+	/* Returns zero if there's no problem */
+	return 0;
+}
 int read_register(XeonStruct *Xeon) {
 	/* Check validity of input data */
 	if (!is_register_index(Xeon->ID.Register.read_addr_1)) {return 1;}
@@ -109,7 +124,11 @@ int read_register(XeonStruct *Xeon) {
 int sign_extension_ID(XeonStruct *Xeon) {
 	/* Check validity of input of sign extensor
 	 * i.e., check whether it is IMM value or not. */
-	if (!is_imm(Xeon->ID.Bus.sign_extension_in)) { return 1; }
+	if (!is_imm(Xeon->ID.Bus.sign_extension_in)) { 
+		cerr << "[ERROR] The input of sign_extensor is not valid" << endl;
+		cerr << "[ERROR] The value of Bus.sign_extension_in == " << Xeon->ID.Bus.sign_extension_in << endl;
+		return 1; 
+	}
 	/* Do sign extension */
 	Xeon->ID.Bus.sign_extension_out = sign_extensor(Xeon->ID.Bus.sign_extension_in); 
 	/* Move extended data into ID_EX register */
@@ -121,9 +140,11 @@ int is_register_index(unsigned int idx) {
 }
 int is_imm(unsigned int imm_tested) {
 	unsigned int mask_upper_16 = 0xFFFF0000;
-	if (!(imm_tested & mask_upper_16)) {
-		return 1; // The upper 16 bits is not zero so it is not IMM value.
-	} else {return 0;}
+	if (imm_tested & mask_upper_16) {
+		return 0; // The upper 16 bits is not zero so it is not IMM value.
+	} else {
+		return 1; // It is valid IMM value.
+	}
 }
 unsigned int sign_extensor(unsigned int input) {
 	unsigned int inited = (0x0000FFFF & input);
@@ -132,6 +153,14 @@ unsigned int sign_extensor(unsigned int input) {
 		inited += 0xFFFF0000;
 	}
 	return inited;
+}
+int is_5bit(unsigned int input) {
+	unsigned int mask_lower5 = 0xFFFFFFE0;
+	if ((input & mask_lower5)) { 
+		return 0; // It isn't 5 bit
+	} else { 
+		return 1; // It is 5 bit 
+	}
 }
 
 void IFstage(struct XeonStruct *Xeon) {
