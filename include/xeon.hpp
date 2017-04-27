@@ -10,7 +10,7 @@ typedef struct XeonStruct {
 	struct {
 		unsigned int PC = -1;
 		struct {
-			void(*fetch)(struct XeonStruct);
+			void(*fetch)(struct XeonStruct*);
 		}Func;
 	} IF;
 
@@ -82,8 +82,8 @@ typedef struct XeonStruct {
 			unsigned int PC_target;
 		}BUS;
 		struct {
-			void(*move2src_MEM)(struct XeonStruct);
-			void(*f_MEM)(struct XeonStruct);
+			void(*move2src_MEM)(struct XeonStruct*);
+			void(*f_MEM)(struct XeonStruct*);
 		}Func;
 	} MEM;
 
@@ -100,8 +100,8 @@ typedef struct XeonStruct {
 		unsigned int ALU_result;
 		unsigned int dest;
 		struct {
-			void(*move2src_WB)(struct XeonStruct);
-			void(*f_WB)(struct XeonStruct);
+			void(*move2src_WB)(struct XeonStruct*);
+			void(*f_WB)(struct XeonStruct*);
 		}Func;
 		struct {
 			unsigned int read_data;
@@ -142,6 +142,16 @@ void f_MEM(struct XeonStruct *Xeon);
 void move2src_WB(struct XeonStruct *Xeon);
 void f_WB(struct XeonStruct *Xeon);
 
-// hey
+void IF_HEAD(struct XeonStruct *Xeon);
+void ID_HEAD(struct XeonStruct *Xeon);
+void EX_HEAD(struct XeonStruct *Xeon);
+void MEM_HEAD(struct XeonStruct *Xeon);
+void WB_HEAD(struct XeonStruct *Xeon);
+void IF_TAIL(struct XeonStruct *Xeon);
+void ID_TAIL(struct XeonStruct *Xeon);
+void EX_TAIL(struct XeonStruct * Xeon);
+void MEM_TAIL(struct XeonStruct *Xeon);
+void WB_TAIL(struct XeonStruct *Xeon);
+
 
 #endif
