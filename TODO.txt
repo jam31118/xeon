@@ -10,3 +10,9 @@
 170426 log
 - should implement initializeXeon()
 - fix gitstuff
+
+170428 log Kang
+ to do befor 22:00
+ IF structure ( MUX , branch, jump)
+ MEM structure ( MUX)
+ MAIN function( HEAD, TAIL function insert)
