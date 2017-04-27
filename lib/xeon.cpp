@@ -16,6 +16,7 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 	Xeon->ID.Func.read_register = &read_register;
 	Xeon->ID.Func.sign_extension_ID = &sign_extension_ID;
 	Xeon->ID.Func.move2dest = &move2dest;
+	Xeon->ID.Func.multiply_x4 = &multiply_x4;
 
 	// Initialize MEM structure
 	Xeon->MEM.Func.move2src_MEM = &move2src_MEM;
@@ -135,6 +136,21 @@ int sign_extension_ID(XeonStruct *Xeon) {
 	Xeon->ID_EX.Data.imm = Xeon->ID.Bus.sign_extension_out;
 	return 0;
 }
+int multiply_x4(XeonStruct *Xeon) {
+	/* Check the validitiy of input of multiplier */
+	if (!is_n_bit(Xeon->ID.Bus.jump_x4_in, 26)) {
+		cerr << "[ERROR] (multiply_x4) The input of muliplier_x4 in ID stage is not valid" << endl;
+		cerr << "[ERROR] (multiply_x4) The input value of multiplier_x4 == " << Xeon->ID.Bus.jump_x4_in << endl;
+		return 1;
+	}
+	/* Multiply */
+	Xeon->ID.Bus.ConSig.jump = multiplier_x4(Xeon->ID.Bus.jump_x4_in);
+	/* Move data into Bus.ConSig.jump in IF stage */
+	Xeon->IF.Bus.ConSig.jump = Xeon->ID.Bus.ConSig.jump;
+	/* Returns zero if there's no error */
+	return 0;
+}
+/* Lemma function for ID stage */
 int is_register_index(unsigned int idx) {
 	return (idx <= 31);
 }
@@ -161,6 +177,22 @@ int is_5bit(unsigned int input) {
 	} else { 
 		return 1; // It is 5 bit 
 	}
+}
+int is_n_bit(unsigned int input, int n) {
+	unsigned int mask = 0x00000000;
+	int i = 0;
+	for (i=0; i<n; i++) {
+		mask += 0x00000001 << n;
+	}
+	mask = !mask;
+	if (input & mask) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
+unsigned int multiplier_x4(unsigned int input) {
+	return input << 2;
 }
 
 void IFstage(struct XeonStruct *Xeon) {

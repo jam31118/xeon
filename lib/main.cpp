@@ -79,6 +79,7 @@ int main(int argc, char* argv[]) {
 	// ID-tail stage
 	cout << "Resulf of read_register: " << Xeon.ID.Func.read_register(&Xeon) << endl;
 	cout << "Result of sign_extension_ID: " << Xeon.ID.Func.sign_extension_ID(&Xeon) << endl;
+	cout << "Result of multiply_x4: " << Xeon.ID.Func.multiply_x4(&Xeon) << endl;
 
     /* test ends */ 
     // 명령어 실행 핵심 부분
