@@ -7,12 +7,22 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 	Xeon->ID.Register.reg_file = reg;
 	Xeon->mem = mem;
 	Xeon->IF.PC = PC;	
+	// Initialize IF structure
+	Xeon->IF.Func.fetch = &fetch;
 
 	// Initialize ID structure
 	Xeon->ID.Func.parseIDstage = &parseIDstage;
 	Xeon->ID.Func.move2entrance = &move2entrance;
 
+	// Initialize MEM structure
+	Xeon->MEM.Func.move2src_MEM = &move2src_MEM;
+	Xeon->MEM.Func.f_MEM = &f_MEM;
+
+	// Initialize WB structure
+	Xeon->WB.Func.move2src_WB = &move2src_WB;
+	Xeon->WB.Func.f_WB = &f_WB;
 	/* Other initialization of Xeon Structure */
+	
 	return 0;
 }
 
