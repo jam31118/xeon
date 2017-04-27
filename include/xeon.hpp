@@ -10,12 +10,22 @@ typedef struct XeonStruct {
 	struct {
 		unsigned int PC = -1;
 		struct {
+<<<<<<< HEAD
 			void(*fetch)(struct XeonStruct*);
 		}Func;
 		struct {
 			unsigned int jump;
 			unsigned int PC_src;
 		}ConSig;
+=======
+			void(*fetch)(struct XeonStruct *Xeon);
+		}Func;
+		struct {
+			struct {
+				unsigned int jump;
+			} ConSig;
+		} Bus;
+>>>>>>> f8ab1caa8ad90eca125c30da527b85e1636608e9
 	} IF;
 
 	struct {
@@ -29,6 +39,9 @@ typedef struct XeonStruct {
 				unsigned int PC;
 				unsigned int instr;
 			} ID_IF_out;
+			struct {
+				unsigned int jump;
+			} ConSig;
             unsigned int sign_extension_in, sign_extension_out;
             unsigned int read_addr_1, read_addr_2, write_addr, write_data;
             unsigned int dest_1; // bus carrying Rd(5 bits) to ID_EX reg.
@@ -50,6 +63,10 @@ typedef struct XeonStruct {
 		struct {
 			int (*parseIDstage)(XeonStruct *Xeon);
 			int (*move2entrance)(XeonStruct *Xeon);
+			int (*read_register)(XeonStruct *Xeon);
+			int (*sign_extension_ID)(XeonStruct *Xeon);
+			int (*move2dest)(XeonStruct *Xeon);
+			int (*multiply_x4)(XeonStruct *Xeon);
 		} Func;
 	} ID;
 
@@ -61,8 +78,10 @@ typedef struct XeonStruct {
 			//unsigned int WB;
 		} ConSig;
 		struct { 
-			int reg_read_data_1;
-			int reg_read_data_2;
+			unsigned int reg_read_data_1;
+			unsigned int reg_read_data_2;
+			unsigned int imm;
+			unsigned int dest_1, dest_2;
 		} Data;
 	} ID_EX;
 
@@ -87,8 +106,13 @@ typedef struct XeonStruct {
 			unsigned int PC_target;
 		}BUS;
 		struct {
+<<<<<<< HEAD
 			void(*move2src_MEM)(struct XeonStruct*);
 			void(*f_MEM)(struct XeonStruct*);
+=======
+			void(*move2src_MEM)(struct XeonStruct *Xeon);
+			void(*f_MEM)(struct XeonStruct *Xeon);
+>>>>>>> f8ab1caa8ad90eca125c30da527b85e1636608e9
 		}Func;
 	} MEM;
 
@@ -136,10 +160,21 @@ void IFstage(struct XeonStruct *Xeon);
 
 /* Functions for ID stage */
 void IDstage(struct XeonStruct *Xeon);
+// For ID-head stage
 int parseIDstage(XeonStruct *Xeon);
 int move2entrance(XeonStruct *Xeon);
+int move2dest(XeonStruct *Xeon);
+// For ID-tail stage
 int read_register(XeonStruct *Xeon);
+int sign_extension_ID(XeonStruct *Xeon);
+int multiply_x4(XeonStruct *Xeon);
+// Lemma function for ID stage
 int is_register_index(unsigned int idx); 
+int is_imm(unsigned int imm_tested);
+unsigned int sign_extensor(unsigned int in);
+int is_5bit(unsigned int input);
+int is_n_bit(unsigned int input, int n);
+unsigned int multiplier_x4(unsigned int input);
 
 void fetch(struct XeonStruct *Xeon);
 void move2src_MEM(struct XeonStruct *Xeon);
