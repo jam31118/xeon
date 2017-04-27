@@ -11,6 +11,7 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 	// Initialize ID structure
 	Xeon->ID.Func.parseIDstage = &parseIDstage;
 	Xeon->ID.Func.move2entrance = &move2entrance;
+	Xeon->ID.Func.read_register = &read_register;
 
 	/* Other initialization of Xeon Structure */
 	return 0;
@@ -85,13 +86,19 @@ int read_register(XeonStruct *Xeon) {
 	if (!is_register_index(Xeon->ID.Register.read_addr_2)) {return 1;}
 	
 	/* Read register */
+	Xeon->ID.Register.read_data_1 = Xeon->ID.Register.reg_file[Xeon->ID.Register.read_addr_1];
+	Xeon->ID.Register.read_data_2 = Xeon->ID.Register.reg_file[Xeon->ID.Register.read_addr_2];
+
 	/* Move data to ID_EX register */
+	Xeon->ID_EX.Data.reg_read_data_1 = Xeon->ID.Register.read_data_1;
+	Xeon->ID_EX.Data.reg_read_data_2 = Xeon->ID.Register.read_addr_2;
+
 	return 0;
 }
+
 int is_register_index(unsigned int idx) {
 	return (idx <= 31);
 }
-
 
 void IFstage(struct XeonStruct *Xeon) {
 	/* Just Test (can be removed) */

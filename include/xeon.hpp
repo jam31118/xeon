@@ -46,6 +46,7 @@ typedef struct XeonStruct {
 		struct {
 			int (*parseIDstage)(XeonStruct *Xeon);
 			int (*move2entrance)(XeonStruct *Xeon);
+			int (*read_register)(XeonStruct *Xeon);
 		} Func;
 	} ID;
 
@@ -131,9 +132,12 @@ void IFstage(struct XeonStruct *Xeon);
 
 /* Functions for ID stage */
 void IDstage(struct XeonStruct *Xeon);
+// For ID-head stage
 int parseIDstage(XeonStruct *Xeon);
 int move2entrance(XeonStruct *Xeon);
+// For ID-tail stage
 int read_register(XeonStruct *Xeon);
+// Lemma function for ID stage
 int is_register_index(unsigned int idx); 
 
 void fetch(struct XeonStruct *Xeon);
