@@ -158,7 +158,7 @@ void move2src_WB(struct XeonStruct *Xeon) {
 	//printf("TESTING move2scr_WB\n");
 }
 // WB function
-void f_WB(struct XeonStruct *Xeon) {
+void f_WB( XeonStruct *Xeon) {
 	// store at REG
 	if (Xeon->MEM_WB.ConSig.WB[0] == 1)
 	{
