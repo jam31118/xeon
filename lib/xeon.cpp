@@ -154,8 +154,6 @@ int multiply_x4(XeonStruct *Xeon) {
 int is_register_index(unsigned int idx) {
 	return (idx <= 31);
 }
-<<<<<<< HEAD
-=======
 int is_imm(unsigned int imm_tested) {
 	unsigned int mask_upper_16 = 0xFFFF0000;
 	if (imm_tested & mask_upper_16) {
@@ -202,8 +200,6 @@ void IFstage(struct XeonStruct *Xeon) {
 	//cout << "Xeon.PC == " << Xeon->PC << endl;
 	//cout << "Xeon.ID_EX.ConSig.EX == " << Xeon->ID_EX.ConSig.EX << endl;
 }
->>>>>>> f8ab1caa8ad90eca125c30da527b85e1636608e9
-
 void fetch(struct XeonStruct *Xeon) {
 	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.PC];
 	//printf("TESTING fetch\n");

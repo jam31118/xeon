@@ -10,22 +10,14 @@ typedef struct XeonStruct {
 	struct {
 		unsigned int PC = -1;
 		struct {
-<<<<<<< HEAD
 			void(*fetch)(struct XeonStruct*);
 		}Func;
 		struct {
-			unsigned int jump;
-			unsigned int PC_src;
-		}ConSig;
-=======
-			void(*fetch)(struct XeonStruct *Xeon);
-		}Func;
-		struct {
 			struct {
+				unsigned int PC_src;
 				unsigned int jump;
 			} ConSig;
 		} Bus;
->>>>>>> f8ab1caa8ad90eca125c30da527b85e1636608e9
 	} IF;
 
 	struct {
@@ -106,13 +98,8 @@ typedef struct XeonStruct {
 			unsigned int PC_target;
 		}BUS;
 		struct {
-<<<<<<< HEAD
 			void(*move2src_MEM)(struct XeonStruct*);
 			void(*f_MEM)(struct XeonStruct*);
-=======
-			void(*move2src_MEM)(struct XeonStruct *Xeon);
-			void(*f_MEM)(struct XeonStruct *Xeon);
->>>>>>> f8ab1caa8ad90eca125c30da527b85e1636608e9
 		}Func;
 	} MEM;
 
