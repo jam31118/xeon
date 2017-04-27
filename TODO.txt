@@ -10,3 +10,7 @@
 170426 log
 - should implement initializeXeon()
 - fix gitstuff
+
+170427 log
+- Which is faster? Probabily, and necessarily, mem_write signal should be arrived to mem first. .. exactly which stages when signal arrives
+- add ssh autologin
