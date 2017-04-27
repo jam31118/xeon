@@ -106,8 +106,8 @@ void fetch(struct XeonStruct *Xeon) {
 
 //MEM BUS to MEM
 void move2src_MEM(struct XeonStruct *Xeon) {
-	Xeon->MEM.BUS.ALU_result = Xeon->MEM.addr_src;
-	Xeon->ID_EX.Data.reg_read_data_2 = Xeon->MEM.write_data;
+	Xeon->MEM.addr_src = Xeon->MEM.BUS.ALU_result;
+	Xeon->MEM.write_data = Xeon->ID_EX.Data.reg_read_data_2;
 	//printf("TESTING move2src_MEM\n");
 }
 
