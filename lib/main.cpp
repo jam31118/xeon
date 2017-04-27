@@ -68,7 +68,24 @@ int main(int argc, char* argv[]) {
 	// Initialize Xeon Structure
 	XeonStruct Xeon;
 	initalizeXeon(&Xeon,reg,mem,pc);
+	/* Clock 0 ~ 0.5 */
 	move2bus(&Xeon);
+
+	IF_HEAD(&Xeon);
+	ID_HEAD(&Xeon);
+	EX_HEAD(&Xeon);
+	MEM_HEAD(&Xeon);
+	WB_HEAD(&Xeon);
+
+	/* Clock 0.5 ~ 1 */ 
+	IF_TAIL(&Xeon); 
+	ID_TAIL(&Xeon); 
+	EX_TAIL(&Xeon);
+	MEM_TAIL(&Xeon);
+	WB_TAIL(&Xeon);
+
+	// cycle ++;
+
 	/* test start */
 	cout << "Xeon.clock == " << Xeon.clock << endl; 
 	// ID-head stage

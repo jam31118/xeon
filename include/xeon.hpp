@@ -19,6 +19,7 @@ typedef struct XeonStruct {
 			void(*setPC)(struct XeonStruct*);
 		}Func;
 		struct {
+			unsigned int PC;
 			struct {
 				unsigned int PC_src;
 				unsigned int jump;
