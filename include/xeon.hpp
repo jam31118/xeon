@@ -47,6 +47,7 @@ typedef struct XeonStruct {
 			int (*parseIDstage)(XeonStruct *Xeon);
 			int (*move2entrance)(XeonStruct *Xeon);
 			int (*read_register)(XeonStruct *Xeon);
+			int (*sign_extension_ID)(XeonStruct *Xeon);
 		} Func;
 	} ID;
 
@@ -58,8 +59,10 @@ typedef struct XeonStruct {
 			//unsigned int WB;
 		} ConSig;
 		struct { 
-			int reg_read_data_1;
-			int reg_read_data_2;
+			unsigned int reg_read_data_1;
+			unsigned int reg_read_data_2;
+			unsigned int imm;
+			unsigned int dest_1, dest_2;
 		} Data;
 	} ID_EX;
 
@@ -135,10 +138,14 @@ void IDstage(struct XeonStruct *Xeon);
 // For ID-head stage
 int parseIDstage(XeonStruct *Xeon);
 int move2entrance(XeonStruct *Xeon);
+int move2dest(XeonStruct *Xeon);
 // For ID-tail stage
 int read_register(XeonStruct *Xeon);
+int sign_extension_ID(XeonStruct *Xeon);
 // Lemma function for ID stage
 int is_register_index(unsigned int idx); 
+int is_imm(unsigned int imm_tested);
+unsigned int sign_extensor(unsigned int in);
 
 void fetch(struct XeonStruct *Xeon);
 void move2src_MEM(struct XeonStruct *Xeon);
