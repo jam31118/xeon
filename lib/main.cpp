@@ -75,6 +75,7 @@ int main(int argc, char* argv[]) {
 	// ID-head stage
 	cout << "Result of parseIDstage: " << Xeon.ID.Func.parseIDstage(&Xeon) << endl;
 	cout << "Result of move2entrance: "<< Xeon.ID.Func.move2entrance(&Xeon) << endl;
+	cout << "Result of move2dest: " << Xeon.ID.Func.move2dest(&Xeon) << endl;
 	// ID-tail stage
 	cout << "Resulf of read_register: " << Xeon.ID.Func.read_register(&Xeon) << endl;
 	cout << "Result of sign_extension_ID: " << Xeon.ID.Func.sign_extension_ID(&Xeon) << endl;

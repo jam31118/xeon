@@ -48,6 +48,7 @@ typedef struct XeonStruct {
 			int (*move2entrance)(XeonStruct *Xeon);
 			int (*read_register)(XeonStruct *Xeon);
 			int (*sign_extension_ID)(XeonStruct *Xeon);
+			int (*move2dest)(XeonStruct *Xeon);
 		} Func;
 	} ID;
 
@@ -146,6 +147,7 @@ int sign_extension_ID(XeonStruct *Xeon);
 int is_register_index(unsigned int idx); 
 int is_imm(unsigned int imm_tested);
 unsigned int sign_extensor(unsigned int in);
+int is_5bit(unsigned int input);
 
 void fetch(struct XeonStruct *Xeon);
 void move2src_MEM(struct XeonStruct *Xeon);

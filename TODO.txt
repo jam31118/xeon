@@ -14,3 +14,5 @@
 170427 log
 - Which is faster? Probabily, and necessarily, mem_write signal should be arrived to mem first. .. exactly which stages when signal arrives
 - add ssh autologin
+- if something goes wrong, functions returns 1. We should check this results and if one of them returns 1 then we should stop program and should cerr << (error messeage).
+
