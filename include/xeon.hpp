@@ -10,7 +10,7 @@ typedef struct XeonStruct {
 	struct {
 		unsigned int PC = -1;
 		struct {
-			void(*fetch)(struct XeonStruct);
+			void(*fetch)(struct XeonStruct *Xeon);
 		}Func;
 	} IF;
 
@@ -86,8 +86,8 @@ typedef struct XeonStruct {
 			unsigned int PC_target;
 		}BUS;
 		struct {
-			void(*move2src_MEM)(struct XeonStruct);
-			void(*f_MEM)(struct XeonStruct);
+			void(*move2src_MEM)(struct XeonStruct *Xeon);
+			void(*f_MEM)(struct XeonStruct *Xeon);
 		}Func;
 	} MEM;
 
@@ -104,8 +104,8 @@ typedef struct XeonStruct {
 		unsigned int ALU_result;
 		unsigned int dest;
 		struct {
-			void(*move2src_WB)(struct XeonStruct);
-			void(*f_WB)(struct XeonStruct);
+			void(*move2src_WB)(struct XeonStruct*);
+			void(*f_WB)(struct XeonStruct*);
 		}Func;
 		struct {
 			unsigned int read_data;
