@@ -92,13 +92,6 @@ int is_register_index(unsigned int idx) {
 	return (idx <= 31);
 }
 
-
-void IFstage(struct XeonStruct *Xeon) {
-	/* Just Test (can be removed) */
-	//cout << "Xeon.PC == " << Xeon->PC << endl;
-	//cout << "Xeon.ID_EX.ConSig.EX == " << Xeon->ID_EX.ConSig.EX << endl;
-}
-
 void fetch(struct XeonStruct *Xeon) {
 	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.PC];
 	//printf("TESTING fetch\n");
@@ -129,14 +122,11 @@ void f_MEM(struct XeonStruct *Xeon) {
 		}
 	}
 	else {
-		//beq instruction
-
-		//PC value 
-		Xeon->IF.PC = Xeon->EX_MEM.PC_target;
-		// Flush
-		Xeon->IF_ID.instr = 0;//instructino update ban
-		Xeon->IF_ID.PC = 0;//PC update ban
-						   // clearing ID ,EXE stage
+		if (Xeon->EX_MEM.ConSig.is_zero == 1) {
+			//beq instruction
+			Xeon->IF.ConSig.PC_src = 1;
+			
+		}
 	}
 	//printf("TESTING f_MEM\n");
 }
@@ -160,4 +150,36 @@ void f_WB(struct XeonStruct *Xeon) {
 		}
 	}
 	//printf("TESTING f_WB\n");
+}
+
+
+void IF_HEAD(struct XeonStruct *Xeon){
+	
+}
+void ID_HEAD(struct XeonStruct *Xeon) {
+
+}
+void EX_HEAD(struct XeonStruct *Xeon) {
+
+}
+void MEM_HEAD(struct XeonStruct *Xeon) {
+
+}
+void WB_HEAD(struct XeonStruct *Xeon) {
+
+}
+void IF_TAIL(struct XeonStruct *Xeon) {
+
+}
+void ID_TAIL(struct XeonStruct *Xeon) {
+
+}
+void EX_TAIL(struct XeonStruct * Xeon) {
+
+}
+void MEM_TAIL(struct XeonStruct *Xeon) {
+
+}
+void WB_TAIL(struct XeonStruct *Xeon) {
+
 }

@@ -12,6 +12,10 @@ typedef struct XeonStruct {
 		struct {
 			void(*fetch)(struct XeonStruct*);
 		}Func;
+		struct {
+			unsigned int jump;
+			unsigned int PC_src;
+		}ConSig;
 	} IF;
 
 	struct {
@@ -70,6 +74,7 @@ typedef struct XeonStruct {
         struct {
             unsigned int MEM[3];
             unsigned int WB[2];
+			unsigned int is_zero;
         } ConSig;
     } EX_MEM;
 
