@@ -17,7 +17,7 @@ typedef struct XeonStruct {
 				unsigned int PC_src;
 				unsigned int jump;
 			} ConSig;
-		} Bus;
+		} BUS;
 	} IF;
 
 	struct {

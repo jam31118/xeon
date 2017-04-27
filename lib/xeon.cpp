@@ -41,7 +41,7 @@ int move2bus(struct XeonStruct *Xeon) {
 		
 	// Moves in EX stage starts
 	/* ... */
-	Xeon->BUS.
+	
 
 	// Moves in MEM stage starts
 	Xeon->MEM.BUS.ALU_result = Xeon->EX_MEM.ALU_result;
@@ -146,7 +146,7 @@ int multiply_x4(XeonStruct *Xeon) {
 	/* Multiply */
 	Xeon->ID.Bus.ConSig.jump = multiplier_x4(Xeon->ID.Bus.jump_x4_in);
 	/* Move data into Bus.ConSig.jump in IF stage */
-	Xeon->IF.Bus.ConSig.jump = Xeon->ID.Bus.ConSig.jump;
+	Xeon->IF.BUS.ConSig.jump = Xeon->ID.Bus.ConSig.jump;
 	/* Returns zero if there's no error */
 	return 0;
 }
@@ -232,8 +232,7 @@ void f_MEM(struct XeonStruct *Xeon) {
 	else {
 		if (Xeon->EX_MEM.ConSig.is_zero == 1) {
 			//beq instruction
-			Xeon->IF.ConSig.PC_src = 1;
-			
+			Xeon->IF.BUS.ConSig.PC_src= 1;	
 		}
 	}
 	//printf("TESTING f_MEM\n");
