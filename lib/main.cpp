@@ -9,14 +9,14 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 	string filename;
-	int d = 0; // -d�ɼ��� �ԷµǸ� d=1�� �Ͽ����ϴ�.
-	int m = 0; // -m�ɼ��� �ԷµǸ� m=1�� �Ͽ����ϴ�.
+	int d = 0; // print registor file and current PC per every cycle
+	int m = 0; // after end of simulation do memory dump
 	unsigned int addr_begin = 0;
 	unsigned int addr_end = 0;
-	int n = -1; // -n �ɼ��� ���� �Էµ��� ������ n�� -1�� �Ͽ����ϴ�.
-
+	int p = 0; // print every PCs in each pipeline stage per every cycle
+	int f = 
 	// argv�� �д� �κ��Դϴ�. argv�� �дµ� stream�� �����ؾ� �Ѵٴ� ���� ���� �ټ� �������������ϴ�.
-    if (getopt(argc,argv,&d,&m,&n,&addr_begin,&addr_end, filename)) { return 1; } // �߸��� �ɼ��Ľ�
+    if (getopt(argc,argv,&d,&m,&p,&addr_begin,&addr_end, filename)) { return 1; } // �߸��� �ɼ��Ľ�
 
 	// input�� ���� �������� ������ ������� ������ ����.
 	string input[1000];
