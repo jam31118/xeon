@@ -19,6 +19,7 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 	Xeon->ID.Func.sign_extension_ID = &sign_extension_ID;
 	Xeon->ID.Func.move2dest = &move2dest;
 	Xeon->ID.Func.multiply_x4 = &multiply_x4;
+    Xeon->ID.Func.generateControlSignal = &generateControlSignal;
 
 	// Initialize EX structure 
 
@@ -112,6 +113,28 @@ int move2dest(XeonStruct *Xeon) {
 	/* Returns zero if there's no problem */
 	return 0;
 }
+int generateControlSignal(XeonStruct *Xeon) {
+    /* Check validity of input signal which should be 6-bit opcode */ 
+    if (!is_n_bit(Xeon->ID.Bus.control_in, 6)) {
+        cerr << "[ERROR] The input of Control unit is not valid" << endl;
+        cerr << "[ERROR] The input of Contorl == " << Xeon->ID.Bus.control_in << endl;
+        return 1;
+    }
+    unsigned int opcode = Xeon->ID.Bus.control_in;
+	struct ConSig consigDB;
+    if (opcode == 0) {
+        /* The instruction is R-type */
+		putControlSignal(Xeon, consigDB.R);
+    } else if (opcode >> 2 == 0) {
+        /* The instruction is J-type */
+        
+    } else {
+        /* The instruction is I-type */
+
+    }
+
+    return 0;
+}
 int read_register(XeonStruct *Xeon) {
 	/* Check validity of input data */
 	if (!is_register_index(Xeon->ID.Register.read_addr_1)) {return 1;}
@@ -199,7 +222,43 @@ int is_n_bit(unsigned int input, int n) {
 unsigned int multiplier_x4(unsigned int input) {
 	return input << 2;
 }
-// set PC value
+int putControlSignal(XeonStruct *Xeon, unsigned int sig9bits[]) {
+	Xeon->ID_EX.ConSig.EX.RegDst = sig9bits[0];
+    Xeon->ID_EX.ConSig.EX.ALU_Op1 = sig9bits[1];
+    Xeon->ID_EX.ConSig.EX.ALU_Op2 = sig9bits[2];
+	Xeon->ID_EX.ConSig.EX.ALU_Src = sig9bits[3];
+    Xeon->ID_EX.ConSig.MEM.Brch = sig9bits[4];
+   	Xeon->ID_EX.ConSig.MEM.MemRead = sig9bits[5];
+    Xeon->ID_EX.ConSig.MEM.MemWrite = sig9bits[6];
+    Xeon->ID_EX.ConSig.WB.RegWrite = sig9bits[7];
+   	Xeon->ID_EX.ConSig.WB.MemtoReg = sig9bits[8];
+	return 0;
+}
+/* This puts control signals according to mod such as R(-type), lw etc.*/
+/*
+int putControlSignal(XeonStruct *Xeon, char mod) {
+	struct ConSig consigDB;	
+	switch (mod) {
+		case 'R':
+	        Xeon->ID_EX.ConSig.EX.RegDst = consigDB.R.EX[0];
+    	    Xeon->ID_EX.ConSig.EX.ALU_Op1 = consigDB.R.EX[1];
+        	Xeon->ID_EX.ConSig.EX.ALU_Op2 = consigDB.R.EX[2];
+	        Xeon->ID_EX.ConSig.EX.ALU_Src = consigDB.R.EX[3];
+    	    Xeon->ID_EX.ConSig.MEM.Brch = consigDB.R.MEM[0];
+        	Xeon->ID_EX.ConSig.MEM.MemRead = consigDB.R.MEM[1];
+	        Xeon->ID_EX.ConSig.MEM.MemWrite = consigDB.R.MEM[2];
+    	    Xeon->ID_EX.ConSig.WB.RegWrite = consigDB.R.WB[0];
+        	Xeon->ID_EX.ConSig.WB.MemtoReg = 0;
+			break;
+		default:
+			cerr << "[ERROR] There is corresponding mode" << endl;
+			cerr << "[ERROR] The input mod == " << mod << endl;
+			return 1;
+	} 
+	return 0;
+}
+*/
+
 void setPC(struct XeonStruct *Xeon){
 	if(Xeon->IF.BUS.ConSig.PC_src==1)
 	{
