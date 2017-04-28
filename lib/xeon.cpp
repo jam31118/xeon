@@ -19,6 +19,7 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 	Xeon->ID.Func.sign_extension_ID = &sign_extension_ID;
 	Xeon->ID.Func.move2dest = &move2dest;
 	Xeon->ID.Func.multiply_x4 = &multiply_x4;
+    Xeon->ID.Func.generateControlSignal = &generateControlSignal;
 
 	// Initialize EX structure 
 
@@ -111,6 +112,36 @@ int move2dest(XeonStruct *Xeon) {
 	Xeon->ID_EX.Data.dest_2 = Xeon->ID.Bus.dest_2;
 	/* Returns zero if there's no problem */
 	return 0;
+}
+int generateControlSignal(XeonStruct *Xeon) {
+    /* Check validity of input signal which should be 6-bit opcode */ 
+    if (!is_n_bit(Xeon->ID.Bus.control_in, 6)) {
+        cerr << "[ERROR] The input of Control unit is not valid" << endl;
+        cerr << "[ERROR] The input of Contorl == " << Xeon->ID.Bus.control_in << endl;
+        return 1;
+    }
+    unsigned int opcode = Xeon->ID.Bus.control_in;
+
+    if (opcode == 0) {
+        /* The instruction is R-type */
+        Xeon->ID_EX.ConSig.EX.RegDst = 1;
+        Xeon->ID_EX.ConSig.EX.ALU_Op1 = 1;
+        Xeon->ID_EX.ConSig.EX.ALU_Op2 = 0;
+        Xeon->ID_EX.ConSig.EX.ALU_Src = 0;
+        Xeon->ID_EX.ConSig.MEM.Brch = 0;
+        Xeon->ID_EX.ConSig.MEM.MemRead = 0;
+        Xeon->ID_EX.ConSig.MEM.MemWrite = 0;
+        Xeon->ID_EX.ConSig.WB.RegWrite = 1;
+        Xeon->ID_EX.ConSig.WB.MemtoReg = 0;
+    } else if (opcode >> 2 == 0) {
+        /* The instruction is J-type */
+        
+    } else {
+        /* The instruction is I-type */
+
+    }
+
+    return 0;
 }
 int read_register(XeonStruct *Xeon) {
 	/* Check validity of input data */

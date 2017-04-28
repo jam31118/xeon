@@ -66,6 +66,7 @@ typedef struct XeonStruct {
 			int (*sign_extension_ID)(XeonStruct *Xeon);
 			int (*move2dest)(XeonStruct *Xeon);
 			int (*multiply_x4)(XeonStruct *Xeon);
+            int (*generateControlSignal)(XeonStruct *Xeon);
 		} Func;
 	} ID;
 
@@ -73,8 +74,20 @@ typedef struct XeonStruct {
         unsigned int PC;
 		struct {
 			//unsigned int EX = -1;
+            //unsigned int EX[4];
 			//unsigned int MEM;
+            //unsigned int MEM[3];
 			//unsigned int WB;
+            //unsigned int WB[2];
+            struct {
+                unsigned int RegDst, ALU_Op1, ALU_Op2, ALU_Src;
+            } EX;
+            struct {
+                unsigned int Brch, MemRead, MemWrite;
+            } MEM;
+            struct {
+                unsigned int RegWrite, MemtoReg;
+            } WB;
 		} ConSig;
 		struct { 
 			unsigned int reg_read_data_1;
@@ -146,7 +159,14 @@ struct MaskInstr {
 	static const unsigned int IMM = 0x0000FFFF;
 	static const unsigned int J26 = 0x0CFFFFFF;
 };
-
+struct ConSig {
+    struct R {
+        static constexpr unsigned int EX[4] = {1,1,0,0};
+        static constexpr unsigned int MEM[3] = {0,0,0};
+        static constexpr unsigned int WB[2] = {1,0};
+    };
+    
+};
 int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem, unsigned int PC);
 int move2bus(struct XeonStruct *Xeon);
 
@@ -159,6 +179,7 @@ void IDstage(struct XeonStruct *Xeon);
 int parseIDstage(XeonStruct *Xeon);
 int move2entrance(XeonStruct *Xeon);
 int move2dest(XeonStruct *Xeon);
+int generateControlSignal(XeonStruct *Xeon);
 // For ID-tail stage
 int read_register(XeonStruct *Xeon);
 int sign_extension_ID(XeonStruct *Xeon);
