@@ -23,6 +23,7 @@ typedef struct XeonStruct {
 			struct {
 				unsigned int PC_src;
 				unsigned int jump;
+				unsigned int flush;
 			} ConSig;
 		} BUS;
 	} IF;
@@ -72,7 +73,7 @@ typedef struct XeonStruct {
 
 	struct {
         unsigned int PC;
-		struct {
+		struct {			
 			//unsigned int EX = -1;
             //unsigned int EX[4];
 			//unsigned int MEM;

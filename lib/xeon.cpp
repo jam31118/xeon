@@ -276,6 +276,7 @@ void setPC(struct XeonStruct *Xeon){
 		Xeon->IF.PC= Xeon->IF.PC + 4; //BUS ??
 	//printf("THIS IS setPC FUNCTION\n");
 }
+// fetch instruction
 void fetch(struct XeonStruct *Xeon) {
 	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.BUS.PC];
 	Xeon->IF_ID.PC = Xeon->IF.PC;
@@ -313,8 +314,13 @@ void f_MEM(struct XeonStruct *Xeon) {
 			Xeon->IF.Tmp.branch= Xeon->MEM.BUS.PC_target;
 			
 			//Flush
-			Xeon->IF_ID.instr =0;
-			Xeon->IF_ID.PC =0;
+			Xeon->IF.BUS.ConSig.flush = 1;
+			Xeon->IF_ID.instr = 0;
+			Xeon->IF_ID.PC = 0;
+		}
+		else {
+			Xeon->IF.BUS.ConSig.flush = 0;
+			Xeon->IF.BUS.ConSig.PC_src = 0;
 		}
 	}
 	//printf("TESTING f_MEM\n");
@@ -327,7 +333,7 @@ void move2src_WB(struct XeonStruct *Xeon) {
 	//printf("TESTING move2scr_WB\n");
 }
 // WB function
-void f_WB( XeonStruct *Xeon) {
+void f_WB(struct XeonStruct *Xeon) {
 	// store at REG
 	if (Xeon->MEM_WB.ConSig.WB[0] == 1)
 	{
