@@ -38,7 +38,7 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 }
 
 // Return 1 if something got wrong
-int move2bus(struct XeonStruct *Xeon) {
+int move2bus(struct XeonStruct *Xeon) {	
 	// Moves in IF stage starts
 	Xeon->IF.BUS.PC = Xeon->IF.PC;
 
@@ -356,14 +356,17 @@ void conSig(struct XeonStruct *Xeon){
 	Xeon->MEM_WB.ConSig.WB.MemtoReg = Xeon->EX_MEM.ConSig.WB.MemtoReg;
 }
 // WB function
+void 
 void f_WB(struct XeonStruct *Xeon) {
 	// store at REG
 	if (Xeon->MEM_WB.ConSig.WB.RegWrite == 1)
 	{
 		if (Xeon->MEM_WB.ConSig.WB.MemtoReg == 1) {
+			Xeon->WB.BUS.fwd_WB =Xeon->WB.read_data;
 			Xeon->ID.Register.reg_file[Xeon->WB.dest] = Xeon->WB.read_data;// lw instruction
 		}
 		else {
+			Xeon->WB.BUS.fwd_WB = Xeon->WB.ALU_result;
 			Xeon->ID.Register.reg_file[Xeon->WB.dest] = Xeon->WB.ALU_result;// r type instruction
 		}
 	}
@@ -384,10 +387,11 @@ void ID_HEAD(struct XeonStruct *Xeon) {
 	//printf("THIS IS ID_HEAD STAGE\n");
 }
 void EX_HEAD(struct XeonStruct *Xeon) {
-	Xeon->MEM.Func.move2src_MEM(Xeon);
+	
 	//printf("THIS IS EX_HEAD STAGE\n");
 }
 void MEM_HEAD(struct XeonStruct *Xeon) {
+	Xeon->MEM.Func.move2src_MEM(Xeon);
 	//printf("THIS IS MEM_HEAD STAGE\n");
 }
 void WB_HEAD(struct XeonStruct *Xeon) {
