@@ -145,6 +145,12 @@ int generateControlSignal(XeonStruct *Xeon) {
         /* The instruction is I-type */
 		/* (Should imiplement more I-type!! at 170429) */
 		switch (opcode) {
+			case 0x04: // BEQ
+				putControlSignal(Xeon, consigDB.Brch);
+				break;
+			case 0x05: // BNE
+				putControlSignal(Xeon, consigDB.Brch);
+				break;
 			case 0x23: // LW
 				putControlSignal(Xeon, consigDB.LW);
 				break;
