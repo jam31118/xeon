@@ -160,11 +160,14 @@ struct MaskInstr {
 	static const unsigned int J26 = 0x0CFFFFFF;
 };
 struct ConSig {
+	unsigned int R[9] = {1,1,0,0, 0,0,0, 1,0};
+	/*
     struct R {
         static constexpr unsigned int EX[4] = {1,1,0,0};
         static constexpr unsigned int MEM[3] = {0,0,0};
         static constexpr unsigned int WB[2] = {1,0};
-    };
+    } R;
+	*/
     
 };
 int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem, unsigned int PC);
@@ -184,6 +187,7 @@ int generateControlSignal(XeonStruct *Xeon);
 int read_register(XeonStruct *Xeon);
 int sign_extension_ID(XeonStruct *Xeon);
 int multiply_x4(XeonStruct *Xeon);
+int putControlSignal(XeonStruct *Xeon, unsigned int sig9bits[]);
 // Lemma function for ID stage
 int is_register_index(unsigned int idx); 
 int is_imm(unsigned int imm_tested);
