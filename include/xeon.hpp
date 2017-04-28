@@ -104,8 +104,12 @@ typedef struct XeonStruct {
 		unsigned int ALU_result;
 		unsigned int PC_target;
         struct {
-            unsigned int MEM[3];
-            unsigned int WB[2];
+			struct {
+                 unsigned int Brch, MemRead, MemWrite;
+            } MEM;
+            struct {
+                unsigned int RegWrite, MemtoReg;
+            } WB;
 			unsigned int is_zero;
         } ConSig;
     } EX_MEM;
@@ -129,7 +133,9 @@ typedef struct XeonStruct {
 	unsigned int dest;
 	unsigned int read_data;
         struct {
-             unsigned int WB[2];
+             struct {
+                unsigned int RegWrite, MemtoReg;
+            } WB;
         } ConSig;
     } MEM_WB;
 
@@ -140,6 +146,7 @@ typedef struct XeonStruct {
 		struct {
 			void(*move2src_WB)(struct XeonStruct*);
 			void(*f_WB)(struct XeonStruct*);
+			void(*conSig)(struct XeonStruct*);
 		}Func;
 		struct {
 			unsigned int read_data;
@@ -201,6 +208,7 @@ void setPC(struct XeonStruct *Xeon);
 void fetch(struct XeonStruct *Xeon);
 void move2src_MEM(struct XeonStruct *Xeon);
 void f_MEM(struct XeonStruct *Xeon);
+void conSig(struct XeonStruct *Xeon);
 void move2src_WB(struct XeonStruct *Xeon);
 void f_WB(struct XeonStruct *Xeon);
 
