@@ -125,11 +125,16 @@ int generateControlSignal(XeonStruct *Xeon) {
     if (opcode == 0) {
         /* The instruction is R-type */
 		putControlSignal(Xeon, consigDB.R);
+		Xeon->IF.BUS.ConSig.jump = 0;
     } else if (opcode >> 2 == 0) {
         /* The instruction is J-type */
+		/* ( ) */
+		Xeon->IF.BUS.ConSig.jump = 1;
         
     } else {
         /* The instruction is I-type */
+		/* ( ) */
+		Xeon->IF.BUS.ConSig.jump = 0;
 
     }
 
