@@ -2,8 +2,8 @@
 #define _XEON_H_
 
 typedef struct XeonStruct {
-	//int PC_bus = -1;
-	int clock = -1;
+	//int PC_bus;
+	int cycle = -1;
 	unsigned char *mem;
 	//int *reg_mem; 
 
@@ -121,7 +121,6 @@ typedef struct XeonStruct {
 		struct {
 			unsigned int ALU_result = 0;
 			unsigned int PC_target = 0;
-			
 		}BUS;
 		struct {
 			void(*move2src_MEM)(struct XeonStruct*);
@@ -151,7 +150,8 @@ typedef struct XeonStruct {
 		struct {
 			unsigned int read_data = 0;
 			unsigned int ALU_result = 0;
-			unsigned  int dest = 0;
+			unsigned int dest = 0;
+			unsigned int fwd_WB = 0; 
 		}BUS;
 	} WB;
 
