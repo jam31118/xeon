@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 	}
 	// �ʱ� PC�Դϴ�. text�� ó�� ������ ������ 0x00400000�� ����ŵ�ϴ�.
 	unsigned int pc = 0x00400000;
-	unsigned int* PC = &pc;
+	//unsigned int* PC = &pc;
 
 	// label�� �󺧵鸸 ���� ������ string�Դϴ�. �ִ� 10���� ������ �ʰڰŴ�.. �����Ͽ����ϴ�.
 	string label[10];
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
 	int data_size = lab2loc(input, label);
 	la2lui(input);
 	lab2pos(input, label);
-	int mainloc = formain(input);
+	//int mainloc = formain(input);
 	cleaner(input);
 
 	// ��ȯ�� binary �ڵ带 ���� string array�Դϴ�.
@@ -85,9 +85,9 @@ int main(int argc, char* argv[]) {
 	XeonStruct Xeon;
 	initalizeXeon(&Xeon,reg,mem,pc);
 	
-	unsigned int pc_max = pc + text_size - 4;
-    if (n >= 0) { pc_max = pc + (n-1)*4; }
-    while (pc_max >= pc) {
+	unsigned int pc_max = Xeon.IF.PC + text_size - 4;
+    if (n >= 0) { pc_max = Xeon.IF.PC + (n-1)*4; }
+    while (pc_max >= Xeon.IF.PC) {
 		//cout << "in while\n";
         //instruction(reg, mem, PC, mainloc);
         /* Clock 0 ~ 0.5 */
@@ -107,12 +107,12 @@ int main(int argc, char* argv[]) {
 		WB_TAIL(&Xeon);
 
 		Xeon.cycle++;
-		if (d) { print_reg(PC, reg); }
+		if (d) { print_reg(&Xeon.IF.PC, reg); }
         if (d && m) { print_mem(mem, addr_begin, addr_end); }
     }
-    if (d && !n) { print_reg(PC, reg); }
+    if (d && !n) { print_reg(&Xeon.IF.PC, reg); }
     if (!d && m) { print_mem(mem, addr_begin, addr_end); }
-    if (!d && !m) { print_reg(PC, reg); } 
+    if (!d && !m) { print_reg(&(Xeon.IF.PC), reg); } 
 
 	delete[] reg;
 

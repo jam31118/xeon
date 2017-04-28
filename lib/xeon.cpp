@@ -356,7 +356,7 @@ void conSig(struct XeonStruct *Xeon){
 	Xeon->MEM_WB.ConSig.WB.MemtoReg = Xeon->EX_MEM.ConSig.WB.MemtoReg;
 }
 // WB function
-void 
+
 void f_WB(struct XeonStruct *Xeon) {
 	// store at REG
 	if (Xeon->MEM_WB.ConSig.WB.RegWrite == 1)
