@@ -310,7 +310,7 @@ void f_MEM(struct XeonStruct *Xeon) {
 			Xeon->IF.Tmp.branch= Xeon->MEM.BUS.PC_target;
 			
 			//Flush
-			Xeon->IF.BUS.ConSig.flush = 1;
+			//Xeon->IF.BUS.ConSig.flush = 1;
 			Xeon->IF_ID.instr = 0;
 			Xeon->IF_ID.PC = 0;
 			
@@ -334,7 +334,7 @@ void f_MEM(struct XeonStruct *Xeon) {
 			Xeon->EX_MEM.ConSig.WB.MemtoReg = 0;
 		}
 		else {
-			Xeon->IF.BUS.ConSig.flush = 0;
+		//	Xeon->IF.BUS.ConSig.flush = 0;
 			Xeon->IF.BUS.ConSig.PC_src = 0;
 		}
 	}
