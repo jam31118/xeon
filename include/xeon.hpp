@@ -9,14 +9,22 @@ typedef struct XeonStruct {
 
 	struct {
 		unsigned int PC = -1;
+		// brach and jump address tmp storage
+		struct{
+			unsigned int branch;
+			unsigned int jump;
+		}Tmp;
 		struct {
-			void(*fetch)(struct XeonStruct *Xeon);
+			void(*fetch)(struct XeonStruct*);
+			void(*setPC)(struct XeonStruct*);
 		}Func;
 		struct {
+			unsigned int PC;
 			struct {
+				unsigned int PC_src;
 				unsigned int jump;
 			} ConSig;
-		} Bus;
+		} BUS;
 	} IF;
 
 	struct {
@@ -84,6 +92,7 @@ typedef struct XeonStruct {
         struct {
             unsigned int MEM[3];
             unsigned int WB[2];
+			unsigned int is_zero;
         } ConSig;
     } EX_MEM;
 
@@ -94,10 +103,11 @@ typedef struct XeonStruct {
 		struct {
 			unsigned int ALU_result;
 			unsigned int PC_target;
+			
 		}BUS;
 		struct {
-			void(*move2src_MEM)(struct XeonStruct *Xeon);
-			void(*f_MEM)(struct XeonStruct *Xeon);
+			void(*move2src_MEM)(struct XeonStruct*);
+			void(*f_MEM)(struct XeonStruct*);
 		}Func;
 	} MEM;
 
@@ -161,12 +171,23 @@ int is_5bit(unsigned int input);
 int is_n_bit(unsigned int input, int n);
 unsigned int multiplier_x4(unsigned int input);
 
+void setPC(struct XeonStruct *Xeon);
 void fetch(struct XeonStruct *Xeon);
 void move2src_MEM(struct XeonStruct *Xeon);
 void f_MEM(struct XeonStruct *Xeon);
 void move2src_WB(struct XeonStruct *Xeon);
 void f_WB(struct XeonStruct *Xeon);
 
-// hey
+void IF_HEAD(struct XeonStruct *Xeon);
+void ID_HEAD(struct XeonStruct *Xeon);
+void EX_HEAD(struct XeonStruct *Xeon);
+void MEM_HEAD(struct XeonStruct *Xeon);
+void WB_HEAD(struct XeonStruct *Xeon);
+void IF_TAIL(struct XeonStruct *Xeon);
+void ID_TAIL(struct XeonStruct *Xeon);
+void EX_TAIL(struct XeonStruct * Xeon);
+void MEM_TAIL(struct XeonStruct *Xeon);
+void WB_TAIL(struct XeonStruct *Xeon);
+
 
 #endif

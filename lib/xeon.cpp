@@ -7,8 +7,10 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 	Xeon->ID.Register.reg_file = reg;
 	Xeon->mem = mem;
 	Xeon->IF.PC = PC;	
+
 	// Initialize IF structure
 	Xeon->IF.Func.fetch = &fetch;
+	Xeon->IF.Func.setPC = &setPC;
 
 	// Initialize ID structure
 	Xeon->ID.Func.parseIDstage = &parseIDstage;
@@ -18,6 +20,8 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 	Xeon->ID.Func.move2dest = &move2dest;
 	Xeon->ID.Func.multiply_x4 = &multiply_x4;
 
+	// Initialize EX structure 
+
 	// Initialize MEM structure
 	Xeon->MEM.Func.move2src_MEM = &move2src_MEM;
 	Xeon->MEM.Func.f_MEM = &f_MEM;
@@ -25,6 +29,7 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 	// Initialize WB structure
 	Xeon->WB.Func.move2src_WB = &move2src_WB;
 	Xeon->WB.Func.f_WB = &f_WB;
+
 	/* Other initialization of Xeon Structure */
 	
 	return 0;
@@ -33,7 +38,7 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 // Return 1 if something got wrong
 int move2bus(struct XeonStruct *Xeon) {
 	// Moves in IF stage starts
-	/* ... */
+	Xeon->IF.BUS.PC = Xeon->IF.PC;
 
 	// Moves in ID stage starts
 	Xeon->ID.Bus.ID_IF_out.PC = Xeon->IF_ID.PC;
@@ -41,7 +46,7 @@ int move2bus(struct XeonStruct *Xeon) {
 		
 	// Moves in EX stage starts
 	/* ... */
-
+	
 
 	// Moves in MEM stage starts
 	Xeon->MEM.BUS.ALU_result = Xeon->EX_MEM.ALU_result;
@@ -146,7 +151,7 @@ int multiply_x4(XeonStruct *Xeon) {
 	/* Multiply */
 	Xeon->ID.Bus.ConSig.jump = multiplier_x4(Xeon->ID.Bus.jump_x4_in);
 	/* Move data into Bus.ConSig.jump in IF stage */
-	Xeon->IF.Bus.ConSig.jump = Xeon->ID.Bus.ConSig.jump;
+	Xeon->IF.BUS.ConSig.jump = Xeon->ID.Bus.ConSig.jump;
 	/* Returns zero if there's no error */
 	return 0;
 }
@@ -195,21 +200,28 @@ unsigned int multiplier_x4(unsigned int input) {
 	return input << 2;
 }
 
-void IFstage(struct XeonStruct *Xeon) {
-	/* Just Test (can be removed) */
-	//cout << "Xeon.PC == " << Xeon->PC << endl;
-	//cout << "Xeon.ID_EX.ConSig.EX == " << Xeon->ID_EX.ConSig.EX << endl;
+void setPC(struct XeonStruct *Xeon){
+	if(Xeon->IF.BUS.ConSig.PC_src==1)
+	{
+		if(Xeon->IF.BUS.ConSig.jump==1)
+			Xeon->IF.PC=Xeon->IF.Tmp.jump;
+		else
+			Xeon->IF.PC=Xeon->IF.Tmp.branch;
+	}
+	else
+		Xeon->IF.PC= Xeon->IF.PC + 4; //BUS ??
+	//printf("THIS IS setPC FUNCTION\n");
 }
-
 void fetch(struct XeonStruct *Xeon) {
-	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.PC];
+	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.BUS.PC];
+	Xeon->IF_ID.PC = Xeon->IF.PC;
 	//printf("TESTING fetch\n");
 }
 
 //MEM BUS to MEM
 void move2src_MEM(struct XeonStruct *Xeon) {
-	Xeon->MEM.BUS.ALU_result = Xeon->MEM.addr_src;
-	Xeon->ID_EX.Data.reg_read_data_2 = Xeon->MEM.write_data;
+	Xeon->MEM.addr_src = Xeon->MEM.BUS.ALU_result;
+	Xeon->MEM.write_data = Xeon->ID_EX.Data.reg_read_data_2;
 	//printf("TESTING move2src_MEM\n");
 }
 
@@ -231,14 +243,15 @@ void f_MEM(struct XeonStruct *Xeon) {
 		}
 	}
 	else {
-		//beq instruction
-
-		//PC value 
-		Xeon->IF.PC = Xeon->EX_MEM.PC_target;
-		// Flush
-		Xeon->IF_ID.instr = 0;//instructino update ban
-		Xeon->IF_ID.PC = 0;//PC update ban
-						   // clearing ID ,EXE stage
+		if (Xeon->EX_MEM.ConSig.is_zero == 1) {
+			//beq instruction
+			Xeon->IF.BUS.ConSig.PC_src= 1;
+			Xeon->IF.Tmp.branch= Xeon->MEM.BUS.PC_target;
+			
+			//Flush
+			Xeon->IF_ID.instr =0;
+			Xeon->IF_ID.PC =0;
+		}
 	}
 	//printf("TESTING f_MEM\n");
 }
@@ -262,4 +275,44 @@ void f_WB( XeonStruct *Xeon) {
 		}
 	}
 	//printf("TESTING f_WB\n");
+}
+
+
+void IF_HEAD(struct XeonStruct *Xeon){
+	Xeon->IF.Func.setPC(Xeon);
+	Xeon->IF.Func.fetch(Xeon);
+	//printf("THIS IS IF_HEAD STAGE\n");
+}
+void ID_HEAD(struct XeonStruct *Xeon) {
+	//printf("THIS IS ID_HEAD STAGE\n");
+}
+void EX_HEAD(struct XeonStruct *Xeon) {
+	Xeon->MEM.Func.move2src_MEM(Xeon);
+	//printf("THIS IS EX_HEAD STAGE\n");
+}
+void MEM_HEAD(struct XeonStruct *Xeon) {
+	//printf("THIS IS MEM_HEAD STAGE\n");
+}
+void WB_HEAD(struct XeonStruct *Xeon) {
+	Xeon->WB.Func.move2src_WB(Xeon);
+	Xeon->WB.Func.f_WB(Xeon);
+	//printf("THIS IS WB_HEAD STAGE\n");
+}
+void IF_TAIL(struct XeonStruct *Xeon) {
+  /* Nothing */
+  //printf("THIS IS IF_TAIL STAGE\n");
+}
+void ID_TAIL(struct XeonStruct *Xeon) {
+	//printf("THIS IS ID_TAIL STAGE\n");
+}
+void EX_TAIL(struct XeonStruct * Xeon) {
+	//printf("THIS IS EX_TAIL STAGE\n");
+}
+void MEM_TAIL(struct XeonStruct *Xeon) {
+	Xeon->MEM.Func.f_MEM(Xeon);
+	//printf("THIS IS MEM_TAIL STAGE\n");
+}
+void WB_TAIL(struct XeonStruct *Xeon) {
+	
+	//printf("THIS IS WB_TAIL STAGE\n");
 }
