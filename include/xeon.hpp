@@ -48,6 +48,7 @@ typedef struct XeonStruct {
             unsigned int dest_2; // bus carrying Rt(5 bits) to ID_EX reg.
             unsigned int control_in; // bus into Control module
             unsigned int jump_x4_in; // bus into left shifter(x4) for jump instr.
+			unsigned int jump_x4_out;
         } Bus;
 		//struct {} Parsed_bus;
         struct {

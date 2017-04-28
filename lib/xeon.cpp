@@ -47,7 +47,6 @@ int move2bus(struct XeonStruct *Xeon) {
 		
 	// Moves in EX stage starts
 	/* ... */
-	
 
 	// Moves in MEM stage starts
 	Xeon->MEM.BUS.ALU_result = Xeon->EX_MEM.ALU_result;
@@ -65,13 +64,13 @@ int parseIDstage(XeonStruct *Xeon) {
 	struct MaskInstr Mask;
 	//cout << Mask.OPCODE << endl;
 	unsigned int instr = Xeon->ID.Bus.ID_IF_out.instr;	
-	unsigned int op, rs, rt, rd, shift, imm, j26;
+	unsigned int op, rs, rt, rd, imm, j26;
 	/* Parsing */
 	op = (Mask.OPCODE & instr) >> 26;
 	rs = (Mask.RS & instr) >> 21;
 	rt = (Mask.RT & instr) >> 16;
 	rd = (Mask.RD & instr) >> 11;
-	shift = (Mask.SHIFT & instr) >> 6;
+	//shift = (Mask.SHIFT & instr) >> 6;
 	//funct = Mask.FUNCT & instr;
 	imm = (Mask.IMM & instr) >> 16;
 	j26 = (Mask.J26 & instr) >> 26;
@@ -177,9 +176,9 @@ int multiply_x4(XeonStruct *Xeon) {
 		return 1;
 	}
 	/* Multiply */
-	Xeon->ID.Bus.ConSig.jump = multiplier_x4(Xeon->ID.Bus.jump_x4_in);
-	/* Move data into Bus.ConSig.jump in IF stage */
-	Xeon->IF.BUS.ConSig.jump = Xeon->ID.Bus.ConSig.jump;
+	Xeon->ID.Bus.jump_x4_out = multiplier_x4(Xeon->ID.Bus.jump_x4_in);
+	/* Move data into IF.Tmp.jump in IF stage */
+	Xeon->IF.Tmp.jump = Xeon->ID.Bus.jump_x4_out;
 	/* Returns zero if there's no error */
 	return 0;
 }

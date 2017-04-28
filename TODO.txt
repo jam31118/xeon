@@ -27,3 +27,8 @@
 - to do before 22:00
  - implement ID stage completely, including Control and ID stage _head() and _tail() etc.
  - so that direct pasting to main function would work
+
+170428 TODO
+- later, should implement jal (require revision of xeon.hpp)
+- should implement shift (require revision of xeon.hpp)
+
