@@ -1,5 +1,6 @@
 #ifndef _XEON_H_
 #define _XEON_H_
+#include <string>
 
 typedef struct XeonStruct {
 	//int PC_bus = -1;
@@ -98,14 +99,54 @@ typedef struct XeonStruct {
 		} Data;
 	} ID_EX;
 
-    struct {} EX;
+   
+    struct 
+	{
+		//int forward_ALUSrc1_mux = 0;	//100 = 4이면 원래대로 작동, 010 = 2이면 EX_MEM단계의 값을 전방전달, 001 = 1이면 MEM_WB단계의 값을 전방전달.
+		//int forward_ALUSrc2_mux = 0;
+
+		int ALUSrc_mux = 0;
+		int ALUSrc1 = 0;
+		int ALUSrc2 = 0;
+		int RegDst_mux = 0;
+		unsigned int RegDst = 0;
+		int ALU_control_unit = 0;
+        std::string ALU;
+		unsigned int funct;
+		unsigned int shamt;
+		unsigned int ALU_result = 0;
+		
+		struct
+		{
+			unsigned int RegisterRs_data = 0;
+			unsigned int RegisterRt_data = 0;   //ID_EX에 있던 RegisterRt 값을 여기에 저장
+			unsigned int sign_extended;		//ID_EX에서 sign extended된 값을 여기에 저장
+			unsigned int Register_Addr2 = 0;	//ID_EX에 저장한 20-16번째 bit에 해당하는 값을 여기에 저장
+			unsigned int Register_write = 0;	//ID_EX에 저장한 15-11번째 bit에 해당하는 값을 여기에 저장
+		} bus;
+
+		struct
+		{
+			int ALUOp_sig = 0;		//ID_EX에 있는 ALUOp_signal을 여기에 저장
+			int RegDst_sig = 0;		//ID_EX에 있는 RegDst_signal을 여기에 저장
+			int ALUSrc_sig = 0;		//ID_EX에 있는 ALUSrc_signal을 여기에 저장
+		} ConSig;
+		
+		unsigned int(*shift_left2_fp) (unsigned int);
+		unsigned (*R_type_ALU_func) (unsigned int, unsigned int, unsigned int, unsigned int);
+	} EX;
 
     struct {
-		unsigned int ALU_result;
+		unsigned int RegisterRd;
+        unsigned int ALU_result;
 		unsigned int PC_target;
         struct {
-            unsigned int MEM[3];
-            unsigned int WB[2];
+            struct{
+                unsigned int Brch, MemWrite, MemRead;
+            } MEM;
+            struct{
+                unsigned int RegWrite, RegDst;
+            } WB;
 			unsigned int is_zero;
         } ConSig;
     } EX_MEM;
@@ -115,8 +156,8 @@ typedef struct XeonStruct {
 		unsigned int write_data;
 		unsigned int read_data;
 		struct {
-			unsigned int ALU_result;
-			unsigned int PC_target;
+			unsigned int ALU_result; 
+            unsigned int PC_target;
 			
 		}BUS;
 		struct {
@@ -145,6 +186,7 @@ typedef struct XeonStruct {
 			unsigned int read_data;
 			unsigned int ALU_result;
 			unsigned  int dest;
+            unsigned int fwd_WB;  //what you write
 		}BUS;
 	} WB;
 
