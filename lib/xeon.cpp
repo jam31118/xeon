@@ -128,16 +128,41 @@ int generateControlSignal(XeonStruct *Xeon) {
 		Xeon->IF.BUS.ConSig.jump = 0;
     } else if (opcode >> 2 == 0) {
         /* The instruction is J-type */
-		/* ( ) */
-		Xeon->IF.BUS.ConSig.jump = 1;
-        
+		switch (opcode) {
+			case 0x2:
+				putControlSignal(Xeon, consigDB.J);
+				Xeon->IF.BUS.ConSig.jump = 1;
+				break;
+			case 0x3:
+				/* (putControlSignal ... ) */
+				Xeon->IF.BUS.ConSig.jump = 1;
+				break;
+			default:
+				cerr << "[ERROR] (generateControlSignal) No opcode match in J-type." << endl;
+				return 1;
+		}
     } else {
         /* The instruction is I-type */
-		/* ( ) */
+		/* (Should imiplement more I-type!! at 170429) */
+		switch (opcode) {
+			case 0x04: // BEQ
+				putControlSignal(Xeon, consigDB.Brch);
+				break;
+			case 0x05: // BNE
+				putControlSignal(Xeon, consigDB.Brch);
+				break;
+			case 0x23: // LW
+				putControlSignal(Xeon, consigDB.LW);
+				break;
+			case 0x2b: // SW
+				putControlSignal(Xeon, consigDB.SW);
+				break;
+			default:
+				cerr << "[ERROR] (generateControlSignal) No opcode match in I-type." << endl;
+				return 1;
+		}
 		Xeon->IF.BUS.ConSig.jump = 0;
-
     }
-
     return 0;
 }
 int read_register(XeonStruct *Xeon) {
