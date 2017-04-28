@@ -8,58 +8,57 @@ typedef struct XeonStruct {
 	//int *reg_mem; 
 
 	struct {
-		unsigned int PC = -1;
+		unsigned int PC = 0;
 		// brach and jump address tmp storage
 		struct{
-			unsigned int branch;
-			unsigned int jump;
+			unsigned int branch = 0;
+			unsigned int jump = 0;
 		}Tmp;
 		struct {
 			void(*fetch)(struct XeonStruct*);
 			void(*setPC)(struct XeonStruct*);
 		}Func;
 		struct {
-			unsigned int PC;
+			unsigned int PC = 0;
 			struct {
-				unsigned int PC_src;
-				unsigned int jump;
-				unsigned int flush;
+				unsigned int PC_src = 0;
+				unsigned int jump = 0;
 			} ConSig;
 		} BUS;
 	} IF;
 
 	struct {
-        unsigned int instr;
-        unsigned int PC;
+        unsigned int instr = 0;
+        unsigned int PC = 0;
     } IF_ID;
 
 	struct {
 		struct {
             struct {
-				unsigned int PC;
-				unsigned int instr;
+				unsigned int PC = 0;
+				unsigned int instr = 0;
 			} ID_IF_out;
 			struct {
-				unsigned int jump;
+				unsigned int jump = 0;
 			} ConSig;
-            unsigned int sign_extension_in, sign_extension_out;
-            unsigned int read_addr_1, read_addr_2, write_addr, write_data;
-            unsigned int dest_1; // bus carrying Rd(5 bits) to ID_EX reg.
-            unsigned int dest_2; // bus carrying Rt(5 bits) to ID_EX reg.
-            unsigned int control_in; // bus into Control module
-            unsigned int jump_x4_in; // bus into left shifter(x4) for jump instr.
-			unsigned int jump_x4_out;
+			unsigned int jump_x4_out = 0;
+            unsigned int sign_extension_in = 0, sign_extension_out = 0;
+            unsigned int read_addr_1 = 0, read_addr_2 = 0, write_addr = 0, write_data = 0;
+            unsigned int dest_1 = 0; // bus carrying Rd(5 bits) to ID_EX reg.
+            unsigned int dest_2 = 0; // bus carrying Rt(5 bits) to ID_EX reg.
+            unsigned int control_in = 0; // bus into Control module
+            unsigned int jump_x4_in = 0; // bus into left shifter(x4) for jump instr.
         } Bus;
 		//struct {} Parsed_bus;
         struct {
-            unsigned int read_addr_1, read_addr_2;
-            unsigned int write_addr, write_data;
-            unsigned int read_data_1, read_data_2;
+            unsigned int read_addr_1 = 0, read_addr_2 = 0;
+            unsigned int write_addr = 0, write_data = 0;
+            unsigned int read_data_1 = 0, read_data_2 = 0;
             unsigned int *reg_file;
-            unsigned int do_reg_write;
+            unsigned int do_reg_write = 0;
         } Register;
         struct {
-			unsigned int input;
+			unsigned int input = 0;
         } Control;
 		struct {
 			int (*parseIDstage)(XeonStruct *Xeon);
@@ -82,42 +81,46 @@ typedef struct XeonStruct {
 			//unsigned int WB;
             //unsigned int WB[2];
             struct {
-                unsigned int RegDst, ALU_Op1, ALU_Op2, ALU_Src;
+                unsigned int RegDst = 0, ALU_Op1 = 0, ALU_Op2 = 0, ALU_Src = 0;
             } EX;
             struct {
-                unsigned int Brch, MemRead, MemWrite;
+                unsigned int Brch = 0, MemRead = 0, MemWrite = 0;
             } MEM;
             struct {
-                unsigned int RegWrite, MemtoReg;
+                unsigned int RegWrite = 0, MemtoReg = 0;
             } WB;
 		} ConSig;
 		struct { 
-			unsigned int reg_read_data_1;
-			unsigned int reg_read_data_2;
-			unsigned int imm;
-			unsigned int dest_1, dest_2;
+			unsigned int reg_read_data_1 = 0;
+			unsigned int reg_read_data_2  = 0;
+			unsigned int imm = 0;
+			unsigned int dest_1 = 0, dest_2 = 0;
 		} Data;
 	} ID_EX;
 
     struct {} EX;
 
     struct {
-		unsigned int ALU_result;
-		unsigned int PC_target;
+		unsigned int ALU_result = 0;
+		unsigned int PC_target = 0;
         struct {
-            unsigned int MEM[3];
-            unsigned int WB[2];
-			unsigned int is_zero;
+			struct {
+                 unsigned int Brch = 0, MemRead = 0, MemWrite = 0;
+            } MEM;
+            struct {
+                unsigned int RegWrite = 0, MemtoReg = 0;
+            } WB;
+			unsigned int is_zero = 0;
         } ConSig;
     } EX_MEM;
 
     struct {
-		unsigned int addr_src;
-		unsigned int write_data;
-		unsigned int read_data;
+		unsigned int addr_src = 0;
+		unsigned int write_data = 0;
+		unsigned int read_data = 0;
 		struct {
-			unsigned int ALU_result;
-			unsigned int PC_target;
+			unsigned int ALU_result = 0;
+			unsigned int PC_target = 0;
 			
 		}BUS;
 		struct {
@@ -127,25 +130,28 @@ typedef struct XeonStruct {
 	} MEM;
 
     struct {
-	unsigned int dest;
-	unsigned int read_data;
+	unsigned int dest = 0;
+	unsigned int read_data = 0;
         struct {
-             unsigned int WB[2];
+             struct {
+                unsigned int RegWrite = 0, MemtoReg = 0;
+            } WB;
         } ConSig;
     } MEM_WB;
 
     struct {
-		unsigned int read_data;
-		unsigned int ALU_result;
-		unsigned int dest;
+		unsigned int read_data = 0;
+		unsigned int ALU_result = 0;
+		unsigned int dest = 0;
 		struct {
 			void(*move2src_WB)(struct XeonStruct*);
 			void(*f_WB)(struct XeonStruct*);
+			void(*conSig)(struct XeonStruct*);
 		}Func;
 		struct {
-			unsigned int read_data;
-			unsigned int ALU_result;
-			unsigned  int dest;
+			unsigned int read_data = 0;
+			unsigned int ALU_result = 0;
+			unsigned  int dest = 0;
 		}BUS;
 	} WB;
 
@@ -202,6 +208,7 @@ void setPC(struct XeonStruct *Xeon);
 void fetch(struct XeonStruct *Xeon);
 void move2src_MEM(struct XeonStruct *Xeon);
 void f_MEM(struct XeonStruct *Xeon);
+void conSig(struct XeonStruct *Xeon);
 void move2src_WB(struct XeonStruct *Xeon);
 void f_WB(struct XeonStruct *Xeon);
 

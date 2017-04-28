@@ -28,6 +28,7 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 	Xeon->MEM.Func.f_MEM = &f_MEM;
 
 	// Initialize WB structure
+	Xeon->WB.Func.conSig = &conSig;
 	Xeon->WB.Func.move2src_WB = &move2src_WB;
 	Xeon->WB.Func.f_WB = &f_WB;
 
@@ -291,9 +292,9 @@ void move2src_MEM(struct XeonStruct *Xeon) {
 
 // MEM stage acting fucntion
 void f_MEM(struct XeonStruct *Xeon) {
-	if (Xeon->EX_MEM.ConSig.MEM[0] == 0) {
-		if (Xeon->EX_MEM.ConSig.MEM[1] == 0) {
-			if (Xeon->EX_MEM.ConSig.MEM[2] == 0) {
+	if (Xeon->EX_MEM.ConSig.MEM.Brch== 0) {
+		if (Xeon->EX_MEM.ConSig.MEM.MemRead == 0) {
+			if (Xeon->EX_MEM.ConSig.MEM.MemWrite == 0) {
 				// r type instructin
 			}
 			else {
@@ -313,12 +314,31 @@ void f_MEM(struct XeonStruct *Xeon) {
 			Xeon->IF.Tmp.branch= Xeon->MEM.BUS.PC_target;
 			
 			//Flush
-			Xeon->IF.BUS.ConSig.flush = 1;
+			//Xeon->IF.BUS.ConSig.flush = 1;
 			Xeon->IF_ID.instr = 0;
 			Xeon->IF_ID.PC = 0;
+			
+			Xeon->ID_EX.ConSig.EX.RegDst = 0;
+			Xeon->ID_EX.ConSig.EX.ALU_Op1 = 0;
+			Xeon->ID_EX.ConSig.EX.ALU_Op2 = 0;
+			Xeon->ID_EX.ConSig.EX.ALU_Src = 0;
+
+			Xeon->ID_EX.ConSig.MEM.Brch = 0;
+			Xeon->ID_EX.ConSig.MEM.MemRead = 0;
+			Xeon->ID_EX.ConSig.MEM.MemWrite = 0;
+
+			Xeon->ID_EX.ConSig.WB.RegWrite = 0;
+			Xeon->ID_EX.ConSig.WB.MemtoReg = 0;
+
+			Xeon->EX_MEM.ConSig.MEM.Brch = 0;
+			Xeon->EX_MEM.ConSig.MEM.MemRead = 0;
+			Xeon->EX_MEM.ConSig.MEM.MemWrite = 0;
+
+			Xeon->EX_MEM.ConSig.WB.RegWrite = 0;
+			Xeon->EX_MEM.ConSig.WB.MemtoReg = 0;
 		}
 		else {
-			Xeon->IF.BUS.ConSig.flush = 0;
+		//	Xeon->IF.BUS.ConSig.flush = 0;
 			Xeon->IF.BUS.ConSig.PC_src = 0;
 		}
 	}
@@ -331,12 +351,16 @@ void move2src_WB(struct XeonStruct *Xeon) {
 	Xeon->WB.read_data = Xeon->WB.BUS.read_data;
 	//printf("TESTING move2scr_WB\n");
 }
+void conSig(struct XeonStruct *Xeon){
+	Xeon->MEM_WB.ConSig.WB.RegWrite = Xeon->EX_MEM.ConSig.WB.RegWrite;
+	Xeon->MEM_WB.ConSig.WB.MemtoReg = Xeon->EX_MEM.ConSig.WB.MemtoReg;
+}
 // WB function
 void f_WB(struct XeonStruct *Xeon) {
 	// store at REG
-	if (Xeon->MEM_WB.ConSig.WB[0] == 1)
+	if (Xeon->MEM_WB.ConSig.WB.RegWrite == 1)
 	{
-		if (Xeon->MEM_WB.ConSig.WB[1] == 1) {
+		if (Xeon->MEM_WB.ConSig.WB.MemtoReg == 1) {
 			Xeon->ID.Register.reg_file[Xeon->WB.dest] = Xeon->WB.read_data;// lw instruction
 		}
 		else {
@@ -363,6 +387,7 @@ void MEM_HEAD(struct XeonStruct *Xeon) {
 	//printf("THIS IS MEM_HEAD STAGE\n");
 }
 void WB_HEAD(struct XeonStruct *Xeon) {
+	Xeon->WB.Func.conSig(Xeon);
 	Xeon->WB.Func.move2src_WB(Xeon);
 	Xeon->WB.Func.f_WB(Xeon);
 	//printf("THIS IS WB_HEAD STAGE\n");
