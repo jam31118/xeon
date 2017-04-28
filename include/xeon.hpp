@@ -179,7 +179,7 @@ int move2bus(struct XeonStruct *Xeon);
 void IFstage(struct XeonStruct *Xeon);
 
 /* Functions for ID stage */
-void IDstage(struct XeonStruct *Xeon);
+//void IDstage(struct XeonStruct *Xeon);
 // For ID-head stage
 int parseIDstage(XeonStruct *Xeon);
 int move2entrance(XeonStruct *Xeon);
@@ -189,7 +189,6 @@ int generateControlSignal(XeonStruct *Xeon);
 int read_register(XeonStruct *Xeon);
 int sign_extension_ID(XeonStruct *Xeon);
 int multiply_x4(XeonStruct *Xeon);
-int putControlSignal(XeonStruct *Xeon, unsigned int sig9bits[]);
 // Lemma function for ID stage
 int is_register_index(unsigned int idx); 
 int is_imm(unsigned int imm_tested);
@@ -197,6 +196,7 @@ unsigned int sign_extensor(unsigned int in);
 int is_5bit(unsigned int input);
 int is_n_bit(unsigned int input, int n);
 unsigned int multiplier_x4(unsigned int input);
+int putControlSignal(XeonStruct *Xeon, unsigned int sig9bits[]);
 
 void setPC(struct XeonStruct *Xeon);
 void fetch(struct XeonStruct *Xeon);

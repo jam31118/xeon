@@ -353,6 +353,10 @@ void IF_HEAD(struct XeonStruct *Xeon){
 	//printf("THIS IS IF_HEAD STAGE\n");
 }
 void ID_HEAD(struct XeonStruct *Xeon) {
+	Xeon->ID.Func.parseIDstage(Xeon);
+	Xeon->ID.Func.move2entrance(Xeon);
+	Xeon->ID.Func.move2dest(Xeon);
+	Xeon->ID.Func.generateControlSignal(Xeon);
 	//printf("THIS IS ID_HEAD STAGE\n");
 }
 void EX_HEAD(struct XeonStruct *Xeon) {
@@ -372,6 +376,9 @@ void IF_TAIL(struct XeonStruct *Xeon) {
   //printf("THIS IS IF_TAIL STAGE\n");
 }
 void ID_TAIL(struct XeonStruct *Xeon) {
+	Xeon->ID.Func.read_register(Xeon);
+	Xeon->ID.Func.sign_extension_ID(Xeon);
+	Xeon->ID.Func.multiply_x4(Xeon);
 	//printf("THIS IS ID_TAIL STAGE\n");
 }
 void EX_TAIL(struct XeonStruct * Xeon) {
