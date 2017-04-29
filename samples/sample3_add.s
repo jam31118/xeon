@@ -2,6 +2,6 @@
 array:  .word   3
         .text
 main:
-        and     $1, $2, $3
-		and     $2, $3, $4
-		and     $3, $4, $5
+        addu    $1, $2, $3
+		addu    $2, $3, $4
+		addu    $3, $4, $5

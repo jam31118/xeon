@@ -440,7 +440,7 @@ void EX_TAIL(struct XeonStruct *Xeon)
 		Xeon->EX.RegDst = Xeon->EX.bus.Register_Addr2;
 
 	//ALU가 수행할 작업 선택
-	switch (Xeon->EX.ALU_control_unit)		//0, 1, 2, 3중 하나
+	switch (Xeon->EX.ConSig.ALUOp_sig)		//0, 1, 2, 3중 하나
 	{
 	case 0:		//lw sw
 	//	Xeon->EX.ALU = "lw/sw";

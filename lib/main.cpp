@@ -100,7 +100,7 @@ int main(int argc, char* argv[]) {
 
 	// �������� ���� �Ҵ�.
 	unsigned int* reg = new unsigned int[32];
-	for (int i = 0; i < 32; ++i) {reg[i] = 0;}
+	for (int i = 0; i < 32; ++i) {reg[i] = 1;}
 
 	// Declaration of system variables (memory etc.)
 	unsigned long long memSizeByte = MEMSIZE_GB*size_GB;
@@ -150,12 +150,17 @@ int main(int argc, char* argv[]) {
     while (pc_max >= Xeon.IF.PC) {
 		//cout << "in while\n";
         //instruction(reg, mem, PC, mainloc);
+		cout << "[ LOG ] cycle == " << Xeon.cycle << "-------------"<< endl;
         /* Clock 0 ~ 0.5 */
-		
+
 		move2bus(&Xeon);
 
 		IF_HEAD(&Xeon);
+		cout << "[ LOG ] (after IF HEAD) instrcode == " << *(unsigned int*)(Xeon.mem + Xeon.IF.PC) << endl;
+		cout << "[ LOG ] (after IF HEAD) IF_ID.instr == " << Xeon.IF_ID.instr << endl; 
 		ID_HEAD(&Xeon);
+		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_1 == " << Xeon.ID.Bus.read_addr_1 << endl;
+		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_2 == " << Xeon.ID.Bus.read_addr_2 << endl;
 		EX_HEAD(&Xeon);
 		MEM_HEAD(&Xeon);
 		WB_HEAD(&Xeon);
@@ -163,9 +168,16 @@ int main(int argc, char* argv[]) {
 		/* Clock 0.5 ~ 1 */ 
 		IF_TAIL(&Xeon); 
 		ID_TAIL(&Xeon); 
+		cout << "[ LOG ] (after ID TAIL) reg_read_addr_1 == " << Xeon.ID.Register.read_addr_1 << endl; 
+		cout << "[ LOG ] (after ID TAIL) reg_read_addr_2 == " << Xeon.ID.Register.read_addr_2 << endl; 
+		cout << "[ LOG ] (after ID_TAIL) reg_read_data_1 == " << Xeon.ID_EX.Data.reg_read_data_1 << endl;
+		cout << "[ LOG ] (after ID_TAIL) reg_read_data_2 == " << Xeon.ID_EX.Data.reg_read_data_2 << endl;
 		EX_TAIL(&Xeon);
+		cout << "[ LOG ] (after EX_TAIL) ALU_result == " << Xeon.EX_MEM.ALU_result << endl;
 		MEM_TAIL(&Xeon);
 		WB_TAIL(&Xeon);
+
+		cout << "------------------------------" << endl;
 		
 		Xeon.cycle++;
 		if (d) { print_reg(&Xeon,&Xeon.IF.PC, reg); }
