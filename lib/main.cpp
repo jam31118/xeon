@@ -5,6 +5,8 @@
 #include "func.hpp"
 #include "xeon.hpp"
 
+#define MEMSIZE_GB 1
+
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -32,12 +34,15 @@ int main(int argc, char* argv[]) {
 		reg[i] = 0x00000000;
 	}
 
-	// �޸��� ���� �Ҵ�. ���� �Ҵ� ���� �� �޸���, array ���� ������ ���ϱ� ���� ������ ���̸� �Ҵ� �޾ҽ��ϴ�.
-	unsigned char* mem = new unsigned char[0x3fffffff];
-	// �ʱ�ȭ
-	for (int i = 0; i < 0x3fffffff; ++i) {
-		mem[i] = 0;
-	}
+	// Declaration of system variables (memory etc.)
+	unsigned long long memSizeByte = MEMSIZE_GB*size_GB;
+	unsigned long long memWordNum = memSizeByte / 4;
+	unsigned char *mem = (unsigned char*) calloc(memWordNum, sizeof(int));
+//	unsigned char* mem = new unsigned char[0x3fffffff];
+//	// �ʱ�ȭ
+//	for (int i = 0; i < 0x3fffffff; ++i) {
+//		mem[i] = 0;
+//	}
 	// �ʱ� PC�Դϴ�. text�� ó�� ������ ������ 0x00400000�� ����ŵ�ϴ�.
 	unsigned int pc = 0x00400000;
 	//unsigned int* PC = &pc;
@@ -115,12 +120,7 @@ int main(int argc, char* argv[]) {
     if (!d && !m) { print_reg(&(Xeon.IF.PC), reg); } 
 
 	delete[] reg;
-
-	/* TESTING START */
-//	XeonStruct Xeon;
-//	cout << "Xeon.clock == " << Xeon.clock << endl;
-	//IFstage(&Xeon);
-	/* TESTING END */
+	delete[] mem;
 
 	return 0;
 }

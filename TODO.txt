@@ -29,7 +29,7 @@
  - so that direct pasting to main function would work
 
 170428 TODO
-- later, should implement jal (require revision of xeon.hpp)
+- [implemented][not verified] later, should implement jal (require revision of xeon.hpp)
 - should implement shift (require revision of xeon.hpp
 - To Test
  - zero extension of ORI
