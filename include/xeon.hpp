@@ -7,7 +7,7 @@ const unsigned long long size_GB = size_MB*1024;
 
 typedef struct XeonStruct {
 	//int PC_bus;
-	int cycle = -1;
+	int cycle = 0;
 	unsigned char *mem;
 	//int *reg_mem; 
 
@@ -145,6 +145,7 @@ typedef struct XeonStruct {
     struct {
 		unsigned int ALU_result = 0;
 		unsigned int PC_target = 0;
+		unsigned int PC =0;
         struct {
 			struct {
                  unsigned int Brch = 0, MemRead = 0, MemWrite = 0;
@@ -163,6 +164,7 @@ typedef struct XeonStruct {
 		struct {
 			unsigned int ALU_result = 0;
 			unsigned int PC_target = 0;
+			unsigned int PC=0;
 		}BUS;
 		struct {
 			void(*move2src_MEM)(struct XeonStruct*);
@@ -173,6 +175,7 @@ typedef struct XeonStruct {
     struct {
 	unsigned int dest = 0;
 	unsigned int read_data = 0;
+	unsigned int PC = 0;
         struct {
              struct {
                 unsigned int RegWrite = 0, MemtoReg = 0;

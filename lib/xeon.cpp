@@ -50,6 +50,7 @@ int move2bus(struct XeonStruct *Xeon) {
 	/* ... */
 
 	// Moves in MEM stage starts
+	Xeon->MEM.BUS.PC = Xeon->EX_MEM.PC;
 	Xeon->MEM.BUS.ALU_result = Xeon->EX_MEM.ALU_result;
 	Xeon->MEM.BUS.PC_target = Xeon->EX_MEM.PC_target;
 
@@ -108,6 +109,7 @@ int move2dest(XeonStruct *Xeon) {
 		return 1;
 	}
 	/* Move date into ID_EX register */
+	Xeon->ID_EX.PC = Xeon->ID.Bus.ID_IF_out.PC;
 	Xeon->ID_EX.Data.dest_1 = Xeon->ID.Bus.dest_1;
 	Xeon->ID_EX.Data.dest_2 = Xeon->ID.Bus.dest_2;
 	/* Returns zero if there's no problem */
@@ -329,21 +331,19 @@ int putControlSignal(XeonStruct *Xeon, char mod) {
 */
 
 void setPC(struct XeonStruct *Xeon){
+	unsigned int tmp_1 = Xeon->IF.PC+4;
 	if(Xeon->IF.BUS.ConSig.PC_src==1)
-	{
-		if(Xeon->IF.BUS.ConSig.jump==1)
-			Xeon->IF.PC=Xeon->IF.Tmp.jump;
-		else
-			Xeon->IF.PC=Xeon->IF.Tmp.branch;
-	}
-	else
-		Xeon->IF.PC= Xeon->IF.PC + 4; //BUS ??
-	//printf("THIS IS setPC FUNCTION\n");
+		tmp_1 = Xeon->IF.Tmp.branch;
+	if(Xeon->IF.BUS.ConSig.jump==1)
+		tmp_1 = Xeon->IF.Tmp.jump;
+	if(Xeon->IF.BUS.ConSig.jr ==1)
+		tmp_1 = Xeon->IF.Tmp.jr;
+	Xeon->IF.PC = tmp_1;
 }
 // fetch instruction
 void fetch(struct XeonStruct *Xeon) {
 	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.BUS.PC];
-	Xeon->IF_ID.PC = Xeon->IF.PC;
+	Xeon->IF_ID.PC = Xeon->IF.BUS.PC;
 	//printf("TESTING fetch\n");
 }
 
@@ -410,6 +410,7 @@ void f_MEM(struct XeonStruct *Xeon) {
 }
 //WB BUS to WB
 void move2src_WB(struct XeonStruct *Xeon) {
+	Xeon->MEM_WB.PC= Xeon->EX_MEM.PC;
 	Xeon->WB.ALU_result = Xeon->WB.BUS.ALU_result;
 	Xeon->WB.dest = Xeon->WB.BUS.dest;
 	Xeon->WB.read_data = Xeon->WB.BUS.read_data;
