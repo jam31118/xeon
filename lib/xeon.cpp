@@ -23,7 +23,7 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 
 	// Initialize EX structure 
     Xeon->EX.Func.shift_left2_fp = &shift_left2;
-    Xeon->Ex.Func.R_type_ALU_func = &R_type_ALU_func;
+    Xeon->EX.Func.R_type_ALU_func = &R_type_ALU_func;
 
 	// Initialize MEM structure
 	Xeon->MEM.Func.move2src_MEM = &move2src_MEM;
