@@ -3,6 +3,19 @@
 
 using namespace std;
 
+int isOver(XeonStruct *Xeon) {
+	int lastInstrIsInWB = (Xeon->pc_max == Xeon->WB.BUS.PC);
+	if (lastInstrIsInWB) return 1;
+	/*
+	if (lastInstrIsInWB) { 
+		int emptyMEM = (Xeon->MEM.BUS.PC == 0);
+		int emptyEX = (Xeon->EX.bus.PC == 0);
+		int emptyID = (Xeon->ID.Bus.ID_IF_out.PC == 0);
+		if (emptyMEM && emptyEX && emptyID) { return 0; }
+	}*/
+	return 0;
+}
+
 int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem, unsigned int PC) {
 	Xeon->ID.Register.reg_file = reg;
 	Xeon->mem = mem;
@@ -345,6 +358,11 @@ void setPC(struct XeonStruct *Xeon){
 	if(Xeon->IF.BUS.ConSig.jr ==1)
 		tmp_1 = Xeon->IF.Tmp.jr;
 	Xeon->IF.PC = tmp_1;
+
+	/* If PC exceeds pc_max */
+	if (Xeon->IF.PC > Xeon->pc_max) {
+		Xeon->IF_ID.PC = 0;
+	}
 }
 // fetch instruction
 void fetch(struct XeonStruct *Xeon) {
@@ -475,6 +493,7 @@ void EX_TAIL(struct XeonStruct *Xeon)
 		Xeon->EX.RegDst = Xeon->EX.bus.Register_Addr2;
 
 	//ALU가 수행할 작업 선택
+	cout << "[ LOG ] Ex.ConSig.ALUOp_sig == " << Xeon->EX.ConSig.ALUOp_sig << endl;
 	switch (Xeon->EX.ConSig.ALUOp_sig)		//0, 1, 2, 3중 하나
 	{
 	case 0:		//lw sw
@@ -485,7 +504,9 @@ void EX_TAIL(struct XeonStruct *Xeon)
 		break;
 	case 2:		//R type
 		Xeon->EX.funct = (Xeon->EX.bus.sign_extended) & 63;
+		cout << "[ LOG ] (in EX_TAIL)(in R-type) EX.funct == 0x" << hex << Xeon->EX.funct << endl;
 		Xeon->EX.shamt = ((Xeon->EX.bus.sign_extended) & 1984) >> 6;
+		cout << "[ LOG ] (in EX_TAIL) ALUSrc1 == " << Xeon->EX.ALUSrc1 << "\tALUSrc2 == " << Xeon->EX.ALUSrc2 << endl;
 		Xeon->EX.ALU_result = Xeon->EX.Func.R_type_ALU_func(Xeon->EX.funct, Xeon->EX.ALUSrc1, Xeon->EX.ALUSrc2, Xeon->EX.shamt);
 		break;
 	case 3:

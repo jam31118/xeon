@@ -10,6 +10,7 @@ typedef struct XeonStruct {
 	int cycle = 0;
 	unsigned char *mem;
 	//int *reg_mem; 
+	unsigned int pc_max = 0;
 
 	struct {
 		unsigned int PC = 0;
@@ -231,6 +232,7 @@ struct ConSig {
     } R;
 	*/
 };
+int isOver(XeonStruct *Xeon);
 int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem, unsigned int PC);
 int move2bus(struct XeonStruct *Xeon);
 

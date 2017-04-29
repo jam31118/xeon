@@ -146,8 +146,9 @@ int main(int argc, char* argv[]) {
 	initalizeXeon(&Xeon,reg,mem,pc);
 	
 	unsigned int pc_max = Xeon.IF.PC + text_size - 4;
-    if (n >= 0) { pc_max = Xeon.IF.PC + (n-1)*4; }
-    while (pc_max >= Xeon.IF.PC) {
+	Xeon.pc_max = pc_max;
+    if (n >= 0) { Xeon.pc_max = Xeon.IF.PC + (n-1)*4; }
+    while (!isOver(&Xeon)) {
 		//cout << "in while\n";
         //instruction(reg, mem, PC, mainloc);
 		cout << "[ LOG ] cycle == " << Xeon.cycle << "-------------"<< endl;
