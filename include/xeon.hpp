@@ -26,7 +26,7 @@ typedef struct XeonStruct {
 		struct {
 			unsigned int PC = 0;
 			struct {
-				unsigned int PC_src = 0;
+				unsigned int branch = 0;
 				unsigned int jump = 0;
 				unsigned int jr = 0;
 			} ConSig;
