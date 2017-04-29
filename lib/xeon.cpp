@@ -278,65 +278,6 @@ void fetch(struct XeonStruct *Xeon) {
 	//printf("TESTING fetch\n");
 }
 
-//EX stage
-
-void EXstage(struct XeonStruct *Xeon)
-{
-	// 0 ~ 0.5 clock
-	
-	//ALU source 준비
-	Xeon->EX.bus.RegisterRs_data = Xeon->ID_EX.Data.reg_read_data_1;			//먼저 이렇게 넣어놓고 나중에 전방전달로 바꾸든가 한다.
-	Xeon->EX.bus.RegisterRt_data = Xeon->ID_EX.Data.reg_read_data_2;
-/*	
-	if (Xeon->EX_MEM.ConSig.WB.RegWrite && Xeon->EX_MEM.RegisterRd != 0 && (Xeon->EX_MEM.RegisterRd == Xeon->ID_EX.RegisterRs))
-		Xeon->EX.bus.RegisterRs_data = Xeon->MEM.BUS.ALU_result;
-	
-	if (Xeon->EX_MEM.ConSig.WB.RegWrite && Xeon->EX_MEM.RegisterRd != 0 && (Xeon->EX_MEM.RegisterRd == Xeon->ID_EX.RegisterRt))	
-		Xeon->EX.bus.RegisterRt_data = Xeon->MEM.BUS.ALU_result;
-	
-	if (Xeon->MEM_WB.RegWrite && Xeon->EX_MEM.RegisterRd != 0 && (Xeon->EX_MEM.RegisterRd == Xeon->ID_EX.RegisterRs) && (Xeon->EX_MEM.RegisterRd != Xeon->ID_EX.RegisterRs))
-		Xeon->EX.bus.RegisterRs_data = Xeon->WB.bus.fwd_WB;
-	if (Xeon->EX_MEM.RegWrite && Xeon->EX_MEM.RegisterRd != 0 && (Xeon->EX_MEM.RegisterRd == Xeon->ID_EX.RegisterRt) && (Xeon->EX_MEM.RegisterRd != Xeon->ID_EX.RegisterRt))
-		Xeon->EX.bus.RegisterRt_data = Xeon->WB.bus.fwd_WB;
-*/
-	Xeon->EX.ALUSrc1 = Xeon->EX.bus.RegisterRs_data;		//ALU에다 집어넣을 src1을 저장(얘는 확정)
-	Xeon->EX.ALUSrc2 = Xeon->EX.bus.RegisterRt_data;		//ALU에다 집어넣을 src2을 '일단은' 저장
-
-	Xeon->EX.ALUSrc_mux = Xeon->EX.ConSig.ALUSrc_sig;		//이게 1이 뜨면 sign extended된 값을 ALU source2로 이용하게 된다. ALUSrc2가 전방전달된 값을 받았을 경우 ALUSrc_sig는 1이 될 리가 없다.
-	if (Xeon->EX.ALUSrc_mux == 1)
-		Xeon->EX.ALUSrc2 = Xeon->EX.bus.sign_extended;
-
-	//Xeon->EX.shift_left2_fp = shift_left2;
-	int shifted_value = Xeon->EX.shift_left2(Xeon->EX.bus.sign_extended);
-
-
-	//0.5 ~ 1 clock
-	Xeon->EX.RegDst_mux = Xeon->EX.ConSig.RegDst_sig;
-	if (Xeon->EX.RegDst_mux == 1)
-		Xeon->EX.RegDst = Xeon->EX.bus.Register_write;
-	else
-		Xeon->EX.RegDst = Xeon->EX.bus.Register_Addr2;
-
-	//ALU가 수행할 작업 선택
-	switch (Xeon->EX.ALU_control_unit)		//0, 1, 2, 3중 하나
-	{
-	case 0:		//lw sw
-		Xeon->EX.ALU = "lw/sw";
-		break;
-	case 1:		//beq
-		Xeon->EX.ALU = "beq";
-		break;
-	case 2:		//R type
-		Xeon->EX.funct = (Xeon->EX.bus.sign_extended) & 63;
-		Xeon->EX.shamt = ((Xeon->EX.bus.sign_extended) & 1984) >> 6;
-		Xeon->EX.ALU_result = Xeon->EX.R_type_ALU_func(Xeon->EX.funct, Xeon->EX.ALUSrc1, Xeon->EX.ALUSrc2, Xeon->EX.shamt);
-		break;
-	case 3:
-		break;
-	}
-}
-
-
 //MEM BUS to MEM
 void move2src_MEM(struct XeonStruct *Xeon) {
 	Xeon->MEM.addr_src = Xeon->MEM.BUS.ALU_result;
@@ -385,6 +326,64 @@ void move2src_WB(struct XeonStruct *Xeon) {
 	Xeon->WB.dest = Xeon->WB.BUS.dest;
 	Xeon->WB.read_data = Xeon->WB.BUS.read_data;
 	//printf("TESTING move2scr_WB\n");
+}
+
+//EX stage - 0~0.5 clock
+void EX_HEAD(struct XeonStruct *Xeon)
+{
+	// 0 ~ 0.5 clock
+	
+	//ALU source 준비
+	Xeon->EX.bus.RegisterRs_data = Xeon->ID_EX.Data.reg_read_data_1;			//먼저 이렇게 넣어놓고 나중에 전방전달로 바꾸든가 한다.
+	Xeon->EX.bus.RegisterRt_data = Xeon->ID_EX.Data.reg_read_data_2;
+/*	
+	if (Xeon->EX_MEM.ConSig.WB.RegWrite && Xeon->EX_MEM.RegisterRd != 0 && (Xeon->EX_MEM.RegisterRd == Xeon->ID_EX.RegisterRs))
+		Xeon->EX.bus.RegisterRs_data = Xeon->MEM.BUS.ALU_result;
+	
+	if (Xeon->EX_MEM.ConSig.WB.RegWrite && Xeon->EX_MEM.RegisterRd != 0 && (Xeon->EX_MEM.RegisterRd == Xeon->ID_EX.RegisterRt))	
+		Xeon->EX.bus.RegisterRt_data = Xeon->MEM.BUS.ALU_result;
+	
+	if (Xeon->MEM_WB.RegWrite && Xeon->EX_MEM.RegisterRd != 0 && (Xeon->EX_MEM.RegisterRd == Xeon->ID_EX.RegisterRs) && (Xeon->EX_MEM.RegisterRd != Xeon->ID_EX.RegisterRs))
+		Xeon->EX.bus.RegisterRs_data = Xeon->WB.bus.fwd_WB;
+	if (Xeon->EX_MEM.RegWrite && Xeon->EX_MEM.RegisterRd != 0 && (Xeon->EX_MEM.RegisterRd == Xeon->ID_EX.RegisterRt) && (Xeon->EX_MEM.RegisterRd != Xeon->ID_EX.RegisterRt))
+		Xeon->EX.bus.RegisterRt_data = Xeon->WB.bus.fwd_WB;
+*/
+	Xeon->EX.ALUSrc1 = Xeon->EX.bus.RegisterRs_data;		//ALU에다 집어넣을 src1을 저장(얘는 확정)
+	Xeon->EX.ALUSrc2 = Xeon->EX.bus.RegisterRt_data;		//ALU에다 집어넣을 src2을 '일단은' 저장
+
+	Xeon->EX.ALUSrc_mux = Xeon->EX.ConSig.ALUSrc_sig;		//이게 1이 뜨면 sign extended된 값을 ALU source2로 이용하게 된다. ALUSrc2가 전방전달된 값을 받았을 경우 ALUSrc_sig는 1이 될 리가 없다.
+	if (Xeon->EX.ALUSrc_mux == 1)
+		Xeon->EX.ALUSrc2 = Xeon->EX.bus.sign_extended;
+
+	Xeon->EX.shift_left2_fp = shift_left2;
+	Xeon->EX.shifted_value = Xeon->EX.shift_left2_fp(Xeon->EX.bus.sign_extended);
+}
+//EX stage : 0.5~1 clock
+void EX_TAIL(struct XeonStruct *Xeon)
+{
+	Xeon->EX.RegDst_mux = Xeon->EX.ConSig.RegDst_sig;
+	if (Xeon->EX.RegDst_mux == 1)
+		Xeon->EX.RegDst = Xeon->EX.bus.Register_write;
+	else
+		Xeon->EX.RegDst = Xeon->EX.bus.Register_Addr2;
+
+	//ALU가 수행할 작업 선택
+	switch (Xeon->EX.ALU_control_unit)		//0, 1, 2, 3중 하나
+	{
+	case 0:		//lw sw
+	//	Xeon->EX.ALU = "lw/sw";
+		break;
+	case 1:		//beq
+	//	Xeon->EX.ALU = "beq";
+		break;
+	case 2:		//R type
+		Xeon->EX.funct = (Xeon->EX.bus.sign_extended) & 63;
+		Xeon->EX.shamt = ((Xeon->EX.bus.sign_extended) & 1984) >> 6;
+		Xeon->EX.ALU_result = Xeon->EX.R_type_ALU_func(Xeon->EX.funct, Xeon->EX.ALUSrc1, Xeon->EX.ALUSrc2, Xeon->EX.shamt);
+		break;
+	case 3:
+		break;
+	}
 }
 
 // EX stage functions
@@ -502,10 +501,6 @@ void IF_HEAD(struct XeonStruct *Xeon){
 void ID_HEAD(struct XeonStruct *Xeon) {
 	//printf("THIS IS ID_HEAD STAGE\n");
 }
-void EX_HEAD(struct XeonStruct *Xeon) {
-	Xeon->MEM.Func.move2src_MEM(Xeon);
-	//printf("THIS IS EX_HEAD STAGE\n");
-}
 void MEM_HEAD(struct XeonStruct *Xeon) {
 	//printf("THIS IS MEM_HEAD STAGE\n");
 }
@@ -520,9 +515,6 @@ void IF_TAIL(struct XeonStruct *Xeon) {
 }
 void ID_TAIL(struct XeonStruct *Xeon) {
 	//printf("THIS IS ID_TAIL STAGE\n");
-}
-void EX_TAIL(struct XeonStruct * Xeon) {
-	//printf("THIS IS EX_TAIL STAGE\n");
 }
 void MEM_TAIL(struct XeonStruct *Xeon) {
 	Xeon->MEM.Func.f_MEM(Xeon);

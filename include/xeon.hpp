@@ -111,11 +111,11 @@ typedef struct XeonStruct {
 		int RegDst_mux = 0;
 		unsigned int RegDst = 0;
 		int ALU_control_unit = 0;
-        std::string ALU;
+        //std::string ALU;
 		unsigned int funct;
 		unsigned int shamt;
 		unsigned int ALU_result = 0;
-		
+		unsigned int shifted_value;
 		struct
 		{
 			unsigned int RegisterRs_data = 0;
@@ -257,5 +257,14 @@ void EX_TAIL(struct XeonStruct * Xeon);
 void MEM_TAIL(struct XeonStruct *Xeon);
 void WB_TAIL(struct XeonStruct *Xeon);
 
-
+unsigned int shift_left2(unsigned int val);
+unsigned int R_type_ALU_func(unsigned int funct_code, unsigned int alu_src1, unsigned int alu_src2, unsigned int shamt);
+unsigned int SLL(unsigned int alu_src2, unsigned int shamt);
+unsigned int SRL(unsigned int alu_src2, unsigned int shamt);
+unsigned int ADDU(unsigned int alu_src1, unsigned int alu_src2);
+unsigned int SUBU(unsigned int alu_src1, unsigned int alu_src2);
+unsigned int AND(unsigned int alu_src1, unsigned int alu_src2);
+unsigned int OR(unsigned int alu_src1, unsigned int alu_src2);
+unsigned int NOR(unsigned int alu_src1, unsigned int alu_src2);
+unsigned int SLTU(unsigned int alu_src1, unsigned int alu_src2);
 #endif
