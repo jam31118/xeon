@@ -616,85 +616,107 @@ unsigned int shift_left2(unsigned int val)
 
 unsigned int det_ALU_ctrl_input(unsigned int aluop_sig, unsigned int six_bit_field)
 {
+    unsigned int ret_val = 0;
 	switch (aluop_sig)
 	{
 	case 0:		// lw, sw, ADDIU
-		return 2;		// 0010
+		ret_val = 2;		// 0010
 		break;
 	case 1:		// beq, bne
-		return 6;
+		ret_val = 6;
 		break;		// 0110
 	case 2:		// R type
 		switch (six_bit_field)
 		{
 		case 33:	//ADDU
-			return 2;
+			ret_val = 2;
 			break;
 		case 35:	//SUBU
-			return 6;
+			ret_val = 6;
 			break;
 		case 36:	//AND
-			return 0;
+			ret_val = 0;
 			break;
 		case 37:	//OR
-			return 1;
+			ret_val = 1;
 			break;
 		case 39:	//NOR
-			return 14;
+			ret_val = 14;
 			break;
 		case 42:	//SLTU
-			return 7;
+			ret_val = 7;
 			break;
 		case 0:		//SLL
-			return 12;
+			ret_val = 12;
 			break;
 		case 2:		//SRL
-			return 3;
+			ret_val = 3;
+            break;
 		}
 		break;
 	case 3:		//I type
 		switch (six_bit_field)
 		{
 		case 15:	//LUI
-			return 12;
+			ret_val = 12;
 			break;
 		case 13:	//ORI
-			return 1;
+			ret_val = 1;
 			break;
 		case 12:	//ANDI
-			return 0;
+			ret_val = 0;
 			break;
 		case 11:	//SLTIU
-			return 7;
+			ret_val = 7;
+            break;
 		}
 		break;
+    default:
+        printf("something wrong in your ALUOp \n");
+        ret_val = -1;
+        break;
 	}
+    return ret_val;
 }
 
 unsigned int ALU_execute(unsigned int alu_src1, unsigned int alu_src2, unsigned int alu_control_input)
 {
+    unsigned int ret_val = 0;
 	switch (alu_control_input)
 	{
 	case 0:
-		return alu_src1 & alu_src2;
+		ret_val = alu_src1 & alu_src2;
+        break;
 	case 1:
-		return alu_src1 | alu_src2;
+		ret_val = alu_src1 | alu_src2;
+        break;
 	case 2:
-		return alu_src1 + alu_src2;
+		ret_val = alu_src1 + alu_src2;
+        break;
 	case 3:
-		return alu_src2 >> alu_src1;		//shamt를 alu_src1으로 대체할 방법 구상 필요
+		ret_val = alu_src2 >> alu_src1;		//shamt를 alu_src1으로 대체할 방법 구상 필요
+        break;
 	case 6:
-		return alu_src1 - alu_src2;
+		ret_val = alu_src1 - alu_src2;
+        break;
 	case 7:
 		if (alu_src1 < alu_src2)
-			return 1;
+			ret_val = 1;
 		else
-			return 0;
+			ret_val = 0;
+        break;
 	case 12:
-		return alu_src2 << alu_src1;		//shamt를 alu_src1으로 대체할 방법 구상 필요
+		ret_val = alu_src2 << alu_src1;		//shamt를 alu_src1으로 대체할 방법 구상 필요
+        break;
 	case 14:
-		return ~(alu_src1 | alu_src2);
+		ret_val = ~(alu_src1 | alu_src2);
+        break;
+    default:
+        printf("something wrong on your ALU \n");
+        ret_val = 12345;
+        break;
 	}
+    return ret_val;
 }
 
 // WB function
