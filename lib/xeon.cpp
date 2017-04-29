@@ -22,6 +22,8 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
     Xeon->ID.Func.generateControlSignal = &generateControlSignal;
 
 	// Initialize EX structure 
+    Xeon->EX.Func.shift_left2_fp = &shift_left2;
+    Xeon->EX.Func.R_type_ALU_func = &R_type_ALU_func;
 
 	// Initialize MEM structure
 	Xeon->MEM.Func.move2src_MEM = &move2src_MEM;
@@ -50,6 +52,7 @@ int move2bus(struct XeonStruct *Xeon) {
 	/* ... */
 
 	// Moves in MEM stage starts
+	Xeon->MEM.BUS.PC = Xeon->EX_MEM.PC;
 	Xeon->MEM.BUS.ALU_result = Xeon->EX_MEM.ALU_result;
 	Xeon->MEM.BUS.PC_target = Xeon->EX_MEM.PC_target;
 
@@ -108,6 +111,7 @@ int move2dest(XeonStruct *Xeon) {
 		return 1;
 	}
 	/* Move date into ID_EX register */
+	Xeon->ID_EX.PC = Xeon->ID.Bus.ID_IF_out.PC;
 	Xeon->ID_EX.Data.dest_1 = Xeon->ID.Bus.dest_1;
 	Xeon->ID_EX.Data.dest_2 = Xeon->ID.Bus.dest_2;
 	/* Returns zero if there's no problem */
@@ -329,21 +333,19 @@ int putControlSignal(XeonStruct *Xeon, char mod) {
 */
 
 void setPC(struct XeonStruct *Xeon){
+	unsigned int tmp_1 = Xeon->IF.PC+4;
 	if(Xeon->IF.BUS.ConSig.PC_src==1)
-	{
-		if(Xeon->IF.BUS.ConSig.jump==1)
-			Xeon->IF.PC=Xeon->IF.Tmp.jump;
-		else
-			Xeon->IF.PC=Xeon->IF.Tmp.branch;
-	}
-	else
-		Xeon->IF.PC= Xeon->IF.PC + 4; //BUS ??
-	//printf("THIS IS setPC FUNCTION\n");
+		tmp_1 = Xeon->IF.Tmp.branch;
+	if(Xeon->IF.BUS.ConSig.jump==1)
+		tmp_1 = Xeon->IF.Tmp.jump;
+	if(Xeon->IF.BUS.ConSig.jr ==1)
+		tmp_1 = Xeon->IF.Tmp.jr;
+	Xeon->IF.PC = tmp_1;
 }
 // fetch instruction
 void fetch(struct XeonStruct *Xeon) {
 	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.BUS.PC];
-	Xeon->IF_ID.PC = Xeon->IF.PC;
+	Xeon->IF_ID.PC = Xeon->IF.BUS.PC;
 	//printf("TESTING fetch\n");
 }
 
@@ -410,6 +412,7 @@ void f_MEM(struct XeonStruct *Xeon) {
 }
 //WB BUS to WB
 void move2src_WB(struct XeonStruct *Xeon) {
+	Xeon->MEM_WB.PC= Xeon->EX_MEM.PC;
 	Xeon->WB.ALU_result = Xeon->WB.BUS.ALU_result;
 	Xeon->WB.dest = Xeon->WB.BUS.dest;
 	Xeon->WB.read_data = Xeon->WB.BUS.read_data;
@@ -419,6 +422,9 @@ void conSig(struct XeonStruct *Xeon){
 	Xeon->MEM_WB.ConSig.WB.RegWrite = Xeon->EX_MEM.ConSig.WB.RegWrite;
 	Xeon->MEM_WB.ConSig.WB.MemtoReg = Xeon->EX_MEM.ConSig.WB.MemtoReg;
 }
+
+//EX stage initialize
+//Prepare 
 
 //EX stage - 0~0.5 clock
 void EX_HEAD(struct XeonStruct *Xeon)
@@ -447,8 +453,7 @@ void EX_HEAD(struct XeonStruct *Xeon)
 	if (Xeon->EX.ALUSrc_mux == 1)
 		Xeon->EX.ALUSrc2 = Xeon->EX.bus.sign_extended;
 
-	Xeon->EX.shift_left2_fp = shift_left2;
-	Xeon->EX.shifted_value = Xeon->EX.shift_left2_fp(Xeon->EX.bus.sign_extended);
+	Xeon->EX.shifted_value = Xeon->EX.Func.shift_left2_fp(Xeon->EX.bus.sign_extended);
 }
 //EX stage : 0.5~1 clock
 void EX_TAIL(struct XeonStruct *Xeon)
@@ -471,7 +476,7 @@ void EX_TAIL(struct XeonStruct *Xeon)
 	case 2:		//R type
 		Xeon->EX.funct = (Xeon->EX.bus.sign_extended) & 63;
 		Xeon->EX.shamt = ((Xeon->EX.bus.sign_extended) & 1984) >> 6;
-		Xeon->EX.ALU_result = Xeon->EX.R_type_ALU_func(Xeon->EX.funct, Xeon->EX.ALUSrc1, Xeon->EX.ALUSrc2, Xeon->EX.shamt);
+		Xeon->EX.ALU_result = Xeon->EX.Func.R_type_ALU_func(Xeon->EX.funct, Xeon->EX.ALUSrc1, Xeon->EX.ALUSrc2, Xeon->EX.shamt);
 		break;
 	case 3:
 		break;

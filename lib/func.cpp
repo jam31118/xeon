@@ -1,55 +1,55 @@
 #include "func.hpp"
 
-/* ÁÖ¼®À» ´Þ±â Àü¿¡
-È¥ÀÚ¼­, ±ÞÇÏ°Ô Â§, ±×¸®°í ¸¹ÀÌ ¼öÁ¤µÈ ÄÚµå¶ó ¾û¸ÁÀÎ ºÎºÐÀÌ ¸¹½À´Ï´Ù.
-(°¡·É, signed¿Í unsignedÀÇ ±¸ºÐÀÌ ÀúÁ¶Â÷µµ ¸ðÈ£ÇÏ¿© º¯È¯ÇÏ´Â ÇÔ¼ö°¡ ±²ÀåÈ÷ ¸¹½À´Ï´Ù)
-¶Ç, argvÀÇ Ã³¸®¹æ¹ýÀ» Àß ¸ô¶ó mainÇÔ¼ö°¡ ´Ù¼Ò ÁöÀúºÐÇÏ°Ô µÇ¾ú½À´Ï´Ù.
-¶Ç, ´ëºÎºÐÀÇ ÀÚ·á±¸Á¶¸¦ stringÀ» »ç¿ëÇÏ¿©, ±×¸® È¿À²ÀûÀ¸·Î ÀÛµ¿ÇÏ´Â ¿¡¹Ä·¹ÀÌÅÍ´Â ¾Æ´Õ´Ï´Ù.
-Á¦ ÄÚµå¸¦ ÀÐ¾îÁÖ½Ç ºÐÀÌ °è½Å´Ù¸é, ÀÌ ºÎºÐ À¯ÀÇÇÏ¿© ÀÐ¾îÁÖ½Ã¸é °¨»çÇÏ°Ú½À´Ï´Ù.
+/* ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½Þ±ï¿½ ï¿½ï¿½ï¿½ï¿½
+È¥ï¿½Ú¼ï¿½, ï¿½ï¿½ï¿½Ï°ï¿½ Â§, ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
+(ï¿½ï¿½ï¿½ï¿½, signedï¿½ï¿½ unsignedï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Ï¿ï¿½ ï¿½ï¿½È¯ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½)
+ï¿½ï¿½, argvï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ mainï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½Ù¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
+ï¿½ï¿½, ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ú·á±¸ï¿½ï¿½ï¿½ï¿½ stringï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½, ï¿½×¸ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ûµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½ï¿½Í´ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+ï¿½ï¿½ ï¿½Úµå¸¦ ï¿½Ð¾ï¿½ï¿½Ö½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å´Ù¸ï¿½, ï¿½ï¿½ ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ð¾ï¿½ï¿½Ö½Ã¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Ú½ï¿½ï¿½Ï´ï¿½.
 */
 
-int getopt(int argc, char *argv[], int *d, int *m, int *n, unsigned int *addr_begin, unsigned int *addr_end, string& filename) {
-    int argvi = 1;
-	while (true) {
-		istringstream ss(argv[argvi]);
-		string j;
-		ss >> j;
-		if (j[0] == '-') {
-			if (j[1] == 'm') {
-				*m = 1;
-				istringstream ss(argv[argvi + 1]);
-				ss >> j;
-				int sep;
-				sep = j.find(":");
-				*addr_begin = hex2int(j.substr(0, sep));
-				*addr_end = hex2int(j.substr(sep + 1, j.length() - sep - 1));
-				argvi += 2;
-			}
-			else if (j[1] == 'd') {
-				*d = 1;
-				argvi += 1;
-			}
-			else if (j[1] == 'n') {
-				istringstream ss(argv[argvi + 1]);
-				ss >> j;
-				*n = atoi(j.c_str());
-				argvi += 2;
-			}
-			else {
-				cout << "Something wrong in argv" << endl;
-                return 1;
-			}
-		}
-		else {
-			istringstream ss(argv[argvi]);
-			ss >> filename;
-			break;
-		}
-	}
-    return 0;
-}
+// int getopt(int argc, char *argv[], int *d, int *m, int *p, unsigned int *addr_begin, unsigned int *addr_end, string& filename) {
+//     int argvi = 1;
+// 	while (true) {
+// 		istringstream ss(argv[argvi]);
+// 		string j;
+// 		ss >> j;
+// 		if (j[0] == '-') {
+// 			if (j[1] == 'm') {
+// 				*m = 1;
+// 				istringstream ss(argv[argvi + 1]);
+// 				ss >> j;
+// 				int sep;
+// 				sep = j.find(":");
+// 				*addr_begin = hex2int(j.substr(0, sep));
+// 				*addr_end = hex2int(j.substr(sep + 1, j.length() - sep - 1));
+// 				argvi += 2;
+// 			}
+// 			else if (j[1] == 'd') {
+// 				*d = 1;
+// 				argvi += 1;
+// 			}
+// 			else if (j[1] == 'n') {
+// 				istringstream ss(argv[argvi + 1]);
+// 				ss >> j;
+// 				*n = atoi(j.c_str());
+// 				argvi += 2;
+// 			}
+// 			else {
+// 				cout << "Something wrong in argv" << endl;
+//                 return 1;
+// 			}
+// 		}
+// 		else {
+// 			istringstream ss(argv[argvi]);
+// 			ss >> filename;
+// 			break;
+// 		}
+// 	}
+//     return 0;
+// }
 
-// ¸í·É¾î°¡ ¸Â´ÂÁö Ã£±â. ¸ÂÀ¸¸é true.
+// ï¿½ï¿½ï¿½É¾î°¡ ï¿½Â´ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ true.
 bool isinst(string input) {
 	string instruction[21] = { "addiu", "addu", "and", "andi" , "beq" , "bne" , "j" , "jal" , "jr" , "lui" , "lw" , "la" , "nor" , "or" , "ori" , "sltiu" , "sltu" , "sll" , "srl" , "sw" , "subu" };
 	for (int i = 0; i < 21; ++i) {
@@ -61,7 +61,7 @@ bool isinst(string input) {
 }
 
 
-// unsigned int¸¦ ¸Þ¸ð¸®¿¡ ÀÔ·ÂÇØÁÖ´Â ÇÔ¼ö. ÀúÀåÀ» char·Î ÇÏ´Ùº¸´Ï, ºÒ°¡ÇÇÇÏ°Ô ÇÔ¼ö¸¦ »õ·Î ¸¸µé°Ô µÇ¾ú½À´Ï´Ù.
+// unsigned intï¿½ï¿½ ï¿½Þ¸ð¸®¿ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Ô¼ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ charï¿½ï¿½ ï¿½Ï´Ùºï¿½ï¿½ï¿½, ï¿½Ò°ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
 void wmem(unsigned char* mem, unsigned int n, unsigned int a) {
 	mem[n] = a / 0x1000000;
 	a %= 0x1000000;
@@ -73,7 +73,7 @@ void wmem(unsigned char* mem, unsigned int n, unsigned int a) {
 }
 
 
-// unsigned int¸¦ ¸Þ¸ð¸®¿¡¼­ ÀÐ¾îÁÖ´Â ÇÔ¼ö. À§¿Í ºñ½ÁÇÕ´Ï´Ù.
+// unsigned intï¿½ï¿½ ï¿½Þ¸ð¸®¿ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½Ö´ï¿½ ï¿½Ô¼ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 unsigned int rmem(unsigned char* mem, unsigned int n) {
 	unsigned int a = 0;
 	a += 0x1000000 * mem[n];
@@ -85,7 +85,7 @@ unsigned int rmem(unsigned char* mem, unsigned int n) {
 }
 
 
-// 16Áø¹ýÀ» 10Áø¹ýÀ¸·Î º¯È¯. stringstreamÀ» ÀÌ¿ëÇÏ¸é ¹ø°Å·Ó°Ô ÇÔ¼ö¸¦ ¸¸µéÁö ¾Ê¾Æµµ µË´Ï´Ù.
+// 16ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 10ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯. stringstreamï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½Å·Ó°ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Æµï¿½ ï¿½Ë´Ï´ï¿½.
 unsigned int hex2int(string input) {
 	stringstream ss;
 	unsigned int temp;
@@ -96,7 +96,7 @@ unsigned int hex2int(string input) {
 }
 
 
-// Á¤¼ö¸¦ unsignedÇü lenÀÚ¸®ÀÇ ÀÌÁø¼ö·Î º¯È¯.
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ unsignedï¿½ï¿½ lenï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯.
 string int2bi(unsigned int num, int len) {
 	string rstring;
 	for (int i = 0; i < len; ++i) {
@@ -106,7 +106,7 @@ string int2bi(unsigned int num, int len) {
 	return rstring;
 }
 
-// Á¤¼ö¸¦ signedÇü lenÀÚ¸®ÀÇ ÀÌÁø¼ö·Î º¯È¯.
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ signedï¿½ï¿½ lenï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯.
 string int2sbi(int num, int len) {
 	string rstring;
 	if (num < 0) {
@@ -129,7 +129,7 @@ string int2sbi(int num, int len) {
 }
 
 
-// ÀÌÁø¼ö¸¦ unsignedÇü Á¤¼ö·Î º¯È¯
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ unsignedï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
 unsigned int bi2int(string input) {
 	unsigned int a = 0;
 	int len = input.length();
@@ -143,7 +143,7 @@ unsigned int bi2int(string input) {
 }
 
 
-// ÀÌÁø¼ö¸¦ signedÇü Á¤¼ö·Î º¯È¯
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ signedï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
 int sbi2int(string input) {
 	int a = 0;
 	int len = input.length();
@@ -160,7 +160,7 @@ int sbi2int(string input) {
 }
 
 
-// ÀÌ¸§À» ³ÖÀ¸¸é ÇØ´ç ÀÌ¸§ÀÇ ÆÄÀÏÀ» ÀÐ¾îÁÖ´Â ÇÔ¼ö. ÀúÀå ÇüÅÂ´Â, 'µ¢¾î¸®'º°·Î ÇÏ³ªÀÇ string¿¡ ÀúÀå.
+// ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½Ö´ï¿½ ï¿½Ô¼ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½, 'ï¿½ï¿½ï¿½î¸®'ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ stringï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 void readfile(string filename, string* input) {
 	ifstream file(filename);
 	int i = 0;
@@ -183,8 +183,8 @@ void readfile(string filename, string* input) {
 }
 
 
-// ¶óº§(:°¡ µé¾îÀÖ´Â string)¸¸ »Ì¾ÆÁÖ´Â ÇÔ¼ö. ¶óº§¿¡´Â :µµ »èÁ¦ÇÔ.
-// ¼ø¼­ÀÇ ÆíÀÇ»ó 16Áø¹ý Ç¥Çö¶ÇÇÑ ¸ðµÎ 10Áø¹ýÀ¸·Î ¹Ù²Ù¾îÁÖ¾ú½À´Ï´Ù.
+// ï¿½ï¿½ï¿½ï¿½(:ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ string)ï¿½ï¿½ ï¿½Ì¾ï¿½ï¿½Ö´ï¿½ ï¿½Ô¼ï¿½. ï¿½óº§¿ï¿½ï¿½ï¿½ :ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç»ï¿½ 16ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 10ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù¾ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
 void findlabel(string* input, string* label) {
 	int index = 0;
 	int findv;
@@ -202,7 +202,7 @@ void findlabel(string* input, string* label) {
 		}
 	}
 
-	// 16Áø¹ýÀ» 10Áø¹ýÀ¸·Î. ¾Æ±î À§¿¡¼­ ¸¸µç ÇÔ¼ö ÀÌ¿ë.
+	// 16ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 10ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½Æ±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ ï¿½Ì¿ï¿½.
 	for (int i = 0; i < 1000; ++i) {
 		if (input[i].find("0x") != string::npos) {
 			unsigned int a = hex2int(input[i]);
@@ -213,8 +213,8 @@ void findlabel(string* input, string* label) {
 
 
 
-// data¿µ¿ªÀ» ½ÇÁ¦ ¸Þ¸ð¸®¿¡ ÀúÀå.
-// ±¸Ã¼ÀûÀÎ ¹æ¹ýÀº, .text°¡ ³ª¿À±â ÀÌÀü±îÁö ¶óº§ÀÌ ¾Æ´Ñ°ÍµéÀº ´Ù ÀúÀåÇß´ø °Í °°½À´Ï´Ù.
+// dataï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ð¸®¿ï¿½ ï¿½ï¿½ï¿½ï¿½.
+// ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, .textï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ñ°Íµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
 void savedata(string* input, unsigned char* mem) {
 	int i = 0;
 	int j = 0x10000000;
@@ -230,8 +230,8 @@ void savedata(string* input, unsigned char* mem) {
 }
 
 
-// dataºÎºÐÀÇ labelÀ» ¸ðµÎ ÀúÀåµÈ ¸Þ¸ð¸® ÁÖ¼Ò·Î ¹Ù²Ù¾îÁÜ. (var, array °°Àº °Íµé)
-// return°ªÀº »çÀÌÁî Å©±âÀÎµ¥, ¹ÙÀÌ³Ê¸® ÆÄÀÏ¿¡ ÀÔ·ÂÇØ¾ß ÇÏ±â ¶§¹®¿¡ returnÇÏ¿´½À´Ï´Ù.
+// dataï¿½Îºï¿½ï¿½ï¿½ labelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½Ö¼Ò·ï¿½ ï¿½Ù²Ù¾ï¿½ï¿½ï¿½. (var, array ï¿½ï¿½ï¿½ï¿½ ï¿½Íµï¿½)
+// returnï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ï¿½Îµï¿½, ï¿½ï¿½ï¿½Ì³Ê¸ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ô·ï¿½ï¿½Ø¾ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ returnï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
 int lab2loc(string* input, string* label) {
 	int j = 0;
 	int add = 0;
@@ -243,12 +243,12 @@ int lab2loc(string* input, string* label) {
 		}
 
 		int index = 0;
-		// ¶óº§¿¡ ÇØ´çÇÏ´Âindex¹øÈ£¸¦ Ã£±â.
+		// ï¿½óº§¿ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½indexï¿½ï¿½È£ï¿½ï¿½ Ã£ï¿½ï¿½.
 		while ((label[j] + ":") != input[index]) {
 			++index;
 		}
 
-		// ´ÙÀ½²¨ add±îÁö.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ addï¿½ï¿½ï¿½ï¿½.
 		while (label[j + 1] + ":" != input[index] && input[index] != ".text") {
 			if (input[index].find(".") != string::npos) {
 				add += 4;
@@ -262,13 +262,13 @@ int lab2loc(string* input, string* label) {
 }
 
 
-// laÇÔ¼öÀÇ °æ¿ì, 1ÁÙ È¤Àº 2ÁÙÀÌ µÇ¾î¾ßÇÏ±â ¶§¹®¿¡ ¿ì¼±ÀûÀ¸·Î Ã³¸®ÇØ¾ß ÇÕ´Ï´Ù. µû¶ó¼­ lui¿Í ori·Î ¹Ù²Ù¾îÁÝ´Ï´Ù.
+// laï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, 1ï¿½ï¿½ È¤ï¿½ï¿½ 2ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Õ´Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ luiï¿½ï¿½ oriï¿½ï¿½ ï¿½Ù²Ù¾ï¿½ï¿½Ý´Ï´ï¿½.
 void la2lui(string* input) {
 	int index = 0;
 	int x;
 	int y;
 	while (true) {
-		// la¿¡ ÇØ´çÇÏ´Âindex ¹øÈ£ Ã£±â.
+		// laï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½index ï¿½ï¿½È£ Ã£ï¿½ï¿½.
 		while (input[index] != "la") {
 			++index;
 			if (index == 1000) {
@@ -279,8 +279,8 @@ void la2lui(string* input) {
 			break;
 		}
 		else {
-			x = atoi(input[index + 2].c_str()) / 65536; // ¸ò(À­ºÎºÐ)
-			y = atoi(input[index + 2].c_str()) % 65536; // ³ª¸ÓÁö(¾Æ·§ºÎºÐ)
+			x = atoi(input[index + 2].c_str()) / 65536; // ï¿½ï¿½(ï¿½ï¿½ï¿½Îºï¿½)
+			y = atoi(input[index + 2].c_str()) % 65536; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½Æ·ï¿½ï¿½Îºï¿½)
 			if (y == 0) {
 				input[index] = "lui";
 				input[index + 2] = to_string(x);
@@ -303,8 +303,8 @@ void la2lui(string* input) {
 }
 
 
-// textºÎºÐ labelÀ» ¸ðµÎ »ó´ëÀû À§Ä¡·Î ¹Ù²Ù¾îÁÜ. (beq ÇÔ¼ö µî¿¡¼­ »ç¿ë)
-// j, jalÀÇ °æ¿ì Ã³À½ºÎÅÍ ¼¼¾ß ÇÑ´Ù´Â °ÍÀ» ±ôºýÇØ¼­, ÄÚµå°¡ Á¶±Ý ÁöÀúºÐÇÕ´Ï´Ù.
+// textï¿½Îºï¿½ labelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ù²Ù¾ï¿½ï¿½ï¿½. (beq ï¿½Ô¼ï¿½ ï¿½î¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+// j, jalï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½, ï¿½Úµå°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 void lab2pos(string* input, string* label) {
 	int j = 0;
 	while (label[j] != "") {
@@ -315,14 +315,14 @@ void lab2pos(string* input, string* label) {
 		int index1 = 0;
 		//int pos = 0;
 
-		// ¶óº§¿¡ ÇØ´çÇÏ´Â index1 Ã£±â.
+		// ï¿½óº§¿ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ index1 Ã£ï¿½ï¿½.
 		while ((label[j] + ":") != input[index1]) {
 			++index1;
 		}
 
 		while (true) {
 			int index2 = 0;
-			// ¶óº§À» »ç¿ëÇÑ ºÎºÐ index2 Ã£±â.
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ index2 Ã£ï¿½ï¿½.
 			while (label[j] != input[index2]) {
 				++index2;
 				if (index2 == 1000) {
@@ -332,22 +332,22 @@ void lab2pos(string* input, string* label) {
 			if (index2 == 1000) {
 				break;
 			}
-			// ¿©±â¼­ index¸¦ °Å½½·¯ ¿Ã¶ó°¡ Ã³À½ ¸¸³ª´Â ÇÔ¼ö°¡ beq·ùÀÎÁö j·ùÀÎÁö¸¦ ÆÇ´ÜÇÏÀÚ.
+			// ï¿½ï¿½ï¿½â¼­ indexï¿½ï¿½ ï¿½Å½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ beqï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ï¿½ï¿½ï¿½ï¿½.
 			int index3 = index2;
 			while (!isinst(input[index3])) {
 				--index3;
 			}
-			// beq·ùÀÏ °æ¿ì
+			// beqï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			if (input[index3] == "beq" || input[index3] == "bne") {
 				int pos = 0;
-				if (index1 < index2) { // ¶óº§ÀÌ ¾ÕºÎºÐÀÏ °æ¿ì (À½¼ö)
+				if (index1 < index2) { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÕºÎºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½)
 					for (int i = index1; i < index2; ++i) {
 						if (isinst(input[i])) {
 							pos -= 1;
 						}
 					}
 				}
-				else { // ¶óº§ÀÌ µÞºÎºÐÀÏ °æ¿ì (¾ç¼ö)
+				else { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÞºÎºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½)
 					for (int i = index2; i < index1; ++i) {
 						if (isinst(input[i])) {
 							pos += 1;
@@ -356,7 +356,7 @@ void lab2pos(string* input, string* label) {
 				}
 				input[index2] = to_string(pos);
 			}
-			// j·ùÀÏ °æ¿ì
+			// jï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			else if (input[index3] == "j" || input[index3]=="jal") {
 				int count = 0;
 				int i = index1;
@@ -370,7 +370,7 @@ void lab2pos(string* input, string* label) {
 				input[index2] = to_string(count);
 			}
 			else {
-				cout << "Something wrong in lab2pos" << endl; // ¿À·ù ¸Þ¼¼Áö Ãâ·Â
+				cout << "Something wrong in lab2pos" << endl; // ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			}
 		}
 		++j;
@@ -378,7 +378,7 @@ void lab2pos(string* input, string* label) {
 }
 
 
-// mainÇÔ¼öÀÇ ¸Ç ³¡ÀÇ instructionÀº ¿¹¿ÜÃ³¸®¸¦ ÇØÁÖ¾î¾ß ÇÏ±â ¶§¹®¿¡, µÚ´Ê°Ô Ãß°¡ÇÑ ÇÔ¼ö. mainÇÔ¼öÀÇ ¸Ç ¸¶Áö¸· instructionÀÌ ¸î¹øÂ°ÀÎÁö¸¦ int·Î ¹ÝÈ¯.
+// mainï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ instructionï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ú´Ê°ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½. mainï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ instructionï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Â°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ intï¿½ï¿½ ï¿½ï¿½È¯.
 int formain(string* input) {
 	int i = 0;
 	int count = 0;
@@ -401,9 +401,9 @@ int formain(string* input) {
 
 
 
-// ¾Õ¿¡¼­ ¶óº§, laÇÔ¼ö, 16Áø¹ý µîÀ» ´Ù º¯È¯ÇÏ¿´±â ¶§¹®¿¡ ÀÌÁ¦ ±ò²ûÇÏ°Ô ¸¸µé¾îÁÖ´Â ÇÔ¼ö. (data¿µ¿ª, ¶óº§, $¿Í ½°Ç¥, °ýÈ£ µîÀ» Á¦°ÅÇØ¼­ ¼ýÀÚ¸¸ ³²°Ô ÇÔ)
+// ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, laï¿½Ô¼ï¿½, 16ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Ô¼ï¿½. (dataï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½, $ï¿½ï¿½ ï¿½ï¿½Ç¥, ï¿½ï¿½È£ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
 void cleaner(string* input) {
-	// 1¹ø. .text ÀÌÀü±îÁö Á¦°Å.
+	// 1ï¿½ï¿½. .text ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	int index = 0;
 	while (input[index] != ".text") {
 		++index;
@@ -413,7 +413,7 @@ void cleaner(string* input) {
 		input[i - index] = input[i];
 	}
 
-	// 2¹ø. ¶óº§ Á¦°Å.
+	// 2ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	for (int i = 0; i < 1000; ++i) {
 		if (input[i].find(":") != string::npos) {
 			for (int j = i + 1; j < 1000; ++j) {
@@ -422,7 +422,7 @@ void cleaner(string* input) {
 		}
 	}
 
-	// 3¹ø. $, ½°Ç¥ Á¦°Å.
+	// 3ï¿½ï¿½. $, ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½.
 	for (int i = 0; i < 1000; ++i) {
 		int j = input[i].find("$");
 		if (j != -1) {
@@ -434,7 +434,7 @@ void cleaner(string* input) {
 		}
 	}
 
-	// 4¹ø. °ýÈ£ Ã³¸®
+	// 4ï¿½ï¿½. ï¿½ï¿½È£ Ã³ï¿½ï¿½
 	for (int i = 0; i < 1000; ++i) {
 		index = input[i].find("(");
 		if (index != -1) {
@@ -451,7 +451,7 @@ void cleaner(string* input) {
 }
 
 
-// input¿¡ Áß¿ä Á¤º¸µé¸¸ ³²¾ÒÀ¸¹Ç·Î, ÀÌµéÀ» ÀÌ¿ëÇØ ¾î¼Àºí¸® ÄÚµå¸¦ ¹ÙÀÌ³Ê¸®ÄÚµå·Î º¯È¯ÇÕ´Ï´Ù.
+// inputï¿½ï¿½ ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½é¸¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½, ï¿½Ìµï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµå¸¦ ï¿½ï¿½ï¿½Ì³Ê¸ï¿½ï¿½Úµï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Õ´Ï´ï¿½.
 int convert(string* input, string* binary) {
 	int index = 0;
 	int bindex = 0;
@@ -609,7 +609,7 @@ int convert(string* input, string* binary) {
 			index += 4;
 		}
 		else {
-			cout << "Something wrong in convert" << endl; // ¿À·ù ¸Þ¼¼Áö Ãâ·Â
+			cout << "Something wrong in convert" << endl; // ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			index = 999;
 		}
 		++bindex;
@@ -619,7 +619,7 @@ int convert(string* input, string* binary) {
 }
 
 
-// ofstreamÀ» ÀÌ¿ëÇÏ¿©, binaryÄÚµå¸¦ ÆÄÀÏ·Î ÀúÀåÇÕ´Ï´Ù.
+// ofstreamï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¿ï¿½, binaryï¿½Úµå¸¦ ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 void savefile(string filename, string* input, int text, int data) {
 	ofstream file(filename);
 	
@@ -636,7 +636,7 @@ void savefile(string filename, string* input, int text, int data) {
 }
 
 
-// instructionÀ» ¸Þ¸ð¸®(0x00400000ºÎÅÍ)¿¡ ÀúÀåÇÕ´Ï´Ù.
+// instructionï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½ï¿½(0x00400000ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 void savetext(string* input, unsigned char* mem) {
 	int i = 0;
 	int j = 0x00400000;
@@ -648,8 +648,8 @@ void savetext(string* input, unsigned char* mem) {
 }
 
 
-// instructionÀ» ½ÃÇàÇÕ´Ï´Ù. ¿¹¿ÜÃ³¸® ¶§¹®¿¡ argumentµéÀÌ Á¶±Ý ¸¹¾ÆÁ³½À´Ï´Ù.
-// PC°¡ °¡¸®Å°´Â °÷ÀÌ 0ÀÌ¸é (¾Æ¹« instructionÀÌ ¾øÀ¸¸é) 1À» ¹ÝÈ¯ÇÕ´Ï´Ù. ÀÌ ¹ÝÈ¯µÈ 1Àº mainÇÔ¼öÀÇ while¹®À» Á¾·áÇÕ´Ï´Ù.
+// instructionï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ argumentï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
+// PCï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 0ï¿½Ì¸ï¿½ (ï¿½Æ¹ï¿½ instructionï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) 1ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Õ´Ï´ï¿½. ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ 1ï¿½ï¿½ mainï¿½Ô¼ï¿½ï¿½ï¿½ whileï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 int instruction(unsigned int* reg, unsigned char* mem, unsigned int* PC, int mainloc) {
 	if (rmem(mem, *PC) == 0) {
 		return 1;
@@ -679,7 +679,7 @@ int instruction(unsigned int* reg, unsigned char* mem, unsigned int* PC, int mai
 				*PC = reg[rs];
 			}
 			else {
-				*PC -= 4; // ¸Ç ¸¶Áö¸· PC¸¦ ¸ÂÃß±â À§ÇØ Ãß°¡ÇÏ¿´½À´Ï´Ù.
+				*PC -= 4; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ PCï¿½ï¿½ ï¿½ï¿½ï¿½ß±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
 				return 1;
 			}
 		}
@@ -725,7 +725,7 @@ int instruction(unsigned int* reg, unsigned char* mem, unsigned int* PC, int mai
 			}
 		}
 		else {
-			cout << "Something wrong in instruction" << endl; // ¿À·ù ¸Þ¼¼Áö Ãâ·Â
+			cout << "Something wrong in instruction" << endl; // ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 	}
 	else if (a == 2) { // j
@@ -805,7 +805,7 @@ int instruction(unsigned int* reg, unsigned char* mem, unsigned int* PC, int mai
 		wmem(mem, reg[rs] + offset, reg[rt]);
 	}
 	else {
-		cout << "Something wrong in instruction" << endl; // ¿À·ù ¸Þ¼¼Áö Ãâ·Â
+		cout << "Something wrong in instruction" << endl; // ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		return 1;
 	}
 
