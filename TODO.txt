@@ -34,3 +34,16 @@
 - To Test
  - zero extension of ORI
 
+170429 CheckList
+- Forwarding: MEM/WB --> EX
+ - applied instr.
+  - outputting: add, ...
+  - using: add, ...
+ - not applied instr.:
+- Forwarding: EX/MEM --> EX
+- Forwarding: MEM/WB --> MEM
+- load-use Hazard
+- [DONE] J,JAL,JR
+- Branch (taken/not taken)
+- determineing when to stop
+
