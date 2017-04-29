@@ -29,20 +29,13 @@ int main(int argc, char* argv[]) {
 
 	// �������� ���� �Ҵ�.
 	unsigned int* reg = new unsigned int[32];
-	// �ʱ�ȭ
-	for (int i = 0; i < 32; ++i) {
-		reg[i] = 0x00000000;
-	}
+	for (int i = 0; i < 32; ++i) {reg[i] = 0;}
 
 	// Declaration of system variables (memory etc.)
 	unsigned long long memSizeByte = MEMSIZE_GB*size_GB;
 	unsigned long long memWordNum = memSizeByte / 4;
 	unsigned char *mem = (unsigned char*) calloc(memWordNum, sizeof(int));
-//	unsigned char* mem = new unsigned char[0x3fffffff];
-//	// �ʱ�ȭ
-//	for (int i = 0; i < 0x3fffffff; ++i) {
-//		mem[i] = 0;
-//	}
+
 	// �ʱ� PC�Դϴ�. text�� ó�� ������ ������ 0x00400000�� ����ŵ�ϴ�.
 	unsigned int pc = 0x00400000;
 	//unsigned int* PC = &pc;
@@ -70,22 +63,6 @@ int main(int argc, char* argv[]) {
 		savetext(binary, mem);
 	}
 
-	
-	// /* test start */
-	// cout << "Xeon.clock == " << Xeon.clock << endl; 
-	// // ID-head stage
-	// cout << "Result of parseIDstage: " << Xeon.ID.Func.parseIDstage(&Xeon) << endl;
-	// cout << "Result of move2entrance: "<< Xeon.ID.Func.move2entrance(&Xeon) << endl;
-	// cout << "Result of move2dest: " << Xeon.ID.Func.move2dest(&Xeon) << endl;
-	// cout << "Result of generateControlSignal: " << Xeon.ID.Func.generateControlSignal(&Xeon) << endl;
-	// // ID-tail stage
-	// cout << "Resulf of read_register: " << Xeon.ID.Func.read_register(&Xeon) << endl;
-	// cout << "Result of sign_extension_ID: " << Xeon.ID.Func.sign_extension_ID(&Xeon) << endl;
-	// cout << "Result of multiply_x4: " << Xeon.ID.Func.multiply_x4(&Xeon) << endl;
-
-    // /* test ends */ 
-    // ���ɾ� ���� �ٽ� �κ�
-    
 	// Initialize Xeon Structure
 	XeonStruct Xeon;
 	initalizeXeon(&Xeon,reg,mem,pc);
