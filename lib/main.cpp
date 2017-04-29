@@ -149,20 +149,20 @@ int main(int argc, char* argv[]) {
 	Xeon.pc_max = pc_max;
     if (n >= 0) { Xeon.pc_max = Xeon.IF.PC + (n-1)*4; }
     while (!isOver(&Xeon)) {
-		//cout << "in while\n";
+		cout << "in while\n";
         //instruction(reg, mem, PC, mainloc);
-	//	cout << "[ LOG ] cycle == " << Xeon.cycle << "-------------"<< endl;
+		cout << "[ LOG ] cycle == " << Xeon.cycle << "-------------"<< endl;
         /* Clock 0 ~ 0.5 */
 
 		move2bus(&Xeon);
 
 		IF_HEAD(&Xeon);
-//		cout << "[ LOG ] (after IF HEAD) instrcode == " << *(unsigned int*)(Xeon.mem + Xeon.IF_ID.PC) << endl;
-//		cout << "[ LOG ] (after IF HEAD) IF_ID.instr == " << Xeon.IF_ID.instr << endl; 
+		cout << "[ LOG ] (after IF HEAD) instrcode == " << *(unsigned int*)(Xeon.mem + Xeon.IF.BUS.PC) << endl;
+		cout << "[ LOG ] (after IF HEAD) IF_ID.instr == " << Xeon.IF_ID.instr << endl; 
 		ID_HEAD(&Xeon);
 		
-//		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_1 == " << Xeon.ID.Bus.read_addr_1 << endl;
-//		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_2 == " << Xeon.ID.Bus.read_addr_2 << endl;
+		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_1 == " << Xeon.ID.Bus.read_addr_1 << endl;
+		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_2 == " << Xeon.ID.Bus.read_addr_2 << endl;
 		EX_HEAD(&Xeon);
 		MEM_HEAD(&Xeon);
 		WB_HEAD(&Xeon);
@@ -171,12 +171,12 @@ int main(int argc, char* argv[]) {
 		IF_TAIL(&Xeon); 
 		ID_TAIL(&Xeon); 
 		branch_predict(&Xeon,t);
-	//	cout << "[ LOG ] (after ID TAIL) reg_read_addr_1 == " << Xeon.ID.Register.read_addr_1 << endl; 
-	//	cout << "[ LOG ] (after ID TAIL) reg_read_addr_2 == " << Xeon.ID.Register.read_addr_2 << endl; 
-	//	cout << "[ LOG ] (after ID_TAIL) reg_read_data_1 == " << Xeon.ID_EX.Data.reg_read_data_1 << endl;
-	//	cout << "[ LOG ] (after ID_TAIL) reg_read_data_2 == " << Xeon.ID_EX.Data.reg_read_data_2 << endl;
+		cout << "[ LOG ] (after ID TAIL) reg_read_addr_1 == " << Xeon.ID.Register.read_addr_1 << endl; 
+		cout << "[ LOG ] (after ID TAIL) reg_read_addr_2 == " << Xeon.ID.Register.read_addr_2 << endl; 
+		cout << "[ LOG ] (after ID_TAIL) reg_read_data_1 == " << Xeon.ID_EX.Data.reg_read_data_1 << endl;
+		cout << "[ LOG ] (after ID_TAIL) reg_read_data_2 == " << Xeon.ID_EX.Data.reg_read_data_2 << endl;
 		EX_TAIL(&Xeon);
-	//	cout << "[ LOG ] (after EX_TAIL) ALU_result == " << Xeon.EX_MEM.ALU_result << endl;
+		cout << "[ LOG ] (after EX_TAIL) ALU_result == " << Xeon.EX_MEM.ALU_result << endl;
 		MEM_TAIL(&Xeon);
 		WB_TAIL(&Xeon);
 
