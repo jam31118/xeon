@@ -43,3 +43,27 @@
 	WB struct
 		
 DGIST 2017 Computer Architecture Assignment 02 - Pipelined MIPS
+
+
+[ Controal Signal ]
+RegDst	ALUOP1	ALUOP2	ALUSrc	Brch	MemRead	MemWrit	RegWrit	MemtoReg
+ADDIU	0	0	0	1	0	0	0	1	1
+ANDI	(same as above)
+LW		0	0	0	1	0	1	0	1	1	(implemented)
+SW		X	0	0	1	0	0	1	0	X	(implemented)
+BEQ		X	0	1	0	1	0	0	0	X	(implemented)
+BNE		(same as above)						(implemented)
+J		0	0	0	0	0	0	0	0	0	(implemented)
+JAL		(later)
+JR
+LUI
+ORI
+SLTIU
+SLL
+SRL
+
+zero extended 는 어디에서 되는가?
+sign extension 에서?? 아니면,, and 용으로 따로 만들어야 하나?
+
+
+

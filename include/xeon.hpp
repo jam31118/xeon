@@ -169,6 +169,11 @@ struct MaskInstr {
 };
 struct ConSig {
 	unsigned int R[9] = {1,1,0,0, 0,0,0, 1,0};
+	unsigned int LW[9] = {0,0,0,1, 0,1,0, 1,1};
+	unsigned int SW[9] = {0,0,0,1, 0,0,1, 0,0};
+	unsigned int Brch[9] = {0,0,1,0, 1,0,0, 0,0};
+	unsigned int J[9] = {0,0,0,0, 0,0,0, 0,0};
+	unsigned int JAL[9];
 	/*
     struct R {
         static constexpr unsigned int EX[4] = {1,1,0,0};
