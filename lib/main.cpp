@@ -117,10 +117,10 @@ int main(int argc, char* argv[]) {
 	string label[15];
 	findlabel(input, label);
 	cout << "[ LOG ] Find label completed" << endl;
+	cout << "[ LOG ] label == "; int idx = 0; while(!label[idx].empty()) { cout << label[idx] << endl; idx++; }
 	if (n != 0) { // n�� 0�� ���� �޸𸮿� ������ �ʵ��� ����ó���϶��� �ϼż�, if���� �߰��Ͽ����ϴ�.
 		savedata(input, mem);
 	}
-	
 	cout << "[ LOG ] Save data completed" << endl;
 
 	// ������ �Լ����� �ϳ��� �������ݴϴ�.
