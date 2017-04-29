@@ -180,12 +180,13 @@ int main(int argc, char* argv[]) {
 		cout << "------------------------------" << endl;
 		
 		Xeon.cycle++;
-		if (d) { print_reg(&Xeon,&Xeon.IF.PC, reg); }
+		if (p && !d) {print_pc(&Xeon);}
+		if (d) { print_reg(&Xeon,&Xeon.IF.PC, reg,p,d); }
         if (d && m) { print_mem(mem, addr_begin, addr_end); }
     }
-    if (d && !n) { print_reg(&Xeon,&Xeon.IF.PC, reg); }
+    if (d && !n) { print_reg(&Xeon,&Xeon.IF.PC, reg,p,d); }
     if (!d && m) { print_mem(mem, addr_begin, addr_end); }
-    if (!d && !m) { print_reg(&Xeon,&Xeon.IF.PC, reg); } 
+    if (!d && !m) { print_reg(&Xeon,&Xeon.IF.PC, reg,p,d); } 
 
 	delete[] reg;
 	delete[] mem;
