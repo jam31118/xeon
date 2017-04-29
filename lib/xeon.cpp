@@ -22,6 +22,8 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
     Xeon->ID.Func.generateControlSignal = &generateControlSignal;
 
 	// Initialize EX structure 
+    Xeon->EX.Func.shift_left2_fp = &shift_left2;
+    Xeon->Ex.Func.R_type_ALU_func = &R_type_ALU_func;
 
 	// Initialize MEM structure
 	Xeon->MEM.Func.move2src_MEM = &move2src_MEM;
@@ -421,6 +423,9 @@ void conSig(struct XeonStruct *Xeon){
 	Xeon->MEM_WB.ConSig.WB.MemtoReg = Xeon->EX_MEM.ConSig.WB.MemtoReg;
 }
 
+//EX stage initialize
+//Prepare 
+
 //EX stage - 0~0.5 clock
 void EX_HEAD(struct XeonStruct *Xeon)
 {
@@ -448,8 +453,7 @@ void EX_HEAD(struct XeonStruct *Xeon)
 	if (Xeon->EX.ALUSrc_mux == 1)
 		Xeon->EX.ALUSrc2 = Xeon->EX.bus.sign_extended;
 
-	Xeon->EX.shift_left2_fp = shift_left2;
-	Xeon->EX.shifted_value = Xeon->EX.shift_left2_fp(Xeon->EX.bus.sign_extended);
+	Xeon->EX.shifted_value = Xeon->EX.Func.shift_left2_fp(Xeon->EX.bus.sign_extended);
 }
 //EX stage : 0.5~1 clock
 void EX_TAIL(struct XeonStruct *Xeon)
@@ -472,7 +476,7 @@ void EX_TAIL(struct XeonStruct *Xeon)
 	case 2:		//R type
 		Xeon->EX.funct = (Xeon->EX.bus.sign_extended) & 63;
 		Xeon->EX.shamt = ((Xeon->EX.bus.sign_extended) & 1984) >> 6;
-		Xeon->EX.ALU_result = Xeon->EX.R_type_ALU_func(Xeon->EX.funct, Xeon->EX.ALUSrc1, Xeon->EX.ALUSrc2, Xeon->EX.shamt);
+		Xeon->EX.ALU_result = Xeon->EX.Func.R_type_ALU_func(Xeon->EX.funct, Xeon->EX.ALUSrc1, Xeon->EX.ALUSrc2, Xeon->EX.shamt);
 		break;
 	case 3:
 		break;

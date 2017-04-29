@@ -117,16 +117,15 @@ typedef struct XeonStruct {
 		int RegDst_mux = 0;
 		unsigned int RegDst = 0;
 		int ALU_control_unit = 0;
-        //std::string ALU;
-		unsigned int funct;
-		unsigned int shamt;
+		unsigned int funct = 0;
+		unsigned int shamt = 0;
 		unsigned int ALU_result = 0;
-		unsigned int shifted_value;
+		unsigned int shifted_value = 0;
 		struct
 		{
 			unsigned int RegisterRs_data = 0;
 			unsigned int RegisterRt_data = 0;   //ID_EX에 있던 RegisterRt 값을 여기에 저장
-			unsigned int sign_extended;		//ID_EX에서 sign extended된 값을 여기에 저장
+			unsigned int sign_extended = 0;		//ID_EX에서 sign extended된 값을 여기에 저장
 			unsigned int Register_Addr2 = 0;	//ID_EX에 저장한 20-16번째 bit에 해당하는 값을 여기에 저장
 			unsigned int Register_write = 0;	//ID_EX에 저장한 15-11번째 bit에 해당하는 값을 여기에 저장
 		} bus;
@@ -138,14 +137,17 @@ typedef struct XeonStruct {
 			int ALUSrc_sig = 0;		//ID_EX에 있는 ALUSrc_signal을 여기에 저장
 		} ConSig;
 		
-		unsigned int(*shift_left2_fp) (unsigned int);
-		unsigned (*R_type_ALU_func) (unsigned int, unsigned int, unsigned int, unsigned int);
+        struct
+        {
+    		unsigned int(*shift_left2_fp) (unsigned int);
+	    	unsigned (*R_type_ALU_func) (unsigned int, unsigned int, unsigned int, unsigned int);
+        } Func;
 	} EX;
 
     struct {
 		unsigned int ALU_result = 0;
 		unsigned int PC_target = 0;
-		unsigned int PC =0;
+		unsigned int PC = 0;
         struct {
 			struct {
                  unsigned int Brch = 0, MemRead = 0, MemWrite = 0;
