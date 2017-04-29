@@ -7,3 +7,30 @@
 - Hazard handling memo
  - "Computing branch target address can be done in parallel with RegFile read (done for all instructions – only used when needed)"
 
+170426 log
+- should implement initializeXeon()
+- fix gitstuff
+
+<<<<<<< HEAD
+170428 log Kang
+ to do befor 22:00
+ IF structure ( MUX , branch, jump)
+ MEM structure ( MUX)
+ MAIN function( HEAD, TAIL function insert)
+=======
+170427 log
+- Which is faster? Probabily, and necessarily, mem_write signal should be arrived to mem first. .. exactly which stages when signal arrives
+- add ssh autologin
+- if something goes wrong, functions returns 1. We should check this results and if one of them returns 1 then we should stop program and should cerr << (error messeage).
+
+170428 log
+- to do before 22:00
+ - implement ID stage completely, including Control and ID stage _head() and _tail() etc.
+ - so that direct pasting to main function would work
+
+170428 TODO
+- [implemented][not verified] later, should implement jal (require revision of xeon.hpp)
+- should implement shift (require revision of xeon.hpp
+- To Test
+ - zero extension of ORI
+

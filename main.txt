@@ -1,0 +1,73 @@
+# xeon
+struct IF{
+	//instruction fetching 
+	void fetch(xeon){
+		xeon.IF_ID.instr = xeon.IF.mem[PC];
+	}
+	
+
+}
+struct IF/ID{
+	PC
+	instr
+	
+}
+struct ID{
+	void parse(xeon) // parse and move to each bus
+	struct REG{
+		Reg_File
+		do_RegWrite
+		read_addr_1
+		read_addr_2
+		write_addr
+		write_data
+		read_data_1
+		read_data_2
+	}
+	struct BUS{
+		ID/IF_out
+		sign_ex_in
+		sing_ex_out
+		read_addr_1
+		read_addr_2
+		write_addr
+		write_data
+		dest_1
+		dest_2
+	}
+}
+struct ID/EX{}
+struct EX{}
+struct EX/MEM{}
+struct MEM{}
+struct MEM/WB{}
+struct WB{}
+// main 
+while(end of instruction){
+	// start of clock 0 ~ 0.5
+
+	move2bus(xeon) // move data from registor to bus
+	IF_head(xeon){
+		IF.fetch(xeon)
+		xeon.PC+=4
+	}
+	ID_head(xeon){
+		ID.parse(xeon)
+	}
+	EX_head(xeon){}
+	MEM_head(xeon){}
+	WB_head(xeon){}
+
+	// end of clock 0 ~ 0.5
+	// start of clock 0.5 ~ 1
+
+	IF_tail(xeon){}
+	ID_tail(xeon){}
+	EX_tail(xeon){}
+	MEM_tail(xeon){}
+	WB_tail(xeon){}
+	Cycle ++
+	
+	// end of clock 0.5 ~ 1
+}
+DGIST 2017 Computer Architecture Assignment 02 - Pipelined MIPS
