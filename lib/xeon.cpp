@@ -50,6 +50,7 @@ int move2bus(struct XeonStruct *Xeon) {
 	/* ... */
 
 	// Moves in MEM stage starts
+	Xeon->MEM.BUS.PC = Xeon->EX_MEM.PC;
 	Xeon->MEM.BUS.ALU_result = Xeon->EX_MEM.ALU_result;
 	Xeon->MEM.BUS.PC_target = Xeon->EX_MEM.PC_target;
 
@@ -342,7 +343,7 @@ void setPC(struct XeonStruct *Xeon){
 // fetch instruction
 void fetch(struct XeonStruct *Xeon) {
 	Xeon->IF_ID.instr = Xeon->mem[Xeon->IF.BUS.PC];
-	Xeon->IF_ID.PC = Xeon->IF.PC;
+	Xeon->IF_ID.PC = Xeon->IF.BUS.PC;
 	//printf("TESTING fetch\n");
 }
 

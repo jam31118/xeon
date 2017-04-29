@@ -129,6 +129,7 @@ typedef struct XeonStruct {
 		struct {
 			unsigned int ALU_result = 0;
 			unsigned int PC_target = 0;
+			unsigned int PC=0;
 		}BUS;
 		struct {
 			void(*move2src_MEM)(struct XeonStruct*);

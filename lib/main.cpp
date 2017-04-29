@@ -39,15 +39,15 @@ int main(int argc, char* argv[]) {
 	int long_index = 0;
 	 while ((option = getopt_long(argc, argv, "m:dpn:",long_options,&long_index)) != -1) {
 		switch (option) {
-				case 0:
-				{
-					t =0;
-					printf("OPTION -ANTP\n");
-					break;
-				}
 				case 1:
 				{
-					printf("OPTION -ATP\n");
+					t =0;
+					printf("OPTION ANTP\n");
+					break;
+				}
+				case 0:
+				{
+					printf("OPTION ATP\n");
 					t =1;
 					break;
 				}
@@ -165,6 +165,7 @@ int main(int argc, char* argv[]) {
 		//cout << "in while\n";
         //instruction(reg, mem, PC, mainloc);
         /* Clock 0 ~ 0.5 */
+		
 		move2bus(&Xeon);
 
 		IF_HEAD(&Xeon);
@@ -172,14 +173,14 @@ int main(int argc, char* argv[]) {
 		EX_HEAD(&Xeon);
 		MEM_HEAD(&Xeon);
 		WB_HEAD(&Xeon);
-
+		
 		/* Clock 0.5 ~ 1 */ 
 		IF_TAIL(&Xeon); 
 		ID_TAIL(&Xeon); 
 		EX_TAIL(&Xeon);
 		MEM_TAIL(&Xeon);
 		WB_TAIL(&Xeon);
-
+		
 		Xeon.cycle++;
 		if (d) { print_reg(&Xeon,&Xeon.IF.PC, reg); }
         if (d && m) { print_mem(mem, addr_begin, addr_end); }

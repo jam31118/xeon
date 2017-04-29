@@ -13,7 +13,7 @@ void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers
 
     printf("Current pipeline PC state :\n");
     printf("-----------------------------------------\n");
-    printf("Cycle: %d \n", Xeon->cycle);
+    printf("Cycle %d: 0x%.8X|0x%.8X|0x%.8X|0x%.8X|0x%.8X\n", Xeon->cycle,Xeon->IF.BUS.PC,Xeon->ID.Bus.ID_IF_out.PC,Xeon->ID_EX.PC,Xeon->EX_MEM.PC,Xeon->MEM_WB.PC);
 
     printf("Registers:\n");
     for(i=0; i<32; i++) {
