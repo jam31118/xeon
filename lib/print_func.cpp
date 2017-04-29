@@ -13,23 +13,23 @@
 	if(Xeon->IF.BUS.PC != 0)
 		printf("0x%.8X|",Xeon->IF.BUS.PC);
 	else
-		printf("        |");
+		printf("          |");
 	if(Xeon->ID.Bus.ID_IF_out.PC !=0)
 		printf("0x%.8X|",Xeon->ID.Bus.ID_IF_out.PC);
 	else
-		printf("        |");
+		printf("          |");
 	if(Xeon->EX.bus.PC != 0)
 		printf("0x%.8X|",Xeon->EX.bus.PC);
 	else
-		printf("        |");
+		printf("          |");
 	if(Xeon->MEM.BUS.PC)
 		printf("0x%.8X|",Xeon->MEM.BUS.PC);
 	else
-		printf("        |");
+		printf("          |");
 	if(Xeon->WB.BUS.PC)
-		printf("0x%.8X|",Xeon->WB.BUS.PC);
+		printf("0x%.8X|\n",Xeon->WB.BUS.PC);
 	else
-		printf("        |");
+		printf("          |\n");
  }
 
 void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers,int p,int d)
@@ -40,29 +40,28 @@ void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers
 
 	if(p == 1)
 	{
-		printf("Current pipeline PC state :\n");
     printf("-----------------------------------------\n");
 		printf("Cycle %d: ",Xeon->cycle);
 	if(Xeon->IF.BUS.PC != 0)
 		printf("0x%.8X|",Xeon->IF.BUS.PC);
 	else
-		printf("        |");
+		printf("          |");
 	if(Xeon->ID.Bus.ID_IF_out.PC !=0)
 		printf("0x%.8X|",Xeon->ID.Bus.ID_IF_out.PC);
 	else
-		printf("        |");
+		printf("          |");
 	if(Xeon->EX.bus.PC != 0)
 		printf("0x%.8X|",Xeon->EX.bus.PC);
 	else
-		printf("        |");
+		printf("          |");
 	if(Xeon->MEM.BUS.PC)
 		printf("0x%.8X|",Xeon->MEM.BUS.PC);
 	else
-		printf("        |");
+		printf("          |");
 	if(Xeon->WB.BUS.PC)
-		printf("0x%.8X|",Xeon->WB.BUS.PC);
+		printf("0x%.8X|\n",Xeon->WB.BUS.PC);
 	else
-		printf("        |");
+		printf("          |\n");
     
 	}
 		printf("Current register values :\n");
