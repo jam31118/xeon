@@ -35,9 +35,10 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
     Xeon->ID.Func.generateControlSignal = &generateControlSignal;
 
 	// Initialize EX structure 
-    Xeon->EX.Func.shift_left2_fp = &shift_left2;
-    Xeon->EX.Func.R_type_ALU_func = &R_type_ALU_func;
-
+	Xeon->EX.Func.shift_left2_fp = &shift_left2;
+	Xeon->EX.Func.det_ALU_ctrl_input = &det_ALU_ctrl_input;
+	Xeon->EX.Func.ALU_execute = &ALU_execute;
+    
 	// Initialize MEM structure
 	Xeon->MEM.Func.move2src_MEM = &move2src_MEM;
 	Xeon->MEM.Func.f_MEM = &f_MEM;
@@ -527,10 +528,25 @@ void conSig(struct XeonStruct *Xeon){
 //EX stage initialize
 //Prepare 
 
-//EX stage - 0~0.5 clock
+//EX stage : 0~0.5 clock
 void EX_HEAD(struct XeonStruct *Xeon)
 {
-	// 0 ~ 0.5 clock
+	//이용할 signal값 저장
+	Xeon->EX.ConSig.ALUOp_sig = (Xeon->ID_EX.ConSig.EX.ALU_Op1)*2 + Xeon->ID_EX.ConSig.EX.ALU_Op2;
+	Xeon->EX.ConSig.ALUSrc_sig = Xeon->ID_EX.ConSig.EX.ALU_Src;
+	Xeon->EX.ConSig.RegDst_sig = Xeon->ID_EX.ConSig.EX.RegDst;
+	//이용 안 할 signal 값
+	Xeon->EX.ConSig.Brch = Xeon->ID_EX.ConSig.MEM.Brch;
+	Xeon->EX.ConSig.MemRead = Xeon->ID_EX.ConSig.MEM.MemRead;
+	Xeon->EX.ConSig.MemWrite = Xeon->ID_EX.ConSig.MEM.MemWrite;
+	Xeon->EX.ConSig.RegWrite = Xeon->ID_EX.ConSig.WB.RegWrite;
+	Xeon->EX.ConSig.MemtoReg = Xeon->ID_EX.ConSig.WB.MemtoReg;
+	
+	Xeon->EX.bus.op_code = Xeon->ID_EX.Data.opcode;
+	Xeon->EX.PC = Xeon->ID_EX.PC;
+	Xeon->EX.bus.sign_extended = Xeon->ID_EX.Data.imm;
+	Xeon->EX.bus.Register_Addr2 = Xeon->ID_EX.Data.dest_1;		//rt
+	Xeon->EX.bus.Register_write = Xeon->ID_EX.Data.dest_2;		//rd
 	
 	//ALU source 준비
 	Xeon->EX.bus.RegisterRs_data = Xeon->ID_EX.Data.reg_read_data_1;			//먼저 이렇게 넣어놓고 나중에 전방전달로 바꾸든가 한다.
@@ -549,6 +565,7 @@ void EX_HEAD(struct XeonStruct *Xeon)
 */
 	Xeon->EX.ALUSrc1 = Xeon->EX.bus.RegisterRs_data;		//ALU에다 집어넣을 src1을 저장(얘는 확정)
 	Xeon->EX.ALUSrc2 = Xeon->EX.bus.RegisterRt_data;		//ALU에다 집어넣을 src2을 '일단은' 저장
+	Xeon->EX.SW_data = Xeon->EX.ALUSrc2;		//SW instr.의 경우 이 값이 data memory에 쓸 데이터에 해당함.
 
 	Xeon->EX.ALUSrc_mux = Xeon->EX.ConSig.ALUSrc_sig;		//이게 1이 뜨면 sign extended된 값을 ALU source2로 이용하게 된다. ALUSrc2가 전방전달된 값을 받았을 경우 ALUSrc_sig는 1이 될 리가 없다.
 	if (Xeon->EX.ALUSrc_mux == 1)
@@ -559,32 +576,35 @@ void EX_HEAD(struct XeonStruct *Xeon)
 //EX stage : 0.5~1 clock
 void EX_TAIL(struct XeonStruct *Xeon)
 {
+	unsigned int six_bit_field = 0;
 	Xeon->EX.RegDst_mux = Xeon->EX.ConSig.RegDst_sig;
 	if (Xeon->EX.RegDst_mux == 1)
 		Xeon->EX.RegDst = Xeon->EX.bus.Register_write;
 	else
 		Xeon->EX.RegDst = Xeon->EX.bus.Register_Addr2;
+		
+	if (Xeon->EX.ConSig.ALUOp_sig == 2)
+		six_bit_field = (Xeon->EX.bus.sign_extended) & 63;		//funct field 6비트 저장
+	if (Xeon->EX.ConSig.ALUOp_sig == 3)
+		six_bit_field = Xeon->EX.bus.op_code;		//op field 6비트 저장
 
-	//ALU가 수행할 작업 선택
-	cout << "[ LOG ] Ex.ConSig.ALUOp_sig == " << Xeon->EX.ConSig.ALUOp_sig << endl;
-	switch (Xeon->EX.ConSig.ALUOp_sig)		//0, 1, 2, 3중 하나
-	{
-	case 0:		//lw sw
-	//	Xeon->EX.ALU = "lw/sw";
-		break;
-	case 1:		//beq
-	//	Xeon->EX.ALU = "beq";
-		break;
-	case 2:		//R type
-		Xeon->EX.funct = (Xeon->EX.bus.sign_extended) & 63;
-		cout << "[ LOG ] (in EX_TAIL)(in R-type) EX.funct == 0x" << hex << Xeon->EX.funct << endl;
-		Xeon->EX.shamt = ((Xeon->EX.bus.sign_extended) & 1984) >> 6;
-		cout << "[ LOG ] (in EX_TAIL) ALUSrc1 == " << Xeon->EX.ALUSrc1 << "\tALUSrc2 == " << Xeon->EX.ALUSrc2 << endl;
-		Xeon->EX.ALU_result = Xeon->EX.Func.R_type_ALU_func(Xeon->EX.funct, Xeon->EX.ALUSrc1, Xeon->EX.ALUSrc2, Xeon->EX.shamt);
-		break;
-	case 3:
-		break;
-	}
+	Xeon->EX.ALU_control_input = Xeon->EX.Func.det_ALU_ctrl_input(Xeon->EX.ConSig.ALUOp_sig, six_bit_field);
+	Xeon->EX.ALU_result = Xeon->EX.Func.ALU_execute(Xeon->EX.ALUSrc1, Xeon->EX.ALUSrc2, Xeon->EX.ALU_control_input);
+
+
+	//결과값들을 EX_MEM에 모두 저장
+	Xeon->EX_MEM.ALU_result = Xeon->EX.ALU_result;
+	Xeon->EX_MEM.PC_target = Xeon->EX.shifted_value + Xeon->EX.PC;
+	Xeon->EX_MEM.fin_reg_dst = Xeon->EX.RegDst;
+	Xeon->EX_MEM.SW_data = Xeon->EX.SW_data;
+
+	//이용하지 않은 signal을 모두 저장
+	Xeon->EX_MEM.ConSig.MEM.Brch = Xeon->EX.ConSig.Brch;
+	Xeon->EX_MEM.ConSig.MEM.MemRead = Xeon->EX.ConSig.MemRead;
+	Xeon->EX_MEM.ConSig.MEM.MemWrite = Xeon->EX.ConSig.MemWrite;
+	Xeon->EX_MEM.ConSig.WB.RegWrite = Xeon->EX.ConSig.RegWrite;
+	Xeon->EX_MEM.ConSig.WB.MemtoReg = Xeon->EX.ConSig.MemtoReg;
+
 }
 
 // EX stage functions
@@ -594,88 +614,87 @@ unsigned int shift_left2(unsigned int val)
 	return val;
 }
 
-unsigned int R_type_ALU_func(unsigned int funct_code, unsigned int alu_src1, unsigned int alu_src2, unsigned int shamt)
+unsigned int det_ALU_ctrl_input(unsigned int aluop_sig, unsigned int six_bit_field)
 {
-	unsigned int alu_result = 0;
-	switch (funct_code)
+	switch (aluop_sig)
 	{
-	case 0: //SLL
-		alu_result = SLL(alu_src2, shamt);
+	case 0:		// lw, sw, ADDIU
+		return 2;		// 0010
 		break;
-	case 2: //SRL
-		alu_result = SRL(alu_src2, shamt);
+	case 1:		// beq, bne
+		return 6;
+		break;		// 0110
+	case 2:		// R type
+		switch (six_bit_field)
+		{
+		case 33:	//ADDU
+			return 2;
+			break;
+		case 35:	//SUBU
+			return 6;
+			break;
+		case 36:	//AND
+			return 0;
+			break;
+		case 37:	//OR
+			return 1;
+			break;
+		case 39:	//NOR
+			return 14;
+			break;
+		case 42:	//SLTU
+			return 7;
+			break;
+		case 0:		//SLL
+			return 12;
+			break;
+		case 2:		//SRL
+			return 3;
+		}
 		break;
-	/*
-	case 8: //JR
-		JR(Instruction_cutted, regs, PC, &a);
-		break;
-	*/
-	case 33: //ADDU
-		alu_result = ADDU(alu_src1, alu_src2);
-		break;
-	case 35: //SUBU
-		alu_result = SUBU(alu_src1, alu_src2);
-		break;
-	case 36: //AND
-		alu_result = AND(alu_src1, alu_src2);
-		break;
-	case 37: //OR
-		alu_result = OR(alu_src1, alu_src2);
-		break;
-	case 39: //NOR
-		alu_result = NOR(alu_src1, alu_src2);
-		break;
-	case 43: //SLTU
-		alu_result = SLTU(alu_src1, alu_src2);
-		break;
-	default:
-		printf("error");
+	case 3:		//I type
+		switch (six_bit_field)
+		{
+		case 15:	//LUI
+			return 12;
+			break;
+		case 13:	//ORI
+			return 1;
+			break;
+		case 12:	//ANDI
+			return 0;
+			break;
+		case 11:	//SLTIU
+			return 7;
+		}
 		break;
 	}
-	return alu_result;
 }
 
-unsigned int SLL(unsigned int alu_src2, unsigned int shamt)
+unsigned int ALU_execute(unsigned int alu_src1, unsigned int alu_src2, unsigned int alu_control_input)
 {
-	return alu_src2 << shamt;
-}
-
-unsigned int SRL(unsigned int alu_src2, unsigned int shamt)
-{
-	return alu_src2 >> shamt;
-}
-
-unsigned int ADDU(unsigned int alu_src1, unsigned int alu_src2)
-{
-	return alu_src1 + alu_src2;
-}
-
-unsigned int SUBU(unsigned int alu_src1, unsigned int alu_src2)
-{
-	return alu_src1 - alu_src2;
-}
-
-unsigned int AND(unsigned int alu_src1, unsigned int alu_src2)
-{
-	return alu_src1 & alu_src2;
-}
-
-unsigned int OR(unsigned int alu_src1, unsigned int alu_src2)
-{
-	return alu_src1 | alu_src2;
-}
-
-unsigned int NOR(unsigned int alu_src1, unsigned int alu_src2)
-{
-	return ~(alu_src1 | alu_src2);
-}
-
-unsigned int SLTU(unsigned int alu_src1, unsigned int alu_src2)
-{
-	if (alu_src1 < alu_src2)
-		return 1;
-	else
-		return 0;
+	switch (alu_control_input)
+	{
+	case 0:
+		return alu_src1 & alu_src2;
+	case 1:
+		return alu_src1 | alu_src2;
+	case 2:
+		return alu_src1 + alu_src2;
+	case 3:
+		return alu_src2 >> alu_src1;		//shamt를 alu_src1으로 대체할 방법 구상 필요
+	case 6:
+		return alu_src1 - alu_src2;
+	case 7:
+		if (alu_src1 < alu_src2)
+			return 1;
+		else
+			return 0;
+	case 12:
+		return alu_src2 << alu_src1;		//shamt를 alu_src1으로 대체할 방법 구상 필요
+	case 14:
+		return ~(alu_src1 | alu_src2);
+	}
 }
 
 // WB function

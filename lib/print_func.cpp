@@ -1,3 +1,4 @@
+
 #include "print_func.hpp"
 #include <stdio.h>
 #include "xeon.hpp"
@@ -9,7 +10,7 @@
  */
  void print_pc(struct XeonStruct *Xeon)
  {
-	printf("Cycle %d: ",Xeon->cycle);
+	printf("Cycle %2d: ",Xeon->cycle);
 	if(Xeon->IF.BUS.PC != 0)
 		printf("0x%.8X|",Xeon->IF.BUS.PC);
 	else
@@ -41,7 +42,7 @@ void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers
 	if(p == 1)
 	{
     printf("-----------------------------------------\n");
-		printf("Cycle %d: ",Xeon->cycle);
+		printf("Cycle %2d: ",Xeon->cycle);
 	if(Xeon->IF.BUS.PC != 0)
 		printf("0x%.8X|",Xeon->IF.BUS.PC);
 	else
@@ -69,7 +70,7 @@ void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers
     printf("PC: 0x%.8X\n", *PC);
      printf("Registers:\n");
     for(i=0; i<32; i++) {
-        printf("R%d: 0x%.8X\n", i, registers[i]);
+        printf("R%2d: 0x%.8X\n", i, registers[i]);
 	}
 	printf("\n");
    
