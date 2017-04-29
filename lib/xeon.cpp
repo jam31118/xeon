@@ -237,7 +237,9 @@ int read_register(XeonStruct *Xeon) {
 	
 	/* Read register */
 	Xeon->ID.Register.read_data_1 = Xeon->ID.Register.reg_file[Xeon->ID.Register.read_addr_1];
+//	cout << "Read reg 1 == " << Xeon->ID.Register.read_data_1 << endl;
 	Xeon->ID.Register.read_data_2 = Xeon->ID.Register.reg_file[Xeon->ID.Register.read_addr_2];
+//	cout << "Read reg 2 == " << Xeon->ID.Register.read_data_2 << endl;
 
 	/* Move data to ID_EX register */
 	Xeon->ID_EX.Data.reg_read_data_1 = Xeon->ID.Register.read_data_1;
@@ -587,9 +589,13 @@ void EX_TAIL(struct XeonStruct *Xeon)
 		six_bit_field = (Xeon->EX.bus.sign_extended) & 63;		//funct field 6비트 저장
 	if (Xeon->EX.ConSig.ALUOp_sig == 3)
 		six_bit_field = Xeon->EX.bus.op_code;		//op field 6비트 저장
-
+//	cout << "[ LOG ] reg_data_1 == " << Xeon->ID_EX.Data.reg_read_data_1 << "\treg_data_2 == " << Xeon->ID_EX.Data.reg_read_data_2 << endl;
 	Xeon->EX.ALU_control_input = Xeon->EX.Func.det_ALU_ctrl_input(Xeon->EX.ConSig.ALUOp_sig, six_bit_field);
+//	cout << "[ LOG ] ALUSrc1 == " << Xeon->EX.ALUSrc1 << "\tALUSrc2 == " << Xeon->EX.ALUSrc2 << endl;
+//	cout << "[ LOG ] ALU_control_input == " << Xeon->EX.ALU_control_input << endl;
+//	cout << "[ LOG ] ALUOp_sig == " << Xeon->EX.ConSig.ALUOp_sig << endl;
 	Xeon->EX.ALU_result = Xeon->EX.Func.ALU_execute(Xeon->EX.ALUSrc1, Xeon->EX.ALUSrc2, Xeon->EX.ALU_control_input);
+//	cout << "[ LOG ] ALU_result == " << Xeon->EX.ALU_result << endl;
 
 
 	//결과값들을 EX_MEM에 모두 저장

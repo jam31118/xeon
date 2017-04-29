@@ -457,7 +457,7 @@ int convert(string* input, string* binary) {
 	int index = 0;
 	int bindex = 0;
 	while (input[index] != "") {
-		cout << "[ LOG ] (convert()) input[" << index << "]" << input[index] << endl;
+//		cout << "[ LOG ] (convert()) input[" << index << "]" << input[index] << endl;
 		if (input[index] == "addiu") {
 			binary[bindex].append(int2bi(9, 6));
 			binary[bindex].append(int2bi(atoi(input[index + 2].c_str()), 5));
