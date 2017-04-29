@@ -170,6 +170,7 @@ int main(int argc, char* argv[]) {
 		/* Clock 0.5 ~ 1 */ 
 		IF_TAIL(&Xeon); 
 		ID_TAIL(&Xeon); 
+		
 	//	cout << "[ LOG ] (after ID TAIL) reg_read_addr_1 == " << Xeon.ID.Register.read_addr_1 << endl; 
 	//	cout << "[ LOG ] (after ID TAIL) reg_read_addr_2 == " << Xeon.ID.Register.read_addr_2 << endl; 
 	//	cout << "[ LOG ] (after ID_TAIL) reg_read_data_1 == " << Xeon.ID_EX.Data.reg_read_data_1 << endl;
