@@ -178,7 +178,7 @@ int main(int argc, char* argv[]) {
 		MEM_TAIL(&Xeon);
 		WB_TAIL(&Xeon);
 
-		cout << "------------------------------" << endl;
+		//cout << "------------------------------" << endl;
 		
 		Xeon.cycle++;
 		if (p && !d) {print_pc(&Xeon);}
@@ -187,6 +187,9 @@ int main(int argc, char* argv[]) {
     }
     if (d && !n) { print_reg(&Xeon,&Xeon.IF.PC, reg,p,d); }
     if (!d && m) { print_mem(mem, addr_begin, addr_end); }
+	puts("-----------------------------------------");
+	puts("FINAL PC AND REGISTOR");
+	if (d && !m){print_reg(&Xeon,&Xeon.IF.PC, reg,p,d);}
     if (!d && !m) { print_reg(&Xeon,&Xeon.IF.PC, reg,p,d); } 
 
 	delete[] reg;
