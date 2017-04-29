@@ -9,7 +9,27 @@
  */
  void print_pc(struct XeonStruct *Xeon)
  {
-	printf("Cycle %d: 0x%.8X|0x%.8X|0x%.8X|0x%.8X|0x%.8X\n", Xeon->cycle,Xeon->IF.BUS.PC,Xeon->ID.Bus.ID_IF_out.PC,Xeon->EX.bus.PC,Xeon->MEM.BUS.PC,Xeon->WB.BUS.PC);
+	printf("Cycle %d: ",Xeon->cycle);
+	if(Xeon->IF.BUS.PC != 0)
+		printf("0x%.8X|",Xeon->IF.BUS.PC);
+	else
+		printf("        |");
+	if(Xeon->ID.Bus.ID_IF_out.PC !=0)
+		printf("0x%.8X|",Xeon->ID.Bus.ID_IF_out.PC);
+	else
+		printf("        |");
+	if(Xeon->EX.bus.PC != 0)
+		printf("0x%.8X|",Xeon->EX.bus.PC);
+	else
+		printf("        |");
+	if(Xeon->MEM.BUS.PC)
+		printf("0x%.8X|",Xeon->MEM.BUS.PC);
+	else
+		printf("        |");
+	if(Xeon->WB.BUS.PC)
+		printf("0x%.8X|",Xeon->WB.BUS.PC);
+	else
+		printf("        |");
  }
 
 void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers,int p,int d)
@@ -22,7 +42,27 @@ void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers
 	{
 		printf("Current pipeline PC state :\n");
     printf("-----------------------------------------\n");
-	printf("Cycle %d: 0x%.8X|0x%.8X|0x%.8X|0x%.8X|0x%.8X\n", Xeon->cycle,Xeon->IF.BUS.PC,Xeon->ID.Bus.ID_IF_out.PC,Xeon->EX.bus.PC,Xeon->MEM.BUS.PC,Xeon->WB.BUS.PC);
+		printf("Cycle %d: ",Xeon->cycle);
+	if(Xeon->IF.BUS.PC != 0)
+		printf("0x%.8X|",Xeon->IF.BUS.PC);
+	else
+		printf("        |");
+	if(Xeon->ID.Bus.ID_IF_out.PC !=0)
+		printf("0x%.8X|",Xeon->ID.Bus.ID_IF_out.PC);
+	else
+		printf("        |");
+	if(Xeon->EX.bus.PC != 0)
+		printf("0x%.8X|",Xeon->EX.bus.PC);
+	else
+		printf("        |");
+	if(Xeon->MEM.BUS.PC)
+		printf("0x%.8X|",Xeon->MEM.BUS.PC);
+	else
+		printf("        |");
+	if(Xeon->WB.BUS.PC)
+		printf("0x%.8X|",Xeon->WB.BUS.PC);
+	else
+		printf("        |");
     
 	}
 		printf("Current register values :\n");

@@ -60,7 +60,7 @@ int move2bus(struct XeonStruct *Xeon) {
 	// Moves in ID stage starts
 	Xeon->ID.Bus.ID_IF_out.PC = Xeon->IF_ID.PC;
 	Xeon->ID.Bus.ID_IF_out.instr = Xeon->IF_ID.instr;
-	cout << "[ LOG ] (in move2bus) IF_ID.instr == 0x" << hex << Xeon->IF_ID.instr << endl;
+	//cout << "[ LOG ] (in move2bus) IF_ID.instr == 0x" << hex << Xeon->IF_ID.instr << endl;
 		
 	// Moves in EX stage starts
 	Xeon->EX.bus.PC = Xeon->ID_EX.PC;
@@ -84,10 +84,10 @@ int parseIDstage(XeonStruct *Xeon) {
 	struct MaskInstr Mask;
 	//cout << Mask.OPCODE << endl;
 	unsigned int instr = Xeon->ID.Bus.ID_IF_out.instr;	
-	cout << "[ LOG ] (in parseIDstage()) instr == 0x" << hex << instr << endl;
+	//cout << "[ LOG ] (in parseIDstage()) instr == 0x" << hex << instr << endl;
 	unsigned int op, rs, rt, rd, imm, j26;
 	/* Parsing */
-	cout << "[ LOG ] (in parseIDstage()) Mask.OPCODE == 0x" << hex << Mask.OPCODE << endl;
+	//cout << "[ LOG ] (in parseIDstage()) Mask.OPCODE == 0x" << hex << Mask.OPCODE << endl;
 	op = (Mask.OPCODE & instr) >> 26;
 	rs = (Mask.RS & instr) >> 21;
 	rt = (Mask.RT & instr) >> 16;
@@ -106,12 +106,12 @@ int parseIDstage(XeonStruct *Xeon) {
 	Xeon->ID.Bus.dest_1 = rt;
 	Xeon->ID.Bus.dest_2 = rd;
 
-	cout << "op == " << op << endl;
-	cout << "rs == " << rs << endl;
-	cout << "rt == " << rt << endl;
-	cout << "rd == " << rd << endl;
-	cout << "imm == " << imm << endl;
-	cout << "j26 == " << j26 << endl;
+	// cout << "op == " << op << endl;
+	// cout << "rs == " << rs << endl;
+	// cout << "rt == " << rt << endl;
+	// cout << "rd == " << rd << endl;
+	// cout << "imm == " << imm << endl;
+	// cout << "j26 == " << j26 << endl;
 
 	return 0;
 }
@@ -349,9 +349,82 @@ unsigned int toLittleEndian(unsigned int big) {
 	little |= ((big & 0x000000ff) << 24);
 	return little;
 }
+
+
+void branch_predict(struct XeonStruct *Xeon, int t)
+{
+	Xeon->IF.BUS.ConSig.branch = 0;
+	if(t == 0){
+		//printf("ANTP");
+		if (Xeon->ID.Bus.control_in == 4) // beq
+		{
+		//	printf("ID.BUS.CONTROL_IN %d\n",Xeon->ID.Bus.control_in);
+			if (Xeon->ID.Register.read_data_1 == Xeon->ID.Register.read_data_2)
+			{
+				Xeon->IF.BUS.ConSig.branch = 1;
+				Xeon->IF.Tmp.branch = (Xeon->ID.Bus.sign_extension_in * 4) + Xeon->ID.Bus.ID_IF_out.PC;
+
+				Xeon->IF_ID.instr = 0;
+				Xeon->IF_ID.PC = 0;
+				
+			}
+		}
+		if (Xeon->ID.Bus.control_in == 5)
+			{
+				//printf("ID.BUS.CONTROL_IN %d\n",Xeon->ID.Bus.control_in);
+				if (Xeon->ID.Register.read_data_1 != Xeon->ID.Register.read_data_2)
+				{
+					Xeon->IF.BUS.ConSig.branch = 1;
+					Xeon->IF.Tmp.branch = (Xeon->ID.Bus.sign_extension_in * 4) + Xeon->ID.Bus.ID_IF_out.PC;
+
+					Xeon->IF_ID.instr = 0;
+					Xeon->IF_ID.PC = 0;
+				}
+			}
+		}
+	if(t == 1){
+		//printf("ATP");
+		if (Xeon->ID.Bus.control_in == 4) {
+			//printf("ID.BUS.CONTROL_IN %d\n",Xeon->ID.Bus.control_in);
+			Xeon->IF_ID.instr = 0;
+			Xeon->IF_ID.PC = 0;
+			if (Xeon->ID.Register.read_data_1 == Xeon->ID.Register.read_data_2)
+			{
+				Xeon->IF.BUS.ConSig.branch = 1;
+				Xeon->IF.Tmp.branch = (Xeon->ID.Bus.sign_extension_in * 4) + Xeon->ID.Bus.ID_IF_out.PC;
+			}
+			else
+				Xeon->IF.PC = Xeon->IF.PC - 4;
+		}
+		if (Xeon->ID.Bus.control_in == 5) {
+			//printf("ID.BUS.CONTROL_IN %d\n",Xeon->ID.Bus.control_in);
+			Xeon->IF_ID.instr = 0;
+			Xeon->IF_ID.PC = 0;
+			if (Xeon->ID.Register.read_data_1 != Xeon->ID.Register.read_data_2)
+			{
+				Xeon->IF.BUS.ConSig.branch = 1;
+				Xeon->IF.Tmp.branch = (Xeon->ID.Bus.sign_extension_in * 4) + Xeon->ID.Bus.ID_IF_out.PC;
+			}
+			else
+				Xeon->IF.PC = Xeon->IF.PC - 4;
+		}
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 void setPC(struct XeonStruct *Xeon){
 	unsigned int tmp_1 = Xeon->IF.PC+4;
-	if(Xeon->IF.BUS.ConSig.PC_src==1)
+	if(Xeon->IF.BUS.ConSig.branch==1)
 		tmp_1 = Xeon->IF.Tmp.branch;
 	if(Xeon->IF.BUS.ConSig.jump==1)
 		tmp_1 = Xeon->IF.Tmp.jump;
@@ -368,11 +441,11 @@ void setPC(struct XeonStruct *Xeon){
 void fetch(struct XeonStruct *Xeon) {
 	unsigned int instrBigEndian = *(unsigned int*)(Xeon->mem + Xeon->IF.BUS.PC);
 	Xeon->IF_ID.instr = toLittleEndian(instrBigEndian);
-	cout << "[ LOG ] (in fetch()) Xeon->IF.BUS.PC == 0x" << hex << Xeon->IF.BUS.PC << endl;
-	cout << "[ LOG ] (in fetch()) Xeon->mem[Xeon->IF.BUS.PC] == 0x" << hex << Xeon->mem[Xeon->IF.BUS.PC] << endl;
-	cout << "[ LOG ] (in fetch()) *(unsigned int*)(Xeon->mem + Xeon->IF.BUS.PC) == 0x" << hex << *(unsigned int*)(Xeon->mem + Xeon->IF.BUS.PC) << endl;
-	Xeon->IF_ID.PC = Xeon->IF.BUS.PC;
-	cout << "[ LOG ] Xeon->IF.BUS.PC == 0x" << hex << Xeon->IF.BUS.PC << endl;
+	// cout << "[ LOG ] (in fetch()) Xeon->IF.BUS.PC == 0x" << hex << Xeon->IF.BUS.PC << endl;
+	// cout << "[ LOG ] (in fetch()) Xeon->mem[Xeon->IF.BUS.PC] == 0x" << hex << Xeon->mem[Xeon->IF.BUS.PC] << endl;
+	// cout << "[ LOG ] (in fetch()) *(unsigned int*)(Xeon->mem + Xeon->IF.BUS.PC) == 0x" << hex << *(unsigned int*)(Xeon->mem + Xeon->IF.BUS.PC) << endl;
+	 Xeon->IF_ID.PC = Xeon->IF.BUS.PC;
+	//cout << "[ LOG ] Xeon->IF.BUS.PC == 0x" << hex << Xeon->IF.BUS.PC << endl;
 	//printf("TESTING fetch\n");
 }
 
@@ -404,7 +477,7 @@ void f_MEM(struct XeonStruct *Xeon) {
 	else {
 		if (Xeon->EX_MEM.ConSig.is_zero == 1) {
 			//beq instruction
-			Xeon->IF.BUS.ConSig.PC_src= 1;
+			Xeon->IF.BUS.ConSig.branch= 1;
 			Xeon->IF.Tmp.branch= Xeon->MEM.BUS.PC_target;
 			
 			//Flush
@@ -433,7 +506,7 @@ void f_MEM(struct XeonStruct *Xeon) {
 		}
 		else {
 		//	Xeon->IF.BUS.ConSig.flush = 0;
-			Xeon->IF.BUS.ConSig.PC_src = 0;
+			Xeon->IF.BUS.ConSig.branch = 0;
 		}
 	}
 	//printf("TESTING f_MEM\n");

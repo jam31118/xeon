@@ -27,7 +27,7 @@ typedef struct XeonStruct {
 		struct {
 			unsigned int PC = 0;
 			struct {
-				unsigned int PC_src = 0;
+				unsigned int branch = 0;
 				unsigned int jump = 0;
 				unsigned int jr = 0;
 			} ConSig;
@@ -76,6 +76,7 @@ typedef struct XeonStruct {
 			int (*move2dest)(XeonStruct *Xeon);
 			int (*multiply_x4)(XeonStruct *Xeon);
             int (*generateControlSignal)(XeonStruct *Xeon);
+			
 		} Func;
 	} ID;
 
@@ -260,7 +261,7 @@ unsigned int multiplier_x4(unsigned int input);
 int putControlSignal(XeonStruct *Xeon, unsigned int sig9bits[]);
 unsigned int toBigEndian(unsigned int little);
 unsigned int toLittleEndian(unsigned int big);
-
+void branch_predict(struct XeonStruct *Xeon,int t);
 void setPC(struct XeonStruct *Xeon);
 void fetch(struct XeonStruct *Xeon);
 void move2src_MEM(struct XeonStruct *Xeon);

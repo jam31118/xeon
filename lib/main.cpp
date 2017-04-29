@@ -96,7 +96,7 @@ int main(int argc, char* argv[]) {
 	string outfilename = filename + "o";
 	readfile(infilename, input);
 
-	cout << "[ LOG ] readfile completed" << endl;
+	//cout << "[ LOG ] readfile completed" << endl;
 
 	// �������� ���� �Ҵ�.
 	unsigned int* reg = new unsigned int[32];
@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
 	unsigned long long memWordNum = memSizeByte / 4;
 	unsigned char *mem = (unsigned char*) calloc(memWordNum, sizeof(int));
 
-	cout << "[ LOG ] memory allocation completed" << endl;
+	//cout << "[ LOG ] memory allocation completed" << endl;
 
 	// �ʱ� PC�Դϴ�. text�� ó�� ������ ������ 0x00400000�� ����ŵ�ϴ�.
 	unsigned int pc = 0x00400000;
@@ -116,12 +116,12 @@ int main(int argc, char* argv[]) {
 	// label�� �󺧵鸸 ���� ������ string�Դϴ�. �ִ� 10���� ������ �ʰڰŴ�.. �����Ͽ����ϴ�.
 	string label[15];
 	findlabel(input, label);
-	cout << "[ LOG ] Find label completed" << endl;
+	//cout << "[ LOG ] Find label completed" << endl;
 	//cout << "[ LOG ] label == "; int idx = 0; while(!label[idx].empty()) { cout << label[idx] << endl; idx++; }
 	if (n != 0) { // n�� 0�� ���� �޸𸮿� ������ �ʵ��� ����ó���϶��� �ϼż�, if���� �߰��Ͽ����ϴ�.
 		savedata(input, mem);
 	}
-	cout << "[ LOG ] Save data completed" << endl;
+//	cout << "[ LOG ] Save data completed" << endl;
 
 	// ������ �Լ����� �ϳ��� �������ݴϴ�.
 	int data_size = lab2loc(input, label);
@@ -139,7 +139,7 @@ int main(int argc, char* argv[]) {
 		savetext(binary, mem);
 	}
 
-	cout << "[ LOG ] binary file saving completed" << endl;
+	//cout << "[ LOG ] binary file saving completed" << endl;
 
 	// Initialize Xeon Structure
 	XeonStruct Xeon;
@@ -151,17 +151,18 @@ int main(int argc, char* argv[]) {
     while (!isOver(&Xeon)) {
 		//cout << "in while\n";
         //instruction(reg, mem, PC, mainloc);
-		cout << "[ LOG ] cycle == " << Xeon.cycle << "-------------"<< endl;
+	//	cout << "[ LOG ] cycle == " << Xeon.cycle << "-------------"<< endl;
         /* Clock 0 ~ 0.5 */
 
 		move2bus(&Xeon);
 
 		IF_HEAD(&Xeon);
-		cout << "[ LOG ] (after IF HEAD) instrcode == " << *(unsigned int*)(Xeon.mem + Xeon.IF_ID.PC) << endl;
-		cout << "[ LOG ] (after IF HEAD) IF_ID.instr == " << Xeon.IF_ID.instr << endl; 
+//		cout << "[ LOG ] (after IF HEAD) instrcode == " << *(unsigned int*)(Xeon.mem + Xeon.IF_ID.PC) << endl;
+//		cout << "[ LOG ] (after IF HEAD) IF_ID.instr == " << Xeon.IF_ID.instr << endl; 
 		ID_HEAD(&Xeon);
-		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_1 == " << Xeon.ID.Bus.read_addr_1 << endl;
-		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_2 == " << Xeon.ID.Bus.read_addr_2 << endl;
+		branch_predict(&Xeon,t);
+//		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_1 == " << Xeon.ID.Bus.read_addr_1 << endl;
+//		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_2 == " << Xeon.ID.Bus.read_addr_2 << endl;
 		EX_HEAD(&Xeon);
 		MEM_HEAD(&Xeon);
 		WB_HEAD(&Xeon);
@@ -169,12 +170,12 @@ int main(int argc, char* argv[]) {
 		/* Clock 0.5 ~ 1 */ 
 		IF_TAIL(&Xeon); 
 		ID_TAIL(&Xeon); 
-		cout << "[ LOG ] (after ID TAIL) reg_read_addr_1 == " << Xeon.ID.Register.read_addr_1 << endl; 
-		cout << "[ LOG ] (after ID TAIL) reg_read_addr_2 == " << Xeon.ID.Register.read_addr_2 << endl; 
-		cout << "[ LOG ] (after ID_TAIL) reg_read_data_1 == " << Xeon.ID_EX.Data.reg_read_data_1 << endl;
-		cout << "[ LOG ] (after ID_TAIL) reg_read_data_2 == " << Xeon.ID_EX.Data.reg_read_data_2 << endl;
+	//	cout << "[ LOG ] (after ID TAIL) reg_read_addr_1 == " << Xeon.ID.Register.read_addr_1 << endl; 
+	//	cout << "[ LOG ] (after ID TAIL) reg_read_addr_2 == " << Xeon.ID.Register.read_addr_2 << endl; 
+	//	cout << "[ LOG ] (after ID_TAIL) reg_read_data_1 == " << Xeon.ID_EX.Data.reg_read_data_1 << endl;
+	//	cout << "[ LOG ] (after ID_TAIL) reg_read_data_2 == " << Xeon.ID_EX.Data.reg_read_data_2 << endl;
 		EX_TAIL(&Xeon);
-		cout << "[ LOG ] (after EX_TAIL) ALU_result == " << Xeon.EX_MEM.ALU_result << endl;
+	//	cout << "[ LOG ] (after EX_TAIL) ALU_result == " << Xeon.EX_MEM.ALU_result << endl;
 		MEM_TAIL(&Xeon);
 		WB_TAIL(&Xeon);
 
