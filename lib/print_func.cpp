@@ -7,20 +7,38 @@
  *
  * print values of PC and registers
  */
-void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers)
+ void print_pc(struct XeonStruct *Xeon)
+ {
+	printf("Cycle %d: 0x%.8X|0x%.8X|0x%.8X|0x%.8X|0x%.8X\n", Xeon->cycle,Xeon->IF.BUS.PC,Xeon->ID.Bus.ID_IF_out.PC,Xeon->EX.bus.PC,Xeon->MEM.BUS.PC,Xeon->WB.BUS.PC);
+ }
+
+void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers,int p,int d)
 {
-    int i;
 
-    printf("Current pipeline PC state :\n");
+
+	int i;
+
+	if(p == 1)
+	{
+		printf("Current pipeline PC state :\n");
     printf("-----------------------------------------\n");
-    printf("Cycle %d: 0x%.8X|0x%.8X|0x%.8X|0x%.8X|0x%.8X\n", Xeon->cycle,Xeon->IF.BUS.PC,Xeon->ID.Bus.ID_IF_out.PC,Xeon->ID_EX.PC,Xeon->EX_MEM.PC,Xeon->MEM_WB.PC);
-
-    printf("Registers:\n");
+	printf("Cycle %d: 0x%.8X|0x%.8X|0x%.8X|0x%.8X|0x%.8X\n", Xeon->cycle,Xeon->IF.BUS.PC,Xeon->ID.Bus.ID_IF_out.PC,Xeon->EX.bus.PC,Xeon->MEM.BUS.PC,Xeon->WB.BUS.PC);
+    
+	}
+	puts(" ");
+	if (d ==1)
+	{
+		printf("Current register values :\n");
+    printf("-----------------------------------------\n");
+    printf("PC: 0x%.8X\n", *PC);
+     printf("Registers:\n");
     for(i=0; i<32; i++) {
         printf("R%d: 0x%.8X\n", i, registers[i]);
     }
 
     printf("\n");
+	}
+   
 }
 
 /*

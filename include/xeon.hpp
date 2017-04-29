@@ -129,6 +129,7 @@ typedef struct XeonStruct {
 			unsigned int sign_extended;		//ID_EX에서 sign extended된 값을 여기에 저장
 			unsigned int Register_Addr2 = 0;	//ID_EX에 저장한 20-16번째 bit에 해당하는 값을 여기에 저장
 			unsigned int Register_write = 0;	//ID_EX에 저장한 15-11번째 bit에 해당하는 값을 여기에 저장
+			unsigned int PC = 0;
 		} bus;
 
 		struct
@@ -197,6 +198,7 @@ typedef struct XeonStruct {
 			unsigned int ALU_result = 0;
 			unsigned int dest = 0;
 			unsigned int fwd_WB = 0; 
+			unsigned int PC = 0;
 		}BUS;
 	} WB;
 
