@@ -1,19 +1,19 @@
 #include "print_func.hpp"
 #include <stdio.h>
-
+#include "xeon.hpp"
 /*
  * PC: pointer of PC
  * registers: array of the registers(R0~R31) of which size of element is 4 bytes(=32bits).
  *
  * print values of PC and registers
  */
-void print_reg(unsigned int* PC, unsigned int *registers)
+void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers)
 {
     int i;
 
-    printf("Current register values :\n");
+    printf("Current pipeline PC state :\n");
     printf("-----------------------------------------\n");
-    printf("PC: 0x%.8X\n", *PC);
+    printf("Cycle: %d \n", Xeon->cycle);
 
     printf("Registers:\n");
     for(i=0; i<32; i++) {

@@ -181,12 +181,12 @@ int main(int argc, char* argv[]) {
 		WB_TAIL(&Xeon);
 
 		Xeon.cycle++;
-		if (d) { print_reg(&Xeon.IF.PC, reg); }
+		if (d) { print_reg(&Xeon,&Xeon.IF.PC, reg); }
         if (d && m) { print_mem(mem, addr_begin, addr_end); }
     }
-    if (d && !n) { print_reg(&Xeon.IF.PC, reg); }
+    if (d && !n) { print_reg(&Xeon,&Xeon.IF.PC, reg); }
     if (!d && m) { print_mem(mem, addr_begin, addr_end); }
-    if (!d && !m) { print_reg(&(Xeon.IF.PC), reg); } 
+    if (!d && !m) { print_reg(&Xeon,&Xeon.IF.PC, reg); } 
 
 	delete[] reg;
 	delete[] mem;
