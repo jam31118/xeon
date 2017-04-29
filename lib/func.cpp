@@ -168,7 +168,7 @@ void readfile(string filename, string* input) {
 	bool b = false;
 
 	while (file.get(a)) {
-		if (a == ' ' || a == '\n' || a == '\t') {
+		if (a == ' ' || a == '\n' || a == '\t' || a == '\r') {
 			if (b) {
 				++i;
 			}
@@ -218,8 +218,8 @@ void findlabel(string* input, string* label) {
 void savedata(string* input, unsigned char* mem) {
 	int i = 0;
 	int j = 0x10000000;
-	while (input[i] != ".text" && input[i] != ".text\n") {
-		cout << "[ LOG ] (savedata) input[i] == " << input[i] << endl;
+	while (input[i].compare(".text")) {
+		cout << "[ LOG ] (savedata) input[i] == " << input[i] << "\t" << input[i].compare(".text") << endl;
 		if (i > 20) break;
 		if (input[i].find(".") == string::npos && input[i].find(":") == string::npos) {
 			wmem(mem, j, atoi(input[i].c_str()));
