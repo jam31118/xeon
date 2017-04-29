@@ -123,18 +123,37 @@ int generateControlSignal(XeonStruct *Xeon) {
     unsigned int opcode = Xeon->ID.Bus.control_in;
 	struct ConSig consigDB;
     if (opcode == 0) {
-        /* The instruction is R-type */
-		putControlSignal(Xeon, consigDB.R);
-		Xeon->IF.BUS.ConSig.jump = 0;
+		if (opcode == 0x08) {
+			/* In case of JR */
+			/* Put a bubble instr. into  IF_ID register */
+			Xeon->IF_ID.instr = 0;
+			/* Put controal signal to stall (bubble) */
+			putControlSignal(Xeon, consigDB.Jump);
+			/* Send data required for calculating jumping PC value to IF stage */
+			Xeon->IF.BUS.ConSig.jr = 1;
+			Xeon->IF.BUS.ConSig.jump = 1;
+		} else {
+        	/* The instruction is R-type */
+			putControlSignal(Xeon, consigDB.R);
+			Xeon->IF.BUS.ConSig.jump = 0;
+		}
     } else if (opcode >> 2 == 0) {
         /* The instruction is J-type */
 		switch (opcode) {
-			case 0x2:
-				putControlSignal(Xeon, consigDB.J);
+			case 0x2: // J
+				/* Put a bubble instr. into  IF_ID register */
+				Xeon->IF_ID.instr = 0;
+				/* Put controal signal to stall (bubble) */
+				putControlSignal(Xeon, consigDB.Jump);
 				Xeon->IF.BUS.ConSig.jump = 1;
 				break;
-			case 0x3:
-				/* (putControlSignal ... ) */
+			case 0x3: // JAL
+				/* Put PC+4 into $ra  */
+				Xeon->ID.Register.reg_file[31] = Xeon->ID.Bus.ID_IF_out.PC;
+				/* Put a bubble instr. into  IF_ID register */
+				Xeon->IF_ID.instr = 0;
+				/* Put controal signal to stall (bubble) */
+				putControlSignal(Xeon, consigDB.Jump);
 				Xeon->IF.BUS.ConSig.jump = 1;
 				break;
 			default:
@@ -157,6 +176,21 @@ int generateControlSignal(XeonStruct *Xeon) {
 			case 0x2b: // SW
 				putControlSignal(Xeon, consigDB.SW);
 				break;
+			case 0x09: // ADDIU
+				putControlSignal(Xeon, consigDB.I_typical);
+				break;
+			case 0x0d: // ORI
+				putControlSignal(Xeon, consigDB.I_typical);
+				break;
+			case 0x0b: // SLTIU
+				putControlSignal(Xeon, consigDB.I_typical);
+				break;
+			case 0x0c: // ADDI
+				putControlSignal(Xeon, consigDB.I_typical);
+				break;
+			case 0x0f: // LUI
+				putControlSignal(Xeon, consigDB.I_typical);
+				break;
 			default:
 				cerr << "[ERROR] (generateControlSignal) No opcode match in I-type." << endl;
 				return 1;
@@ -178,6 +212,11 @@ int read_register(XeonStruct *Xeon) {
 	Xeon->ID_EX.Data.reg_read_data_1 = Xeon->ID.Register.read_data_1;
 	Xeon->ID_EX.Data.reg_read_data_2 = Xeon->ID.Register.read_addr_2;
 
+	/* If Register.do_jr is true, we should send $rs to IF stage */
+	if (Xeon->ID.Register.do_jr) {
+		Xeon->IF.Tmp.jr = Xeon->ID.Register.reg_file[Xeon->ID.Register.read_addr_1];
+	}
+	/* Returns zero if there's no problem */
 	return 0;
 }
 int sign_extension_ID(XeonStruct *Xeon) {

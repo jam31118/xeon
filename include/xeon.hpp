@@ -13,6 +13,7 @@ typedef struct XeonStruct {
 		struct{
 			unsigned int branch = 0;
 			unsigned int jump = 0;
+			unsigned int jr = 0;
 		}Tmp;
 		struct {
 			void(*fetch)(struct XeonStruct*);
@@ -23,6 +24,7 @@ typedef struct XeonStruct {
 			struct {
 				unsigned int PC_src = 0;
 				unsigned int jump = 0;
+				unsigned int jr = 0;
 			} ConSig;
 		} BUS;
 	} IF;
@@ -56,6 +58,7 @@ typedef struct XeonStruct {
             unsigned int read_data_1 = 0, read_data_2 = 0;
             unsigned int *reg_file;
             unsigned int do_reg_write = 0;
+			unsigned int do_jr = 0; // when true, read rs and send it to IF.Tmp.jr
         } Register;
         struct {
 			unsigned int input = 0;
@@ -172,8 +175,8 @@ struct ConSig {
 	unsigned int LW[9] = {0,0,0,1, 0,1,0, 1,1};
 	unsigned int SW[9] = {0,0,0,1, 0,0,1, 0,0};
 	unsigned int Brch[9] = {0,0,1,0, 1,0,0, 0,0};
-	unsigned int J[9] = {0,0,0,0, 0,0,0, 0,0};
-	unsigned int JAL[9];
+	unsigned int Jump[9] = {0,0,0,0, 0,0,0, 0,0};
+	unsigned int I_typical[9] = {0,0,0,1, 0,0,0, 1,0};
 	/*
     struct R {
         static constexpr unsigned int EX[4] = {1,1,0,0};
@@ -181,7 +184,6 @@ struct ConSig {
         static constexpr unsigned int WB[2] = {1,0};
     } R;
 	*/
-    
 };
 int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem, unsigned int PC);
 int move2bus(struct XeonStruct *Xeon);
