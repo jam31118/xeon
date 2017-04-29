@@ -336,9 +336,76 @@ unsigned int toLittleEndian(unsigned int big) {
 	little |= ((big & 0x000000ff) << 24);
 	return little;
 }
+
+
+void branch_predict(struct XeonStruct *Xeon, int t)
+{
+	Xeon->IF.BUS.ConSig.branch = 0;
+	if(t == 1){
+		if (Xeon->ID.Bus.control_in == 0x04) // beq
+		{
+			if (Xeon->ID.Bus.read_addr_1 == Xeon->ID.Bus.read_addr_2)
+			{
+				Xeon->IF.BUS.ConSig.branch = 1;
+				Xeon->IF.Tmp.branch = (Xeon->ID.Bus.sign_extension_in * 4) + Xeon->ID.Bus.ID_IF_out.PC;
+
+				Xeon->IF_ID.instr = 0;
+				Xeon->IF_ID.PC = 0;
+
+			}
+		}
+		if (Xeon->ID.Bus.control_in == 0x05)
+			{
+				if (Xeon->ID.Bus.read_addr_1 != Xeon->ID.Bus.read_addr_2)
+				{
+					Xeon->IF.BUS.ConSig.branch = 1;
+					Xeon->IF.Tmp.branch = (Xeon->ID.Bus.sign_extension_in * 4) + Xeon->ID.Bus.ID_IF_out.PC;
+
+					Xeon->IF_ID.instr = 0;
+					Xeon->IF_ID.PC = 0;
+				}
+			}
+		}
+	if(t == 0){
+		if (Xeon->ID.Bus.control_in == 0x04) {
+			Xeon->IF_ID.instr = 0;
+			Xeon->IF_ID.PC = 0;
+			if (Xeon->ID.Bus.read_addr_1 == Xeon->ID.Bus.read_addr_2)
+			{
+				Xeon->IF.BUS.ConSig.branch = 1;
+				Xeon->IF.Tmp.branch = (Xeon->ID.Bus.sign_extension_in * 4) + Xeon->ID.Bus.ID_IF_out.PC;
+			}
+			else
+				Xeon->IF.PC = Xeon->IF.PC - 4;
+		}
+		if (Xeon->ID.Bus.control_in == 0x05) {
+			Xeon->IF_ID.instr = 0;
+			Xeon->IF_ID.PC = 0;
+			if (Xeon->ID.Bus.read_addr_1 != Xeon->ID.Bus.read_addr_2)
+			{
+				Xeon->IF.BUS.ConSig.branch = 1;
+				Xeon->IF.Tmp.branch = (Xeon->ID.Bus.sign_extension_in * 4) + Xeon->ID.Bus.ID_IF_out.PC;
+			}
+			else
+				Xeon->IF.PC = Xeon->IF.PC - 4;
+		}
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 void setPC(struct XeonStruct *Xeon){
 	unsigned int tmp_1 = Xeon->IF.PC+4;
-	if(Xeon->IF.BUS.ConSig.PC_src==1)
+	if(Xeon->IF.BUS.ConSig.branch==1)
 		tmp_1 = Xeon->IF.Tmp.branch;
 	if(Xeon->IF.BUS.ConSig.jump==1)
 		tmp_1 = Xeon->IF.Tmp.jump;
@@ -386,7 +453,7 @@ void f_MEM(struct XeonStruct *Xeon) {
 	else {
 		if (Xeon->EX_MEM.ConSig.is_zero == 1) {
 			//beq instruction
-			Xeon->IF.BUS.ConSig.PC_src= 1;
+			Xeon->IF.BUS.ConSig.branch= 1;
 			Xeon->IF.Tmp.branch= Xeon->MEM.BUS.PC_target;
 			
 			//Flush
@@ -415,7 +482,7 @@ void f_MEM(struct XeonStruct *Xeon) {
 		}
 		else {
 		//	Xeon->IF.BUS.ConSig.flush = 0;
-			Xeon->IF.BUS.ConSig.PC_src = 0;
+			Xeon->IF.BUS.ConSig.branch = 0;
 		}
 	}
 	//printf("TESTING f_MEM\n");
