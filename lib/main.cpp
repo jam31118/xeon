@@ -1,91 +1,182 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "print_func.h"
-#include "func.h"
-#include "xeon.h"
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include "print_func.hpp"
+#include "func.hpp"
+#include "xeon.hpp"
+#include <unistd.h>
+#include <getopt.h>
+
+#define MEMSIZE_GB 1
+
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
 	string filename;
-	int d = 0; // -d¿É¼ÇÀÌ ÀÔ·ÂµÇ¸é d=1·Î ÇÏ¿´½À´Ï´Ù.
-	int m = 0; // -m¿É¼ÇÀÌ ÀÔ·ÂµÇ¸é m=1·Î ÇÏ¿´½À´Ï´Ù.
+	int option = 0;
+	int t = 0; // antp or atp;
+	int d = 0; // print registor file and current PC per every cycle
+	int m = 0; // after end of simulation do memory dump
 	unsigned int addr_begin = 0;
 	unsigned int addr_end = 0;
-	int n = -1; // -n ¿É¼ÇÀÌ µû·Î ÀÔ·ÂµÇÁö ¾ÊÀ¸¸é nÀ» -1·Î ÇÏ¿´½À´Ï´Ù.
-
-	// argv¸¦ ÀÐ´Â ºÎºÐÀÔ´Ï´Ù. argv¸¦ ÀÐ´Âµ¥ streamÀ» »ç¿ëÇØ¾ß ÇÑ´Ù´Â °ÍÀ» ¸ô¶ó ´Ù¼Ò ÁöÀúºÐÇØÁ³½À´Ï´Ù.
-    if (getopt(argc,argv,&d,&m,&n,&addr_begin,&addr_end, filename)) { return 1; } // Àß¸øµÈ ¿É¼ÇÆÄ½Ì
-
-	// inputÀº ÀÐÀ» ¾î¼Àºí¸® ÆÄÀÏÀ» µ¢¾î¸®º°·Î ÀúÀåÇÒ °ø°£.
+	int p = 0; // print every PCs in each pipeline stage per every cycle
+	int n = -1; // execute line
+    //if (getopt(argc,argv,&d,&m,&p,&addr_begin,&addr_end, filename)) { return 1; } // ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½Ä½ï¿½
+	
+	static struct option long_options[] =
+        {
+          /* These options set a flag. */
+          {"antp", no_argument,       0, 1},
+          {"atp",   no_argument,       0, 0},
+        };
+		
+	istringstream ss(argv[argc-1]);
+	ss >> filename;
+	int long_index = 0;
+	 while ((option = getopt_long(argc, argv, "m:dpn:",long_options,&long_index)) != -1) {
+		switch (option) {
+				case 1:
+				{
+					t =0;
+					printf("OPTION ANTP\n");
+					break;
+				}
+				case 0:
+				{
+					printf("OPTION ATP\n");
+					t =1;
+					break;
+				}
+				case 'm': {
+                m=1;
+				char * memRange;
+				memRange = optarg;
+				//printf("memory will be printed: %s\n",memRange);
+				char *tok = strtok(memRange,":");
+				//printf("start: %s\n",tok);
+				addr_begin = strtol(tok,NULL,16);
+				tok = strtok(NULL,":");
+				//printf("start: %s\n",tok);
+				addr_end = strtol(tok,NULL,16);
+				printf("OPTION M\n");
+				break;
+			}
+			case 'd': {
+				d= 1;
+				printf("OPTION D\n");
+				break;
+			}
+			case 'n': {
+				n= atoi(optarg);
+				printf("OPTION Nn");
+				break;
+			}
+			case 'p':{
+				p = 1;
+				printf("OPTION P\n");
+				break;
+			}
+			case 'q':{
+				break;
+			}
+			default: {
+				printf("wrong args\n");
+				return 1;
+			}
+		}
+	}
+	
 	string input[1000];
 	filename.pop_back();
 	string infilename = filename + "s";
 	string outfilename = filename + "o";
 	readfile(infilename, input);
 
-	// ·¹Áö½ºÅÍ µ¿Àû ÇÒ´ç.
+	cout << "[ LOG ] readfile completed" << endl;
+
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½.
 	unsigned int* reg = new unsigned int[32];
-	// ÃÊ±âÈ­
-	for (int i = 0; i < 32; ++i) {
-		reg[i] = 0x00000000;
-	}
+	for (int i = 0; i < 32; ++i) {reg[i] = 0;}
 
-	// ¸Þ¸ð¸® µ¿Àû ÇÒ´ç. µ¿Àû ÇÒ´ç ¹ÞÀ» ¶§ ¸Þ¸ð¸®, array ±æÀÌ ¿À·ù¸¦ ÇÇÇÏ±â À§ÇØ Àû´çÇÑ ±æÀÌ¸¦ ÇÒ´ç ¹Þ¾Ò½À´Ï´Ù.
-	unsigned char* mem = new unsigned char[0x3fffffff];
-	// ÃÊ±âÈ­
-	for (int i = 0; i < 0x3fffffff; ++i) {
-		mem[i] = 0;
-	}
-	// ÃÊ±â PCÀÔ´Ï´Ù. text°¡ Ã³À½ ÀúÀåµÉ °ø°£ÀÎ 0x00400000À» °¡¸®Åµ´Ï´Ù.
+	// Declaration of system variables (memory etc.)
+	unsigned long long memSizeByte = MEMSIZE_GB*size_GB;
+	unsigned long long memWordNum = memSizeByte / 4;
+	unsigned char *mem = (unsigned char*) calloc(memWordNum, sizeof(int));
+
+	cout << "[ LOG ] memory allocation completed" << endl;
+
+	// ï¿½Ê±ï¿½ PCï¿½Ô´Ï´ï¿½. textï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0x00400000ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Åµï¿½Ï´ï¿½.
 	unsigned int pc = 0x00400000;
-	unsigned int* PC = &pc;
+	//unsigned int* PC = &pc;
 
-	// labelÀº ¶óº§µé¸¸ µû·Î ÀúÀåÇÒ stringÀÔ´Ï´Ù. ÃÖ´ë 10°³°¡ ³ÑÁö´Â ¾Ê°Ú°Å´Ï.. »ý°¢ÇÏ¿´½À´Ï´Ù.
-	string label[10];
+	// labelï¿½ï¿½ ï¿½óº§µé¸¸ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ stringï¿½Ô´Ï´ï¿½. ï¿½Ö´ï¿½ 10ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°Ú°Å´ï¿½.. ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
+	string label[15];
 	findlabel(input, label);
-	if (n != 0) { // nÀÌ 0ÀÏ ¶§´Â ¸Þ¸ð¸®¿¡ ´ã±âÁö ¾Êµµ·Ï ¿¹¿ÜÃ³¸®ÇÏ¶ó°í ÇÏ¼Å¼­, if¹®À» Ãß°¡ÇÏ¿´½À´Ï´Ù.
+	cout << "[ LOG ] Find label completed" << endl;
+	if (n != 0) { // nï¿½ï¿½ 0ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ð¸®¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½ ï¿½Ï¼Å¼ï¿½, ifï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
 		savedata(input, mem);
 	}
 	
-	// Á¦ÀÛÇÑ ÇÔ¼öµéÀ» ÇÏ³ª¾¿ ½ÇÇàÇØÁÝ´Ï´Ù.
+	cout << "[ LOG ] Save data completed" << endl;
+
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´Ï´ï¿½.
 	int data_size = lab2loc(input, label);
 	la2lui(input);
 	lab2pos(input, label);
-	int mainloc = formain(input);
+	//int mainloc = formain(input);
 	cleaner(input);
 
-	// º¯È¯µÈ binary ÄÚµå¸¦ ´ãÀ» string arrayÀÔ´Ï´Ù.
+	// ï¿½ï¿½È¯ï¿½ï¿½ binary ï¿½Úµå¸¦ ï¿½ï¿½ï¿½ï¿½ string arrayï¿½Ô´Ï´ï¿½.
 	string binary[1000];
 	int text_size = convert(input, binary);
 
 	savefile(outfilename, binary, text_size, data_size);
-	if (n != 0) { // nÀÌ 0ÀÏ ¶§´Â ¸Þ¸ð¸®¿¡ ´ã±âÁö ¾Êµµ·Ï ¿¹¿ÜÃ³¸®ÇÏ¶ó°í ÇÏ¼Å¼­, if¹®À» Ãß°¡ÇÏ¿´½À´Ï´Ù.
+	if (n != 0) { // nï¿½ï¿½ 0ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ð¸®¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½ ï¿½Ï¼Å¼ï¿½, ifï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
 		savetext(binary, mem);
 	}
-    
-    // ¸í·É¾î ½ÇÇà ÇÙ½É ºÎºÐ
-    unsigned int pc_max = pc + text_size - 4;
-    if (n >= 0) { pc_max = pc + (n-1)*4; }
-    while (pc_max >= pc) {
-        instruction(reg, mem, PC, mainloc);
-        if (d) { print_reg(PC, reg); }
+
+	cout << "[ LOG ] binary file saving completed" << endl;
+
+	// Initialize Xeon Structure
+	XeonStruct Xeon;
+	initalizeXeon(&Xeon,reg,mem,pc);
+	
+	unsigned int pc_max = Xeon.IF.PC + text_size - 4;
+    if (n >= 0) { pc_max = Xeon.IF.PC + (n-1)*4; }
+    while (pc_max >= Xeon.IF.PC) {
+		//cout << "in while\n";
+        //instruction(reg, mem, PC, mainloc);
+        /* Clock 0 ~ 0.5 */
+		
+		move2bus(&Xeon);
+
+		IF_HEAD(&Xeon);
+		ID_HEAD(&Xeon);
+		EX_HEAD(&Xeon);
+		MEM_HEAD(&Xeon);
+		WB_HEAD(&Xeon);
+		
+		/* Clock 0.5 ~ 1 */ 
+		IF_TAIL(&Xeon); 
+		ID_TAIL(&Xeon); 
+		EX_TAIL(&Xeon);
+		MEM_TAIL(&Xeon);
+		WB_TAIL(&Xeon);
+		
+		Xeon.cycle++;
+		if (d) { print_reg(&Xeon,&Xeon.IF.PC, reg); }
         if (d && m) { print_mem(mem, addr_begin, addr_end); }
     }
-    if (d && !n) { print_reg(PC, reg); }
+    if (d && !n) { print_reg(&Xeon,&Xeon.IF.PC, reg); }
     if (!d && m) { print_mem(mem, addr_begin, addr_end); }
-    if (!d && !m) { print_reg(PC, reg); } 
+    if (!d && !m) { print_reg(&Xeon,&Xeon.IF.PC, reg); } 
 
-	// µ¿Àû ÇÒ´ç¹ÞÀº ¸Þ¸ð¸®µéÀ» »èÁ¦ÇÏ¿©ÁÝ´Ï´Ù.
-	delete[] mem;
 	delete[] reg;
-
-	/* TESTING START */
-	XeonStruct Xeon;
-	cout << "Xeon.clock == " << Xeon.clock << endl;
-	//IFstage(&Xeon);
-	/* TESTING END */
+	delete[] mem;
 
 	return 0;
 }
