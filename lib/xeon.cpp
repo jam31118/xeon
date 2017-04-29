@@ -23,7 +23,8 @@ int initalizeXeon(struct XeonStruct *Xeon, unsigned int *reg, unsigned char *mem
 
 	// Initialize EX structure 
     Xeon->EX.Func.shift_left2_fp = &shift_left2;
-    Xeon->EX.Func.R_type_ALU_func = &R_type_ALU_func;
+    Xeon->EX.Func.det_ALU_ctrl_input = &det_ALU_ctrl_input;
+    Xeon->EX.Func.ALU_execute = &ALU_execute;
 
 	// Initialize MEM structure
 	Xeon->MEM.Func.move2src_MEM = &move2src_MEM;
@@ -429,9 +430,14 @@ void conSig(struct XeonStruct *Xeon){
 //EX stage - 0~0.5 clock
 void EX_HEAD(struct XeonStruct *Xeon)
 {
-	// 0 ~ 0.5 clock
-	
-	//ALU source 준비
+	//이용할 signal값 저장
+    Xeon->EX.ConSig.ALUOp_sig = (Xeon->ID_EX.ConSig.EX.ALU_Op1)*2 + Xeon->ID_EX.ConSig.EX.ALU_Op2;
+    Xeon->EX.ConSig.ALUSrc_sig = Xeon->ID_EX.ConSig.EX.ALU_Src;
+    Xeon->EX.ConSig.RegDst_sig = Xeon->ID_EX.ConSig.EX.RegDst;
+    //이용 안 할 signal값
+  
+    
+    //ALU source 준비
 	Xeon->EX.bus.RegisterRs_data = Xeon->ID_EX.Data.reg_read_data_1;			//먼저 이렇게 넣어놓고 나중에 전방전달로 바꾸든가 한다.
 	Xeon->EX.bus.RegisterRt_data = Xeon->ID_EX.Data.reg_read_data_2;
 /*	

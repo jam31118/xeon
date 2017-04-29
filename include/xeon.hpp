@@ -98,7 +98,8 @@ typedef struct XeonStruct {
             } WB;
 		} ConSig;
 		struct { 
-			unsigned int reg_read_data_1 = 0;
+			unsigned int opcode = 0;
+            unsigned int reg_read_data_1 = 0;
 			unsigned int reg_read_data_2  = 0;
 			unsigned int imm = 0;
 			unsigned int dest_1 = 0, dest_2 = 0;
@@ -112,18 +113,23 @@ typedef struct XeonStruct {
 		//int forward_ALUSrc2_mux = 0;
 
 		int ALUSrc_mux = 0;
-		int ALUSrc1 = 0;
-		int ALUSrc2 = 0;
+		unsigned int ALUSrc1 = 0;
+		unsigned int ALUSrc2 = 0;
+        unsigned int PC = 0;
+
 		int RegDst_mux = 0;
 		unsigned int RegDst = 0;
-		int ALU_control_unit = 0;
-		unsigned int funct = 0;
+
+		unsigned int ALU_control_unit = 0;
 		unsigned int shamt = 0;
 		unsigned int ALU_result = 0;
 		unsigned int shifted_value = 0;
+        unsigned int SW_data = 0;
+
 		struct
 		{
-			unsigned int RegisterRs_data = 0;
+			unsigned int op_code = 0;
+            unsigned int RegisterRs_data = 0;
 			unsigned int RegisterRt_data = 0;   //ID_EX에 있던 RegisterRt 값을 여기에 저장
 			unsigned int sign_extended = 0;		//ID_EX에서 sign extended된 값을 여기에 저장
 			unsigned int Register_Addr2 = 0;	//ID_EX에 저장한 20-16번째 bit에 해당하는 값을 여기에 저장
@@ -132,15 +138,16 @@ typedef struct XeonStruct {
 
 		struct
 		{
-			int ALUOp_sig = 0;		//ID_EX에 있는 ALUOp_signal을 여기에 저장
-			int RegDst_sig = 0;		//ID_EX에 있는 RegDst_signal을 여기에 저장
-			int ALUSrc_sig = 0;		//ID_EX에 있는 ALUSrc_signal을 여기에 저장
+            unsigned int ALUOp_sig = 0, RegDst_sig = 0, ALUSrc_sig = 0;
+            unsigned int Brch = 0, MemRead = 0, MemWrite = 0;
+            unsigned int RegWrite = 0, MemtoReg = 0;
 		} ConSig;
 		
         struct
         {
     		unsigned int(*shift_left2_fp) (unsigned int);
-	    	unsigned (*R_type_ALU_func) (unsigned int, unsigned int, unsigned int, unsigned int);
+            unsigned int(*det_ALU_ctrl_input) (unsigned int, unsigned int);
+            unsigned int(*ALU_execute) (unsigned int, unsigned int, unsigned int);
         } Func;
 	} EX;
 
@@ -148,6 +155,8 @@ typedef struct XeonStruct {
 		unsigned int ALU_result = 0;
 		unsigned int PC_target = 0;
 		unsigned int PC = 0;
+        unsigned int fin_reg_dst = 0;
+        unsigned int SW_data = 0;
         struct {
 			struct {
                  unsigned int Brch = 0, MemRead = 0, MemWrite = 0;
@@ -275,7 +284,9 @@ void MEM_TAIL(struct XeonStruct *Xeon);
 void WB_TAIL(struct XeonStruct *Xeon);
 
 unsigned int shift_left2(unsigned int val);
-unsigned int R_type_ALU_func(unsigned int funct_code, unsigned int alu_src1, unsigned int alu_src2, unsigned int shamt);
+unsigned int det_ALU_ctrl_input(unsigned int aluop_sig, unsigned int six_bit_field);
+unsigned int ALU_execute(unsigned int alu_src1, unsigned int alu_src2, unsigned int alu_control_input);
+/*
 unsigned int SLL(unsigned int alu_src2, unsigned int shamt);
 unsigned int SRL(unsigned int alu_src2, unsigned int shamt);
 unsigned int ADDU(unsigned int alu_src1, unsigned int alu_src2);
@@ -284,4 +295,5 @@ unsigned int AND(unsigned int alu_src1, unsigned int alu_src2);
 unsigned int OR(unsigned int alu_src1, unsigned int alu_src2);
 unsigned int NOR(unsigned int alu_src1, unsigned int alu_src2);
 unsigned int SLTU(unsigned int alu_src1, unsigned int alu_src2);
+*/
 #endif
