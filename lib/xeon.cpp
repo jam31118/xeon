@@ -356,9 +356,9 @@ void move2src_MEM(struct XeonStruct *Xeon) {
 
 // MEM stage acting fucntion
 void f_MEM(struct XeonStruct *Xeon) {
-	if (Xeon->EX_MEM.ConSig.MEM.Brch== 0) {
-		if (Xeon->EX_MEM.ConSig.MEM.MemRead == 0) {
-			if (Xeon->EX_MEM.ConSig.MEM.MemWrite == 0) {
+	if (Xeon->EX_MEM.ConSig.MEM.Brch == 0) {
+		if (Xeon->EX_MEM.ConSig.MEM.MemWrite == 0) {
+			if (Xeon->EX_MEM.ConSig.MEM.MemRead == 0) {
 				// r type instructin
 			}
 			else {
@@ -473,9 +473,6 @@ void ID_TAIL(struct XeonStruct *Xeon) {
 	Xeon->ID.Func.sign_extension_ID(Xeon);
 	Xeon->ID.Func.multiply_x4(Xeon);
 	//printf("THIS IS ID_TAIL STAGE\n");
-}
-void EX_TAIL(struct XeonStruct * Xeon) {
-	//printf("THIS IS EX_TAIL STAGE\n");
 }
 void MEM_TAIL(struct XeonStruct *Xeon) {
 	Xeon->MEM.Func.f_MEM(Xeon);
