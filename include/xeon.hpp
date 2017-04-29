@@ -120,7 +120,7 @@ typedef struct XeonStruct {
 		int RegDst_mux = 0;
 		unsigned int RegDst = 0;
 
-		unsigned int ALU_control_unit = 0;
+		unsigned int ALU_control_input = 0;
 		unsigned int shamt = 0;
 		unsigned int ALU_result = 0;
 		unsigned int shifted_value = 0;
