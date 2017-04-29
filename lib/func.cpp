@@ -218,7 +218,9 @@ void findlabel(string* input, string* label) {
 void savedata(string* input, unsigned char* mem) {
 	int i = 0;
 	int j = 0x10000000;
-	while (input[i] != ".text") {
+	while (input[i] != ".text" && input[i] != ".text\n") {
+		cout << "[ LOG ] (savedata) input[i] == " << input[i] << endl;
+		if (i > 20) break;
 		if (input[i].find(".") == string::npos && input[i].find(":") == string::npos) {
 			wmem(mem, j, atoi(input[i].c_str()));
 			j += 4;

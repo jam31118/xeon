@@ -27,6 +27,8 @@ int main(int argc, char* argv[]) {
 	string outfilename = filename + "o";
 	readfile(infilename, input);
 
+	cout << "[ LOG ] readfile completed" << endl;
+
 	// �������� ���� �Ҵ�.
 	unsigned int* reg = new unsigned int[32];
 	for (int i = 0; i < 32; ++i) {reg[i] = 0;}
@@ -36,17 +38,22 @@ int main(int argc, char* argv[]) {
 	unsigned long long memWordNum = memSizeByte / 4;
 	unsigned char *mem = (unsigned char*) calloc(memWordNum, sizeof(int));
 
+	cout << "[ LOG ] memory allocation completed" << endl;
+
 	// �ʱ� PC�Դϴ�. text�� ó�� ������ ������ 0x00400000�� ����ŵ�ϴ�.
 	unsigned int pc = 0x00400000;
 	//unsigned int* PC = &pc;
 
 	// label�� �󺧵鸸 ���� ������ string�Դϴ�. �ִ� 10���� ������ �ʰڰŴ�.. �����Ͽ����ϴ�.
-	string label[10];
+	string label[15];
 	findlabel(input, label);
+	cout << "[ LOG ] Find label completed" << endl;
 	if (n != 0) { // n�� 0�� ���� �޸𸮿� ������ �ʵ��� ����ó���϶��� �ϼż�, if���� �߰��Ͽ����ϴ�.
 		savedata(input, mem);
 	}
 	
+	cout << "[ LOG ] Save data completed" << endl;
+
 	// ������ �Լ����� �ϳ��� �������ݴϴ�.
 	int data_size = lab2loc(input, label);
 	la2lui(input);
@@ -62,6 +69,8 @@ int main(int argc, char* argv[]) {
 	if (n != 0) { // n�� 0�� ���� �޸𸮿� ������ �ʵ��� ����ó���϶��� �ϼż�, if���� �߰��Ͽ����ϴ�.
 		savetext(binary, mem);
 	}
+
+	cout << "[ LOG ] binary file saving completed" << endl;
 
 	// Initialize Xeon Structure
 	XeonStruct Xeon;
