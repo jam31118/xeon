@@ -1,24 +1,91 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
 #include "print_func.hpp"
 #include "func.hpp"
 #include "xeon.hpp"
-
+#include <unistd.h>
+#include <getopt.h>
 using namespace std;
 
 int main(int argc, char* argv[]) {
 	string filename;
+	int option = 0;
+	int t = 0; // antp or atp;
 	int d = 0; // print registor file and current PC per every cycle
 	int m = 0; // after end of simulation do memory dump
 	unsigned int addr_begin = 0;
 	unsigned int addr_end = 0;
 	int p = 0; // print every PCs in each pipeline stage per every cycle
-	int f = 
-	// argv�� �д� �κ��Դϴ�. argv�� �дµ� stream�� �����ؾ� �Ѵٴ� ���� ���� �ټ� �������������ϴ�.
-    if (getopt(argc,argv,&d,&m,&p,&addr_begin,&addr_end, filename)) { return 1; } // �߸��� �ɼ��Ľ�
-
-	// input�� ���� �������� ������ ������� ������ ����.
+	int n = -1; // execute line
+    //if (getopt(argc,argv,&d,&m,&p,&addr_begin,&addr_end, filename)) { return 1; } // �߸��� �ɼ��Ľ�
+	
+	static struct option long_options[] =
+        {
+          /* These options set a flag. */
+          {"antp", no_argument,       0, 1},
+          {"atp",   no_argument,       0, 0},
+        };
+		
+	istringstream ss(argv[argc-1]);
+	ss >> filename;
+	int long_index = 0;
+	 while ((option = getopt_long(argc, argv, "m:dpn:",long_options,&long_index)) != -1) {
+		switch (option) {
+				case 0:
+				{
+					t =0;
+					printf("OPTION -ANTP\n");
+					break;
+				}
+				case 1:
+				{
+					printf("OPTION -ATP\n");
+					t =1;
+					break;
+				}
+				case 'm': {
+                m=1;
+				char * memRange;
+				memRange = optarg;
+				//printf("memory will be printed: %s\n",memRange);
+				char *tok = strtok(memRange,":");
+				//printf("start: %s\n",tok);
+				addr_begin = strtol(tok,NULL,16);
+				tok = strtok(NULL,":");
+				//printf("start: %s\n",tok);
+				addr_end = strtol(tok,NULL,16);
+				printf("OPTION M\n");
+				break;
+			}
+			case 'd': {
+				d= 1;
+				printf("OPTION D\n");
+				break;
+			}
+			case 'n': {
+				n= atoi(optarg);
+				printf("OPTION Nn");
+				break;
+			}
+			case 'p':{
+				p = 1;
+				printf("OPTION P\n");
+				break;
+			}
+			case 'q':{
+				break;
+			}
+			default: {
+				printf("wrong args\n");
+				return 1;
+			}
+		}
+	}
+	
 	string input[1000];
 	filename.pop_back();
 	string infilename = filename + "s";

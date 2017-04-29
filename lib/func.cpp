@@ -8,46 +8,46 @@
 �� �ڵ带 �о��ֽ� ���� ���Ŵٸ�, �� �κ� �����Ͽ� �о��ֽø� �����ϰڽ��ϴ�.
 */
 
-int getopt(int argc, char *argv[], int *d, int *m, int *p, unsigned int *addr_begin, unsigned int *addr_end, string& filename) {
-    int argvi = 1;
-	while (true) {
-		istringstream ss(argv[argvi]);
-		string j;
-		ss >> j;
-		if (j[0] == '-') {
-			if (j[1] == 'm') {
-				*m = 1;
-				istringstream ss(argv[argvi + 1]);
-				ss >> j;
-				int sep;
-				sep = j.find(":");
-				*addr_begin = hex2int(j.substr(0, sep));
-				*addr_end = hex2int(j.substr(sep + 1, j.length() - sep - 1));
-				argvi += 2;
-			}
-			else if (j[1] == 'd') {
-				*d = 1;
-				argvi += 1;
-			}
-			else if (j[1] == 'n') {
-				istringstream ss(argv[argvi + 1]);
-				ss >> j;
-				*n = atoi(j.c_str());
-				argvi += 2;
-			}
-			else {
-				cout << "Something wrong in argv" << endl;
-                return 1;
-			}
-		}
-		else {
-			istringstream ss(argv[argvi]);
-			ss >> filename;
-			break;
-		}
-	}
-    return 0;
-}
+// int getopt(int argc, char *argv[], int *d, int *m, int *p, unsigned int *addr_begin, unsigned int *addr_end, string& filename) {
+//     int argvi = 1;
+// 	while (true) {
+// 		istringstream ss(argv[argvi]);
+// 		string j;
+// 		ss >> j;
+// 		if (j[0] == '-') {
+// 			if (j[1] == 'm') {
+// 				*m = 1;
+// 				istringstream ss(argv[argvi + 1]);
+// 				ss >> j;
+// 				int sep;
+// 				sep = j.find(":");
+// 				*addr_begin = hex2int(j.substr(0, sep));
+// 				*addr_end = hex2int(j.substr(sep + 1, j.length() - sep - 1));
+// 				argvi += 2;
+// 			}
+// 			else if (j[1] == 'd') {
+// 				*d = 1;
+// 				argvi += 1;
+// 			}
+// 			else if (j[1] == 'n') {
+// 				istringstream ss(argv[argvi + 1]);
+// 				ss >> j;
+// 				*n = atoi(j.c_str());
+// 				argvi += 2;
+// 			}
+// 			else {
+// 				cout << "Something wrong in argv" << endl;
+//                 return 1;
+// 			}
+// 		}
+// 		else {
+// 			istringstream ss(argv[argvi]);
+// 			ss >> filename;
+// 			break;
+// 		}
+// 	}
+//     return 0;
+// }
 
 // ���ɾ �´��� ã��. ������ true.
 bool isinst(string input) {
