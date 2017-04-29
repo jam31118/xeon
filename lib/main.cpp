@@ -42,12 +42,12 @@ int main(int argc, char* argv[]) {
 				case 1:
 				{
 					t =0;
-					printf("OPTION ANTP\n");
+//					//printf("OPTION ANTP\n");
 					break;
 				}
 				case 0:
 				{
-					printf("OPTION ATP\n");
+//					//printf("OPTION ATP\n");
 					t =1;
 					break;
 				}
@@ -55,36 +55,36 @@ int main(int argc, char* argv[]) {
                 m=1;
 				char * memRange;
 				memRange = optarg;
-				//printf("memory will be printed: %s\n",memRange);
+				////printf("memory will be printed: %s\n",memRange);
 				char *tok = strtok(memRange,":");
-				//printf("start: %s\n",tok);
+				////printf("start: %s\n",tok);
 				addr_begin = strtol(tok,NULL,16);
 				tok = strtok(NULL,":");
-				//printf("start: %s\n",tok);
+				////printf("start: %s\n",tok);
 				addr_end = strtol(tok,NULL,16);
-				printf("OPTION M\n");
+				//printf("OPTION M\n");
 				break;
 			}
 			case 'd': {
 				d= 1;
-				printf("OPTION D\n");
+				//printf("OPTION D\n");
 				break;
 			}
 			case 'n': {
 				n= atoi(optarg);
-				printf("OPTION Nn");
+				//printf("OPTION Nn");
 				break;
 			}
 			case 'p':{
 				p = 1;
-				printf("OPTION P\n");
+				//printf("OPTION P\n");
 				break;
 			}
 			case 'q':{
 				break;
 			}
 			default: {
-				printf("wrong args\n");
+				//printf("wrong args\n");
 				return 1;
 			}
 		}
@@ -100,7 +100,7 @@ int main(int argc, char* argv[]) {
 
 	// �������� ���� �Ҵ�.
 	unsigned int* reg = new unsigned int[32];
-	for (int i = 0; i < 32; ++i) {reg[i] = 1;}
+	for (int i = 0; i < 32; ++i) {reg[i] = 0;}
 
 	// Declaration of system variables (memory etc.)
 	unsigned long long memSizeByte = MEMSIZE_GB*size_GB;
