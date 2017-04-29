@@ -160,7 +160,7 @@ int main(int argc, char* argv[]) {
 //		cout << "[ LOG ] (after IF HEAD) instrcode == " << *(unsigned int*)(Xeon.mem + Xeon.IF_ID.PC) << endl;
 //		cout << "[ LOG ] (after IF HEAD) IF_ID.instr == " << Xeon.IF_ID.instr << endl; 
 		ID_HEAD(&Xeon);
-		branch_predict(&Xeon,t);
+		
 //		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_1 == " << Xeon.ID.Bus.read_addr_1 << endl;
 //		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_2 == " << Xeon.ID.Bus.read_addr_2 << endl;
 		EX_HEAD(&Xeon);
@@ -170,7 +170,7 @@ int main(int argc, char* argv[]) {
 		/* Clock 0.5 ~ 1 */ 
 		IF_TAIL(&Xeon); 
 		ID_TAIL(&Xeon); 
-		
+		branch_predict(&Xeon,t);
 	//	cout << "[ LOG ] (after ID TAIL) reg_read_addr_1 == " << Xeon.ID.Register.read_addr_1 << endl; 
 	//	cout << "[ LOG ] (after ID TAIL) reg_read_addr_2 == " << Xeon.ID.Register.read_addr_2 << endl; 
 	//	cout << "[ LOG ] (after ID_TAIL) reg_read_data_1 == " << Xeon.ID_EX.Data.reg_read_data_1 << endl;
