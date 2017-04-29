@@ -25,19 +25,14 @@ void print_reg(struct XeonStruct *Xeon,unsigned int* PC, unsigned int *registers
 	printf("Cycle %d: 0x%.8X|0x%.8X|0x%.8X|0x%.8X|0x%.8X\n", Xeon->cycle,Xeon->IF.BUS.PC,Xeon->ID.Bus.ID_IF_out.PC,Xeon->EX.bus.PC,Xeon->MEM.BUS.PC,Xeon->WB.BUS.PC);
     
 	}
-	puts(" ");
-	if (d ==1)
-	{
 		printf("Current register values :\n");
     printf("-----------------------------------------\n");
     printf("PC: 0x%.8X\n", *PC);
      printf("Registers:\n");
     for(i=0; i<32; i++) {
         printf("R%d: 0x%.8X\n", i, registers[i]);
-    }
-
-    printf("\n");
 	}
+	printf("\n");
    
 }
 
