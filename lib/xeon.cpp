@@ -334,6 +334,25 @@ int putControlSignal(XeonStruct *Xeon, char mod) {
 }
 */
 
+void branch_predict(struct XeonStruct *Xeon, int t)
+{
+	if(t == 1){
+	
+	}
+	if(t == 0){
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
 void setPC(struct XeonStruct *Xeon){
 	unsigned int tmp_1 = Xeon->IF.PC+4;
 	if(Xeon->IF.BUS.ConSig.PC_src==1)
