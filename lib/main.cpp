@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
 	string label[15];
 	findlabel(input, label);
 	cout << "[ LOG ] Find label completed" << endl;
-	cout << "[ LOG ] label == "; int idx = 0; while(!label[idx].empty()) { cout << label[idx] << endl; idx++; }
+	//cout << "[ LOG ] label == "; int idx = 0; while(!label[idx].empty()) { cout << label[idx] << endl; idx++; }
 	if (n != 0) { // n�� 0�� ���� �޸𸮿� ������ �ʵ��� ����ó���϶��� �ϼż�, if���� �߰��Ͽ����ϴ�.
 		savedata(input, mem);
 	}
@@ -156,7 +156,7 @@ int main(int argc, char* argv[]) {
 		move2bus(&Xeon);
 
 		IF_HEAD(&Xeon);
-		cout << "[ LOG ] (after IF HEAD) instrcode == " << *(unsigned int*)(Xeon.mem + Xeon.IF.PC) << endl;
+		cout << "[ LOG ] (after IF HEAD) instrcode == " << *(unsigned int*)(Xeon.mem + Xeon.IF_ID.PC) << endl;
 		cout << "[ LOG ] (after IF HEAD) IF_ID.instr == " << Xeon.IF_ID.instr << endl; 
 		ID_HEAD(&Xeon);
 		cout << "[ log ] (after ID HEAD) Bus.reg_read_addr_1 == " << Xeon.ID.Bus.read_addr_1 << endl;

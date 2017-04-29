@@ -256,6 +256,8 @@ int is_5bit(unsigned int input);
 int is_n_bit(unsigned int input, int n);
 unsigned int multiplier_x4(unsigned int input);
 int putControlSignal(XeonStruct *Xeon, unsigned int sig9bits[]);
+unsigned int toBigEndian(unsigned int little);
+unsigned int toLittleEndian(unsigned int big);
 
 void setPC(struct XeonStruct *Xeon);
 void fetch(struct XeonStruct *Xeon);
