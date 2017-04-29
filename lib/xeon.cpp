@@ -49,7 +49,8 @@ int move2bus(struct XeonStruct *Xeon) {
 	Xeon->ID.Bus.ID_IF_out.instr = Xeon->IF_ID.instr;
 		
 	// Moves in EX stage starts
-	/* ... */
+	Xeon->EX.bus.PC = Xeon->ID_EX.PC;
+	
 
 	// Moves in MEM stage starts
 	Xeon->MEM.BUS.PC = Xeon->EX_MEM.PC;
@@ -57,6 +58,7 @@ int move2bus(struct XeonStruct *Xeon) {
 	Xeon->MEM.BUS.PC_target = Xeon->EX_MEM.PC_target;
 
 	// Moves in WB stage starts
+	Xeon->WB.BUS.PC = Xeon->MEM_WB.PC;
 	Xeon->WB.BUS.ALU_result = Xeon->EX_MEM.ALU_result;// need to check
 	Xeon->WB.BUS.dest = Xeon->MEM_WB.dest;
 	Xeon->WB.BUS.read_data = Xeon->MEM_WB.read_data;
@@ -351,6 +353,7 @@ void fetch(struct XeonStruct *Xeon) {
 
 //MEM BUS to MEM
 void move2src_MEM(struct XeonStruct *Xeon) {
+	Xeon->EX_MEM.PC = Xeon->EX.bus.PC;
 	Xeon->MEM.addr_src = Xeon->MEM.BUS.ALU_result;
 	Xeon->MEM.write_data = Xeon->ID_EX.Data.reg_read_data_2;
 	//printf("TESTING move2src_MEM\n");
@@ -412,7 +415,7 @@ void f_MEM(struct XeonStruct *Xeon) {
 }
 //WB BUS to WB
 void move2src_WB(struct XeonStruct *Xeon) {
-	Xeon->MEM_WB.PC= Xeon->EX_MEM.PC;
+	Xeon->MEM_WB.PC= Xeon->MEM.BUS.PC;
 	Xeon->WB.ALU_result = Xeon->WB.BUS.ALU_result;
 	Xeon->WB.dest = Xeon->WB.BUS.dest;
 	Xeon->WB.read_data = Xeon->WB.BUS.read_data;
