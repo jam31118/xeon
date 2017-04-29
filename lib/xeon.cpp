@@ -309,31 +309,6 @@ int putControlSignal(XeonStruct *Xeon, unsigned int sig9bits[]) {
    	Xeon->ID_EX.ConSig.WB.MemtoReg = sig9bits[8];
 	return 0;
 }
-/* This puts control signals according to mod such as R(-type), lw etc.*/
-/*
-int putControlSignal(XeonStruct *Xeon, char mod) {
-	struct ConSig consigDB;	
-	switch (mod) {
-		case 'R':
-	        Xeon->ID_EX.ConSig.EX.RegDst = consigDB.R.EX[0];
-    	    Xeon->ID_EX.ConSig.EX.ALU_Op1 = consigDB.R.EX[1];
-        	Xeon->ID_EX.ConSig.EX.ALU_Op2 = consigDB.R.EX[2];
-	        Xeon->ID_EX.ConSig.EX.ALU_Src = consigDB.R.EX[3];
-    	    Xeon->ID_EX.ConSig.MEM.Brch = consigDB.R.MEM[0];
-        	Xeon->ID_EX.ConSig.MEM.MemRead = consigDB.R.MEM[1];
-	        Xeon->ID_EX.ConSig.MEM.MemWrite = consigDB.R.MEM[2];
-    	    Xeon->ID_EX.ConSig.WB.RegWrite = consigDB.R.WB[0];
-        	Xeon->ID_EX.ConSig.WB.MemtoReg = 0;
-			break;
-		default:
-			cerr << "[ERROR] There is corresponding mode" << endl;
-			cerr << "[ERROR] The input mod == " << mod << endl;
-			return 1;
-	} 
-	return 0;
-}
-*/
-
 void setPC(struct XeonStruct *Xeon){
 	unsigned int tmp_1 = Xeon->IF.PC+4;
 	if(Xeon->IF.BUS.ConSig.PC_src==1)
@@ -468,7 +443,7 @@ void EX_TAIL(struct XeonStruct *Xeon)
 		Xeon->EX.RegDst = Xeon->EX.bus.Register_Addr2;
 
 	//ALU가 수행할 작업 선택
-	switch (Xeon->EX.ALU_control_unit)		//0, 1, 2, 3중 하나
+	switch (Xeon->EX.ConSig.ALUOp_sig)		//0, 1, 2, 3중 하나
 	{
 	case 0:		//lw sw
 	//	Xeon->EX.ALU = "lw/sw";

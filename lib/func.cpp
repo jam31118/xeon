@@ -609,7 +609,8 @@ int convert(string* input, string* binary) {
 			index += 4;
 		}
 		else {
-			cout << "Something wrong in convert" << endl; // ���� �޼��� ����
+			cerr << "[ERROR] (convert) Something wrong in convert" << endl; // ���� �޼��� ����
+			cerr << "[ERROR] (convert) input[" << index << "] == " << input[index] << endl;
 			index = 999;
 		}
 		++bindex;
