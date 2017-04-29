@@ -159,6 +159,10 @@ typedef struct XeonStruct {
     struct {
 		unsigned int addr_src = 0;
 		unsigned int write_data = 0;
+		unsigned int read_data = 0;
+		struct {
+			unsigned int ALU_result = 0;
+			unsigned int PC_target = 0;
 		}BUS;
 		struct {
 			void(*move2src_MEM)(struct XeonStruct*);
@@ -261,7 +265,7 @@ void MEM_HEAD(struct XeonStruct *Xeon);
 void WB_HEAD(struct XeonStruct *Xeon);
 void IF_TAIL(struct XeonStruct *Xeon);
 void ID_TAIL(struct XeonStruct *Xeon);
-void EX_TAIL(struct XeonStruct * Xeon);
+void EX_TAIL(struct XeonStruct *Xeon);
 void MEM_TAIL(struct XeonStruct *Xeon);
 void WB_TAIL(struct XeonStruct *Xeon);
 
